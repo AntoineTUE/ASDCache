@@ -23,5 +23,5 @@ jobs:
         with:
           python-version: '3.11'
           cache: 'pip'
-      - run: pip install mkdocs-material mkdocs-autorefs mkdocstrings mkdocstrings-python mkdocs-gen-files mkdocs-literate-nav mkdocs-section-index mkdocs-jupyter mkdocs-git-revision-date-localized-plugin mkdocs-include-markdown-plugin black
+      - run: pip install mkdocs-material mkdocs-autorefs mkdocstrings mkdocstrings-python mkdocs-gen-files mkdocs-literate-nav mkdocs-section-index mkdocs-jupyter mkdocs-git-revision-date-localized-plugin mkdocs-include-markdown-plugin black mike
       - run: mkdocs gh-deploy --force
