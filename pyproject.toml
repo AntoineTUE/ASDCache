@@ -1,0 +1,183 @@
+[build-system]
+requires = ["hatchling", "hatch-vcs", "hatch-fancy-pypi-readme"]
+build-backend = "hatchling.build"
+
+[project]
+name = "readasd"
+description = "A Python module to retrieve data from the NIST Atomic Spectra Database (ASD), using caching for fast, efficient data handling"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT"}
+keywords = ["NIST", "ASD","Atomic Spectra Database", "spectra","spectrum","spectroscopy","atoms"]
+authors = [
+    { name = "Antoine Salden", email = "t.p.w.salden@tue.nl" },
+]
+
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = ["requests","requests_cache", "pandas","numpy"]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+polars = ["polars"]
+docs = [
+    "mkdocs",
+    "mkdocs-autorefs",
+    "mkdocs-gen-files",
+    "mkdocs-git-revision-date-localized-plugin",
+    "mkdocs-include-markdown-plugin",
+    "mkdocs-jupyter",
+    "mkdocs-literate-nav",
+    "mkdocs-material",
+    "mkdocs-section-index",
+    "mkdocstrings",
+    "mkdocstrings-python",
+    "black"
+]
+
+[project.urls]
+Documentation = "https://antoinetue.github.io/readasd"
+Source = "https://github.com/AntoineTUE/readasd"
+
+[tool.hatch.metadata]
+# direct dependency references, e.g `pip @ git+https://github.com/pypa/pip.git@master`
+allow-direct-references = true
+
+[tool.hatch.version]
+source = "vcs"
+fallback-version = "0.0.1dev"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "src/readasd/_version.py"
+
+[tool.hatch.build]
+packages = ["src/readasd"]
+
+[tool.hatch.build.targets.sdist]
+exclude = ["/.github"]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q --doctest-glob='*.md'"
+testpaths = ["tests"]
+markers = ["full: test using the full NIST ASD"]
+
+[tool.coverage.run]
+branch = true
+source = ["src/readasd"]
+omit = ["_version.py"]
+
+[tool.coverage.paths]
+source = [
+    "src/",
+    "*/site-packages/",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self\\.debug",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
+
+[tool.ruff]
+target-version = "py39"
+line-length = 120
+indent-width = 4
+include = [
+    "src/**/*.py",
+    "src/**/*.pyi",
+    "tests/**/*.py",
+    "tests/**/*.pyi",
+    "docs/**/*.ipynb"
+]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F","C4", "SIM", "NPY", "PD","B","UP","D"]
+ignore = ["PD901","F401"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "pep257"
+
+[tool.ruff.lint.isort]
+known-first-party = ["readasd"]
+
+[tool.ruff.lint.per-file-ignores]
+"examples/*" = ["T201"]
+"tests/**/*" = ["PLR2004", "S101", "TID252","D","F401"]
+
+[tool.hatch.metadata.hooks.fancy-pypi-readme]
+content-type = "text/markdown"
+fragments = [
+    { path = "README.md" }
+]
+
+[tool.uv]
+cache-keys = [{ git = true }]
+
+[tool.hatch.envs.default]
+python = "3.9"
+post-install-commands = ["pre-commit install"]
+dependencies = ["matplotlib", "ipython","ipykernel","ruff"]
+installer = "uv"
+features = ["polars"]
+
+[tool.hatch.envs.test]
+dependencies = [
+    "coverage[toml]>=6.2",
+    "pytest",
+    "pytest-cov",
+    "pytest-mock",
+    "pytest-recording",
+    "pytest-sugar",
+    "hypothesis",
+]
+
+[tool.hatch.envs.hatch-test]
+features = ["polars"]
+
+[tool.hatch.envs.test.scripts]
+cov = "pytest --cov-report=term-missing --cov-config=pyproject.toml --cov=src/readasd --cov=tests {args}"
+no-cov = "cov --no-cov {args}"
+debug =  "cov --no-cov -s --pdb --pdbcls=IPython.core.debugger:Pdb {args}"
+
+[tool.hatch.envs.docs]
+skip-install = true
+features = ["docs"]
+dependencies = ["mike"]
+
+[tool.hatch.envs.docs.scripts]
+serve = "mkdocs serve -f mkdocs.yml {args}"
+build = "mkdocs build --clean -f mkdocs.yml {args}"
+ci-build = "mike deploy --config-file mkdocs.yml --update-aliases {args}"
+
+[tool.hatch.envs.lint]
+template = "lint"
+dependencies = ["ruff>=0.7.0"]
+
+[tool.hatch.envs.lint.scripts]
+style = [
+    "echo \"VERSION: `ruff --version`\"",
+    "ruff check {args:.}",
+    "ruff format --check {args:.}",
+]
+fix = [
+    "ruff format {args:.}",
+    "ruff check --fix {args:.}",
+    "style",  # feedback on what is not fixable
+]
+
+[[tool.hatch.envs.hatch-test.matrix]]
+python = ["39", "310", "311", "312","313"]
