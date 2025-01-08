@@ -23,7 +23,7 @@ jobs:
         with:
           python-version-file: "pyproject.toml"
       - name: Install build frontend
-        run: uv pip install hatch
+        run: uv pip install hatch --upgrade --system hatch
       - name: Build
         run: hatch build
       - name: Minimize uv cache
