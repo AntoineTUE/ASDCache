@@ -22,7 +22,7 @@ The main goals and benefits of `readASD` are:
 
 - [x] Make the data from the NIST ASD locally accessible as a Dataframe for use in analysis of spectra
 - [x] Retrieve a consistent schema of the data that represents the 'human readable' format, but enforce strictly numeric data for important columns
-  - [ ] This removes footnotes and other annotations, be sure to check the ASD itself as well for this information.
+    - [ ] This removes footnotes and other annotations, be sure to check the ASD itself as well for this information.
 - [x]  Use caching to dramatically speed up data retrieval, from minutes down to milliseconds in some cases
     - [x] Cache time-to-live is 1 week by default, meaning you still get updates to the ASD in a reasonable time frame
     - [x] The cache time-to-live can be adjusted
@@ -39,7 +39,7 @@ The main goals and benefits of `readASD` are:
 pip install readasd
 ```
 
-Further optional features can be installed by specifying the `polars` or `docs` feature flag, as defined in [pyproject.toml](./pyproject.toml).
+Further optional features can be installed by specifying the `polars` or `docs` feature flag, as defined in [pyproject.toml](https://github.com/AntoineTUE/readasd/blob/main/pyproject.toml).
 
 To install all dependencies to locally serve and update the documentation for instance, you can run:
 
@@ -86,7 +86,7 @@ Be sure to cite the NIST ASD when using `readasd` in your work, since it is the 
 
 `readasd` itself can be cited using the following DOI provided via Zenodo:
 
-See also
+See also [this page for more information](https://antoinetue.github.io/readasd/citing)
 
 ## License
 

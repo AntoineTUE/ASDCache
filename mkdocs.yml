@@ -160,10 +160,12 @@ extra:
 
 extra_javascript:
   - assets/javascript/mathjax.js
-  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
+  # - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
+  - "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS_CHTML-full,Safe"
 
 nav:
   - index.md
+  - schema.md
   - Examples: examples.ipynb
   - Citing: citing.md
   # defer to gen-files + literate-nav
