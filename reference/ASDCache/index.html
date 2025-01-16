@@ -1,0 +1,1823 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A Python project to retrieve data from the NIST Atomic Spectra Database (ASD), using caching for fast, efficient data handling">
+      
+      
+        <meta name="author" content="Antoine Salden">
+      
+      
+        <link rel="canonical" href="https://antoinetue.github.io/ASDCache/reference/ASDCache/">
+      
+      
+        <link rel="prev" href="../../citing/">
+      
+      
+        <link rel="next" href="ASDCache/">
+      
+      
+      <link rel="icon" href="../../assets/logo.svg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>Reference - ASDCache documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ASDCache" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="ASDCache documentation" class="md-header__button md-logo" aria-label="ASDCache documentation" data-md-component="logo">
+      
+  <img src="../../assets/logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            ASDCache documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Reference
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/AntoineTUE/ASDCache" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 512"><!--! Font Awesome Free 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M186.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1M480 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2m-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3m-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1"/></svg>
+  </div>
+  <div class="md-source__repository">
+    ASDCache
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="ASDCache documentation" class="md-nav__button md-logo" aria-label="ASDCache documentation" data-md-component="logo">
+      
+  <img src="../../assets/logo.svg" alt="logo">
+
+    </a>
+    ASDCache documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/AntoineTUE/ASDCache" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 512"><!--! Font Awesome Free 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M186.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1M480 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2m-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3m-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1"/></svg>
+  </div>
+  <div class="md-source__repository">
+    ASDCache
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ASDCache
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../schema/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Data schema overview
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Examples of using ASDCache
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../citing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Citing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="./" class="md-nav__link md-nav__link--active">
+              
+  
+  <span class="md-ellipsis">
+    Reference
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link md-nav__link--active" for="__nav_5" id="__nav_5_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ASDCache/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ASDCache
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../changelog/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../license/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    License
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<h1 id="ASDCache" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-module"></code>            <span class="doc doc-object-name doc-module-name">ASDCache</span>
+
+
+<a href="#ASDCache" class="headerlink" title="Permanent link">&para;</a></h1>
+
+    <div class="doc doc-contents first">
+
+        <p>ASDCache is a module to retrieve data from the NIST Atomic Spectra Database that uses caching for fast local access.</p>
+<p>To make the most use out of the cache, <code>ASDCache</code> is opinionated in the information it retrieves from the ASD; it always requests the same schema of information and locally computes additional fields.</p>
+<p>The <code>SpectraCache</code> class acts as the entrypoint to retrieve this data.</p>
+
+
+
+
+
+<p><span class="doc-section-title">Modules:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code><a class="autorefs autorefs-internal" title="ASDCache.ASDCache" href="ASDCache/#ASDCache.ASDCache">ASDCache</a></code></td>
+            <td>
+              <div class="doc-md-description">
+                <p><code>ASDcache</code> is a module to fetch data from the  NIST Atomic Spectra Database (ASD), utlizing caching for fast responses.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+
+
+<p><span class="doc-section-title">Classes:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code><a class="autorefs autorefs-internal" title="ASDCache.SpectraCache" href="#ASDCache.SpectraCache">SpectraCache</a></code></td>
+            <td>
+              <div class="doc-md-description">
+                <p>A class acting as the entrypoint to retrieve data from the NIST Atomic Spectra Database that uses caching.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h2 id="ASDCache.__all__" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">__all__</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-module-attribute"><code>module-attribute</code></small>
+  </span>
+
+<a href="#ASDCache.__all__" class="headerlink" title="Permanent link">&para;</a></h2>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;SpectraCache&#39;</span><span class="p">]</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+    </div>
+
+</div>
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="ASDCache.SpectraCache" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <span class="doc doc-object-name doc-class-name">SpectraCache</span>
+
+
+<a href="#ASDCache.SpectraCache" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>A class acting as the entrypoint to retrieve data from the NIST Atomic Spectra Database that uses caching.</p>
+<p>The <code>ASDCache</code> instance acts as an access point to the cache, which stores responses on the local system in a SQLite database.</p>
+<p>Data retrieval from cache is much faster (order milliseconds) than fetching from the internet (order seconds), and avoids wastefull requests to the server.</p>
+<p>Cache time-to-live is one week by default.</p>
+<p>Since the NIST ASD is usually updated less frequently than that, this is a compromise between having the latest data, and overall fast performance.</p>
+<p>Note that the same cache is shared across different class-instances, thread-safety is not guaranteed.</p>
+
+
+
+
+
+
+
+
+
+<p><span class="doc-section-title">Methods:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+            <tr class="doc-section-item">
+              <td><code><a class="autorefs autorefs-internal" title="ASDCache.SpectraCache.__init__" href="#ASDCache.SpectraCache.__init__">__init__</a></code></td>
+              <td>
+                <div class="doc-md-description">
+                  <p>Initialize an instance that handles cached data lookup of the NIST ASD.</p>
+                </div>
+              </td>
+            </tr>
+            <tr class="doc-section-item">
+              <td><code><a class="autorefs autorefs-internal" title="ASDCache.SpectraCache.create_dataframe" href="#ASDCache.SpectraCache.create_dataframe">create_dataframe</a></code></td>
+              <td>
+                <div class="doc-md-description">
+                  <p>Create a dataframe from the (cached) NIST ASD response, using the chosen backend at class instantiation.</p>
+                </div>
+              </td>
+            </tr>
+            <tr class="doc-section-item">
+              <td><code><a class="autorefs autorefs-internal" title="ASDCache.SpectraCache.fetch" href="#ASDCache.SpectraCache.fetch">fetch</a></code></td>
+              <td>
+                <div class="doc-md-description">
+                  <p>Fetch information on a species from the ASD, first checking the cache.</p>
+                </div>
+              </td>
+            </tr>
+            <tr class="doc-section-item">
+              <td><code><a class="autorefs autorefs-internal" title="ASDCache.SpectraCache.get_all_cached" href="#ASDCache.SpectraCache.get_all_cached">get_all_cached</a></code></td>
+              <td>
+                <div class="doc-md-description">
+                  <p>Retrieve all cached data into a single dataframe.</p>
+                </div>
+              </td>
+            </tr>
+            <tr class="doc-section-item">
+              <td><code><a class="autorefs autorefs-internal" title="ASDCache.SpectraCache.list_cached_species" href="#ASDCache.SpectraCache.list_cached_species">list_cached_species</a></code></td>
+              <td>
+                <div class="doc-md-description">
+                  <p>List all species in the cache, based on the string of the original query URL.</p>
+                </div>
+              </td>
+            </tr>
+            <tr class="doc-section-item">
+              <td><code><a class="autorefs autorefs-internal" title="ASDCache.SpectraCache.roman_to_int" href="#ASDCache.SpectraCache.roman_to_int">roman_to_int</a></code></td>
+              <td>
+                <div class="doc-md-description">
+                  <p>Transform Roman numerals to integers.</p>
+                </div>
+              </td>
+            </tr>
+            <tr class="doc-section-item">
+              <td><code><a class="autorefs autorefs-internal" title="ASDCache.SpectraCache.wn_to_n_refractive" href="#ASDCache.SpectraCache.wn_to_n_refractive">wn_to_n_refractive</a></code></td>
+              <td>
+                <div class="doc-md-description">
+                  <p>Calculate the refractive index <span class="arithmatex"><span class="MathJax_Preview">n</span><script type="math/tex">n</script></span> in air for a transition, using the 5-term Sellmeier formula used by NIST.</p>
+                </div>
+              </td>
+            </tr>
+      </tbody>
+    </table>
+
+
+
+
+<p><span class="doc-section-title">Attributes:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code><a class="autorefs autorefs-internal" title="ASDCache.SpectraCache.cache_expiry" href="#ASDCache.SpectraCache.cache_expiry">cache_expiry</a></code></td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><a class="autorefs autorefs-internal" title="ASDCache.SpectraCache.column_order" href="#ASDCache.SpectraCache.column_order">column_order</a></code></td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Fixed order of columns for consistent schema of data.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><a class="autorefs autorefs-internal" title="ASDCache.SpectraCache.known_species" href="#ASDCache.SpectraCache.known_species">known_species</a></code></td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><a class="autorefs autorefs-internal" title="ASDCache.SpectraCache.nist_url" href="#ASDCache.SpectraCache.nist_url">nist_url</a></code></td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><a class="autorefs autorefs-internal" title="ASDCache.SpectraCache.query_params" href="#ASDCache.SpectraCache.query_params">query_params</a></code></td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Request parameters used by the NIST ASD form.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><a class="autorefs autorefs-internal" title="ASDCache.SpectraCache.session" href="#ASDCache.SpectraCache.session">session</a></code></td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><a class="autorefs autorefs-internal" title="ASDCache.SpectraCache.species_expr" href="#ASDCache.SpectraCache.species_expr">species_expr</a></code></td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><a class="autorefs autorefs-internal" title="ASDCache.SpectraCache.strict_matching" href="#ASDCache.SpectraCache.strict_matching">strict_matching</a></code></td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><a class="autorefs autorefs-internal" title="ASDCache.SpectraCache.use_polars" href="#ASDCache.SpectraCache.use_polars">use_polars</a></code></td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+              <details class="quote">
+                <summary>Source code in <code>src/ASDCache/ASDCache.py</code></summary>
+                <div class="highlight"><pre><span></span><code><span class="linenos" data-linenos=" 63 "></span><span class="k">class</span><span class="w"> </span><span class="nc">SpectraCache</span><span class="p">:</span>
+<span class="linenos" data-linenos=" 64 "></span><span class="w">    </span><span class="sd">&quot;&quot;&quot;A class acting as the entrypoint to retrieve data from the NIST Atomic Spectra Database that uses caching.</span>
+<span class="linenos" data-linenos=" 65 "></span>
+<span class="linenos" data-linenos=" 66 "></span><span class="sd">    The `ASDCache` instance acts as an access point to the cache, which stores responses on the local system in a SQLite database.</span>
+<span class="linenos" data-linenos=" 67 "></span>
+<span class="linenos" data-linenos=" 68 "></span><span class="sd">    Data retrieval from cache is much faster (order milliseconds) than fetching from the internet (order seconds), and avoids wastefull requests to the server.</span>
+<span class="linenos" data-linenos=" 69 "></span>
+<span class="linenos" data-linenos=" 70 "></span><span class="sd">    Cache time-to-live is one week by default.</span>
+<span class="linenos" data-linenos=" 71 "></span>
+<span class="linenos" data-linenos=" 72 "></span><span class="sd">    Since the NIST ASD is usually updated less frequently than that, this is a compromise between having the latest data, and overall fast performance.</span>
+<span class="linenos" data-linenos=" 73 "></span>
+<span class="linenos" data-linenos=" 74 "></span><span class="sd">    Note that the same cache is shared across different class-instances, thread-safety is not guaranteed.</span>
+<span class="linenos" data-linenos=" 75 "></span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos" data-linenos=" 76 "></span>
+<span class="linenos" data-linenos=" 77 "></span>    <span class="n">nist_url</span> <span class="o">=</span> <span class="s2">&quot;https://physics.nist.gov/cgi-bin/ASD/lines1.pl&quot;</span>
+<span class="linenos" data-linenos=" 78 "></span>    <span class="n">species_expr</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;spectra=([\w\+\-\%3]+)&amp;&quot;</span><span class="p">)</span>
+<span class="linenos" data-linenos=" 79 "></span>    <span class="n">query_params</span> <span class="o">=</span> <span class="p">{</span>
+<span class="linenos" data-linenos=" 80 "></span>        <span class="s2">&quot;unit&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+<span class="linenos" data-linenos=" 81 "></span>        <span class="s2">&quot;de&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+<span class="linenos" data-linenos=" 82 "></span>        <span class="s2">&quot;plot_out&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+<span class="linenos" data-linenos=" 83 "></span>        <span class="s2">&quot;I_scale_type&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+<span class="linenos" data-linenos=" 84 "></span>        <span class="s2">&quot;format&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+<span class="linenos" data-linenos=" 85 "></span>        <span class="s2">&quot;line_out&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+<span class="linenos" data-linenos=" 86 "></span>        <span class="s2">&quot;remove_js&quot;</span><span class="p">:</span> <span class="s2">&quot;on&quot;</span><span class="p">,</span>
+<span class="linenos" data-linenos=" 87 "></span>        <span class="s2">&quot;no_spaces&quot;</span><span class="p">:</span> <span class="s2">&quot;on&quot;</span><span class="p">,</span>
+<span class="linenos" data-linenos=" 88 "></span>        <span class="s2">&quot;en_unit&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+<span class="linenos" data-linenos=" 89 "></span>        <span class="s2">&quot;output&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+<span class="linenos" data-linenos=" 90 "></span>        <span class="s2">&quot;bibrefs&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+<span class="linenos" data-linenos=" 91 "></span>        <span class="s2">&quot;show_obs_wl&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+<span class="linenos" data-linenos=" 92 "></span>        <span class="s2">&quot;show_calc_wl&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+<span class="linenos" data-linenos=" 93 "></span>        <span class="s2">&quot;show_wn&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+<span class="linenos" data-linenos=" 94 "></span>        <span class="s2">&quot;unc_out&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+<span class="linenos" data-linenos=" 95 "></span>        <span class="s2">&quot;order_out&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+<span class="linenos" data-linenos=" 96 "></span>        <span class="s2">&quot;show_av&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>  <span class="c1"># 3: wavelength in vac, 2: wavelength in air</span>
+<span class="linenos" data-linenos=" 97 "></span>        <span class="s2">&quot;tsb_value&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+<span class="linenos" data-linenos=" 98 "></span>        <span class="s2">&quot;A_out&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+<span class="linenos" data-linenos=" 99 "></span>        <span class="s2">&quot;S_out&quot;</span><span class="p">:</span> <span class="s2">&quot;on&quot;</span><span class="p">,</span>
+<span class="linenos" data-linenos="100 "></span>        <span class="s2">&quot;f_out&quot;</span><span class="p">:</span> <span class="s2">&quot;on&quot;</span><span class="p">,</span>
+<span class="linenos" data-linenos="101 "></span>        <span class="s2">&quot;loggf_out&quot;</span><span class="p">:</span> <span class="s2">&quot;on&quot;</span><span class="p">,</span>
+<span class="linenos" data-linenos="102 "></span>        <span class="s2">&quot;intens_out&quot;</span><span class="p">:</span> <span class="s2">&quot;on&quot;</span><span class="p">,</span>
+<span class="linenos" data-linenos="103 "></span>        <span class="s2">&quot;conf_out&quot;</span><span class="p">:</span> <span class="s2">&quot;on&quot;</span><span class="p">,</span>
+<span class="linenos" data-linenos="104 "></span>        <span class="s2">&quot;term_out&quot;</span><span class="p">:</span> <span class="s2">&quot;on&quot;</span><span class="p">,</span>
+<span class="linenos" data-linenos="105 "></span>        <span class="s2">&quot;enrg_out&quot;</span><span class="p">:</span> <span class="s2">&quot;on&quot;</span><span class="p">,</span>
+<span class="linenos" data-linenos="106 "></span>        <span class="s2">&quot;J_out&quot;</span><span class="p">:</span> <span class="s2">&quot;on&quot;</span><span class="p">,</span>
+<span class="linenos" data-linenos="107 "></span>        <span class="s2">&quot;g_out&quot;</span><span class="p">:</span> <span class="s2">&quot;on&quot;</span><span class="p">,</span>
+<span class="linenos" data-linenos="108 "></span>        <span class="s2">&quot;diag_out&quot;</span><span class="p">:</span> <span class="s2">&quot;on&quot;</span><span class="p">,</span>
+<span class="linenos" data-linenos="109 "></span>        <span class="s2">&quot;allowed_out&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+<span class="linenos" data-linenos="110 "></span>        <span class="s2">&quot;forbid_out&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+<span class="linenos" data-linenos="111 "></span>        <span class="s2">&quot;submit&quot;</span><span class="p">:</span> <span class="s2">&quot;Retrieve Data&quot;</span><span class="p">,</span>
+<span class="linenos" data-linenos="112 "></span>    <span class="p">}</span>
+<span class="linenos" data-linenos="113 "></span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Request parameters used by the NIST ASD form.&quot;&quot;&quot;</span>
+<span class="linenos" data-linenos="114 "></span>    <span class="n">column_order</span> <span class="o">=</span> <span class="p">[</span>
+<span class="linenos" data-linenos="115 "></span>        <span class="s2">&quot;element&quot;</span><span class="p">,</span>
+<span class="linenos" data-linenos="116 "></span>        <span class="s2">&quot;sp_num&quot;</span><span class="p">,</span>
+<span class="linenos" data-linenos="117 "></span>        <span class="s2">&quot;obs_wl_vac(nm)&quot;</span><span class="p">,</span>
+<span class="linenos" data-linenos="118 "></span>        <span class="s2">&quot;unc_obs_wl&quot;</span><span class="p">,</span>
+<span class="linenos" data-linenos="119 "></span>        <span class="s2">&quot;obs_wl_air(nm)&quot;</span><span class="p">,</span>
+<span class="linenos" data-linenos="120 "></span>        <span class="s2">&quot;ritz_wl_vac(nm)&quot;</span><span class="p">,</span>
+<span class="linenos" data-linenos="121 "></span>        <span class="s2">&quot;unc_ritz_wl&quot;</span><span class="p">,</span>
+<span class="linenos" data-linenos="122 "></span>        <span class="s2">&quot;ritz_wl_air(nm)&quot;</span><span class="p">,</span>
+<span class="linenos" data-linenos="123 "></span>        <span class="s2">&quot;wn(cm-1)&quot;</span><span class="p">,</span>
+<span class="linenos" data-linenos="124 "></span>        <span class="s2">&quot;intens&quot;</span><span class="p">,</span>
+<span class="linenos" data-linenos="125 "></span>        <span class="s2">&quot;Aki(s^-1)&quot;</span><span class="p">,</span>
+<span class="linenos" data-linenos="126 "></span>        <span class="s2">&quot;fik&quot;</span><span class="p">,</span>
+<span class="linenos" data-linenos="127 "></span>        <span class="s2">&quot;S(a.u.)&quot;</span><span class="p">,</span>
+<span class="linenos" data-linenos="128 "></span>        <span class="s2">&quot;log_gf&quot;</span><span class="p">,</span>
+<span class="linenos" data-linenos="129 "></span>        <span class="s2">&quot;Acc&quot;</span><span class="p">,</span>
+<span class="linenos" data-linenos="130 "></span>        <span class="s2">&quot;Ei(cm-1)&quot;</span><span class="p">,</span>
+<span class="linenos" data-linenos="131 "></span>        <span class="s2">&quot;Ek(cm-1)&quot;</span><span class="p">,</span>
+<span class="linenos" data-linenos="132 "></span>        <span class="s2">&quot;conf_i&quot;</span><span class="p">,</span>
+<span class="linenos" data-linenos="133 "></span>        <span class="s2">&quot;term_i&quot;</span><span class="p">,</span>
+<span class="linenos" data-linenos="134 "></span>        <span class="s2">&quot;J_i&quot;</span><span class="p">,</span>
+<span class="linenos" data-linenos="135 "></span>        <span class="s2">&quot;conf_k&quot;</span><span class="p">,</span>
+<span class="linenos" data-linenos="136 "></span>        <span class="s2">&quot;term_k&quot;</span><span class="p">,</span>
+<span class="linenos" data-linenos="137 "></span>        <span class="s2">&quot;J_k&quot;</span><span class="p">,</span>
+<span class="linenos" data-linenos="138 "></span>        <span class="s2">&quot;g_i&quot;</span><span class="p">,</span>
+<span class="linenos" data-linenos="139 "></span>        <span class="s2">&quot;g_k&quot;</span><span class="p">,</span>
+<span class="linenos" data-linenos="140 "></span>        <span class="s2">&quot;Type&quot;</span><span class="p">,</span>
+<span class="linenos" data-linenos="141 "></span>        <span class="s2">&quot;tp_ref&quot;</span><span class="p">,</span>
+<span class="linenos" data-linenos="142 "></span>        <span class="s2">&quot;line_ref&quot;</span><span class="p">,</span>
+<span class="linenos" data-linenos="143 "></span>    <span class="p">]</span>
+<span class="linenos" data-linenos="144 "></span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Fixed order of columns for consistent schema of data.&quot;&quot;&quot;</span>
+<span class="linenos" data-linenos="145 "></span>
+<span class="linenos" data-linenos="146 "></span>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">use_polars_backend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cache_expiry</span><span class="o">=</span><span class="n">timedelta</span><span class="p">(</span><span class="n">weeks</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">strict_matching</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="linenos" data-linenos="147 "></span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize an instance that handles cached data lookup of the NIST ASD.&quot;&quot;&quot;</span>
+<span class="linenos" data-linenos="148 "></span>        <span class="bp">self</span><span class="o">.</span><span class="n">strict_matching</span> <span class="o">=</span> <span class="n">strict_matching</span>
+<span class="linenos" data-linenos="149 "></span>        <span class="bp">self</span><span class="o">.</span><span class="n">cache_expiry</span> <span class="o">=</span> <span class="n">cache_expiry</span>
+<span class="linenos" data-linenos="150 "></span>        <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="n">CachedSession</span><span class="p">(</span>
+<span class="linenos" data-linenos="151 "></span>            <span class="s2">&quot;NIST_ASD_cache&quot;</span><span class="p">,</span>
+<span class="linenos" data-linenos="152 "></span>            <span class="n">use_cache_dir</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="linenos" data-linenos="153 "></span>            <span class="n">expire_after</span><span class="o">=</span><span class="n">cache_expiry</span><span class="p">,</span>
+<span class="linenos" data-linenos="154 "></span>            <span class="n">stale_if_error</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="linenos" data-linenos="155 "></span>            <span class="n">filter_fn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_check_response_success</span><span class="p">,</span>
+<span class="linenos" data-linenos="156 "></span>            <span class="n">ignored_parameters</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">query_params</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">strict_matching</span> <span class="ow">is</span> <span class="kc">False</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+<span class="linenos" data-linenos="157 "></span>        <span class="p">)</span>
+<span class="linenos" data-linenos="158 "></span>        <span class="k">if</span> <span class="p">(</span><span class="n">use_polars_backend</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="ow">not</span> <span class="n">POLARS_AVAILABLE</span><span class="p">):</span>
+<span class="linenos" data-linenos="159 "></span>            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Cannot find `polars` as a backend, falling back to `pandas`&quot;</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="linenos" data-linenos="160 "></span>            <span class="bp">self</span><span class="o">.</span><span class="n">use_polars</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="linenos" data-linenos="161 "></span>        <span class="k">else</span><span class="p">:</span>
+<span class="linenos" data-linenos="162 "></span>            <span class="bp">self</span><span class="o">.</span><span class="n">use_polars</span> <span class="o">=</span> <span class="n">use_polars_backend</span>
+<span class="linenos" data-linenos="163 "></span>
+<span class="linenos" data-linenos="164 "></span>        <span class="bp">self</span><span class="o">.</span><span class="n">known_species</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_cached_species</span><span class="p">()</span>
+<span class="linenos" data-linenos="165 "></span>
+<span class="linenos" data-linenos="166 "></span>    <span class="nd">@staticmethod</span>
+<span class="linenos" data-linenos="167 "></span>    <span class="k">def</span><span class="w"> </span><span class="nf">_check_response_success</span><span class="p">(</span><span class="n">response</span><span class="p">:</span> <span class="s2">&quot;CachedResponse&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="linenos" data-linenos="168 "></span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate that data has been fetched succesfully.</span>
+<span class="linenos" data-linenos="169 "></span>
+<span class="linenos" data-linenos="170 "></span><span class="sd">        If this check fails, the cache should not update with this response, even when marked as stale.</span>
+<span class="linenos" data-linenos="171 "></span><span class="sd">        &quot;&quot;&quot;</span>
+<span class="linenos" data-linenos="172 "></span>        <span class="k">return</span> <span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="sa">b</span><span class="s2">&quot;Error Message&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+<span class="linenos" data-linenos="173 "></span>
+<span class="linenos" data-linenos="174 "></span>    <span class="k">def</span><span class="w"> </span><span class="nf">list_cached_species</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="linenos" data-linenos="175 "></span><span class="w">        </span><span class="sd">&quot;&quot;&quot;List all species in the cache, based on the string of the original query URL.&quot;&quot;&quot;</span>
+<span class="linenos" data-linenos="176 "></span>        <span class="k">return</span> <span class="p">[</span>
+<span class="linenos" data-linenos="177 "></span>            <span class="n">elem</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
+<span class="linenos" data-linenos="178 "></span>            <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">urls</span><span class="p">()</span>
+<span class="linenos" data-linenos="179 "></span>            <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">species_expr</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;%3B&quot;</span><span class="p">)</span>
+<span class="linenos" data-linenos="180 "></span>        <span class="p">]</span>
+<span class="linenos" data-linenos="181 "></span>
+<span class="linenos" data-linenos="182 "></span>    <span class="k">def</span><span class="w"> </span><span class="nf">fetch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">species</span><span class="p">,</span> <span class="n">wl_range</span><span class="o">=</span><span class="p">(</span><span class="mi">170</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;pd.DataFrame|pl.DataFrame|CachedResponse&quot;</span><span class="p">:</span>
+<span class="linenos" data-linenos="183 "></span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Fetch information on a species from the ASD, first checking the cache.</span>
+<span class="linenos" data-linenos="184 "></span>
+<span class="linenos" data-linenos="185 "></span><span class="sd">        This supports loading multiple species in one go by using the same notation as the NIST ASD page.</span>
+<span class="linenos" data-linenos="186 "></span>
+<span class="linenos" data-linenos="187 "></span><span class="sd">        Note however that cache keys are computed for unique options for `species` and `wl_range`.</span>
+<span class="linenos" data-linenos="188 "></span>
+<span class="linenos" data-linenos="189 "></span><span class="sd">        This means that you won&#39;t get caching benefits by using different queries.</span>
+<span class="linenos" data-linenos="190 "></span>
+<span class="linenos" data-linenos="191 "></span><span class="sd">        In other words: the cache cannot deduplicate queries such as `ASD.fetch(&#39;H&#39;, (200,1000))` followed by `ASD.fetch(&#39;H I&#39;, (650,660))`.</span>
+<span class="linenos" data-linenos="192 "></span>
+<span class="linenos" data-linenos="193 "></span><span class="sd">        Both these operations will fetch data online and be stored as separate cache entries.</span>
+<span class="linenos" data-linenos="194 "></span><span class="sd">        &quot;&quot;&quot;</span>
+<span class="linenos" data-linenos="195 "></span>        <span class="n">query_params</span> <span class="o">=</span> <span class="p">{</span>
+<span class="linenos" data-linenos="196 "></span>            <span class="s2">&quot;spectra&quot;</span><span class="p">:</span> <span class="n">species</span><span class="p">,</span>
+<span class="linenos" data-linenos="197 "></span>            <span class="s2">&quot;output_type&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+<span class="linenos" data-linenos="198 "></span>            <span class="s2">&quot;low_w&quot;</span><span class="p">:</span> <span class="nb">min</span><span class="p">(</span><span class="n">wl_range</span><span class="p">),</span>
+<span class="linenos" data-linenos="199 "></span>            <span class="s2">&quot;upp_w&quot;</span><span class="p">:</span> <span class="nb">max</span><span class="p">(</span><span class="n">wl_range</span><span class="p">),</span>
+<span class="linenos" data-linenos="200 "></span>            <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">query_params</span><span class="p">,</span>
+<span class="linenos" data-linenos="201 "></span>        <span class="p">}</span>
+<span class="linenos" data-linenos="202 "></span>        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nist_url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">query_params</span><span class="p">)</span>
+<span class="linenos" data-linenos="203 "></span>
+<span class="linenos" data-linenos="204 "></span>        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+<span class="linenos" data-linenos="205 "></span>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_dataframe</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+<span class="linenos" data-linenos="206 "></span>        <span class="k">else</span><span class="p">:</span>
+<span class="linenos" data-linenos="207 "></span>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error: Received status code </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="linenos" data-linenos="208 "></span>            <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+<span class="linenos" data-linenos="209 "></span>            <span class="k">return</span> <span class="n">response</span>
+<span class="linenos" data-linenos="210 "></span>
+<span class="linenos" data-linenos="211 "></span>    <span class="k">def</span><span class="w"> </span><span class="nf">create_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;pd.DataFrame|pl.DataFrame&quot;</span><span class="p">:</span>
+<span class="linenos" data-linenos="212 "></span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a dataframe from the (cached) NIST ASD response, using the chosen backend at class instantiation.&quot;&quot;&quot;</span>
+<span class="linenos" data-linenos="213 "></span>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_polars</span><span class="p">:</span>
+<span class="linenos" data-linenos="214 "></span>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_from_polars</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+<span class="linenos" data-linenos="215 "></span>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_from_pandas</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+<span class="linenos" data-linenos="216 "></span>
+<span class="linenos" data-linenos="217 "></span>    <span class="nd">@classmethod</span>
+<span class="linenos" data-linenos="218 "></span>    <span class="k">def</span><span class="w"> </span><span class="nf">_from_pandas</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">response</span><span class="p">:</span> <span class="s2">&quot;CachedResponse&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;pd.DataFrame&quot;</span><span class="p">:</span>
+<span class="linenos" data-linenos="219 "></span><span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Transform a (cached) NIST ASD response into a pandas DataFrame.</span>
+<span class="linenos" data-linenos="220 "></span>
+<span class="linenos" data-linenos="221 "></span><span class="sd">        Calculates the air equivalent wavelength from the vacuum wavelength using the same Sellmeier equation as the NIST ASD.</span>
+<span class="linenos" data-linenos="222 "></span>
+<span class="linenos" data-linenos="223 "></span><span class="sd">        Note that this conversion is only performed for lines with $200 nm &lt; \lambda &lt; 2000 nm$, like the ASD.</span>
+<span class="linenos" data-linenos="224 "></span>
+<span class="linenos" data-linenos="225 "></span><span class="sd">        For lines outside of this range, the conversion falls back to their vacuum wavelength.</span>
+<span class="linenos" data-linenos="226 "></span><span class="sd">        &quot;&quot;&quot;</span>
+<span class="linenos" data-linenos="227 "></span>        <span class="n">schema</span> <span class="o">=</span> <span class="p">{</span>
+<span class="linenos" data-linenos="228 "></span>            <span class="s2">&quot;obs_wl_vac(nm)&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="linenos" data-linenos="229 "></span>            <span class="s2">&quot;ritz_wl_vac(nm)&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="linenos" data-linenos="230 "></span>            <span class="s2">&quot;wn(cm-1)&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<span class="linenos" data-linenos="231 "></span>            <span class="s2">&quot;intens&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="linenos" data-linenos="232 "></span>            <span class="s2">&quot;Aki(s^-1)&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<span class="linenos" data-linenos="233 "></span>            <span class="s2">&quot;fik&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<span class="linenos" data-linenos="234 "></span>            <span class="s2">&quot;S(a.u.)&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<span class="linenos" data-linenos="235 "></span>            <span class="s2">&quot;log_gf&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<span class="linenos" data-linenos="236 "></span>            <span class="s2">&quot;Acc&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="linenos" data-linenos="237 "></span>            <span class="s2">&quot;Ei(cm-1)&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="linenos" data-linenos="238 "></span>            <span class="s2">&quot;Ek(cm-1)&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="linenos" data-linenos="239 "></span>            <span class="s2">&quot;conf_i&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="linenos" data-linenos="240 "></span>            <span class="s2">&quot;conf_k&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="linenos" data-linenos="241 "></span>            <span class="s2">&quot;term_i&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="linenos" data-linenos="242 "></span>            <span class="s2">&quot;term_k&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="linenos" data-linenos="243 "></span>            <span class="s2">&quot;g_i&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<span class="linenos" data-linenos="244 "></span>            <span class="s2">&quot;g_k&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<span class="linenos" data-linenos="245 "></span>            <span class="s2">&quot;J_i&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="linenos" data-linenos="246 "></span>            <span class="s2">&quot;J_k&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="linenos" data-linenos="247 "></span>            <span class="s2">&quot;&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="linenos" data-linenos="248 "></span>        <span class="p">}</span>
+<span class="linenos" data-linenos="249 "></span>        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">StringIO</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">),</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">schema</span><span class="p">)</span>
+<span class="linenos" data-linenos="250 "></span>        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;obs_wl_vac(nm)&quot;</span><span class="p">,</span> <span class="s2">&quot;ritz_wl_vac(nm)&quot;</span><span class="p">,</span> <span class="s2">&quot;intens&quot;</span><span class="p">,</span> <span class="s2">&quot;Ei(cm-1)&quot;</span><span class="p">,</span> <span class="s2">&quot;Ek(cm-1)&quot;</span><span class="p">]:</span>
+<span class="linenos" data-linenos="251 "></span>            <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;([+-]?\d*\.?\d+(?:[eE][+-]?\d+)?)&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+<span class="linenos" data-linenos="252 "></span>        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="s2">&quot;Type&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">,</span> <span class="s2">&quot;E1&quot;</span><span class="p">)</span>
+<span class="linenos" data-linenos="253 "></span>        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;tp_ref&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="s2">&quot;tp_ref&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+<span class="linenos" data-linenos="254 "></span>        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;obs_wl_air(nm)&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;obs_wl_vac(nm)&quot;</span><span class="p">]</span>
+<span class="linenos" data-linenos="255 "></span>        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;obs_wl_air(nm)&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;wn(cm-1)&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">between</span><span class="p">(</span><span class="mi">5000</span><span class="p">,</span> <span class="mi">50000</span><span class="p">)][</span><span class="s2">&quot;obs_wl_air(nm)&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="bp">cls</span><span class="o">.</span><span class="n">wn_to_n_refractive</span><span class="p">(</span>
+<span class="linenos" data-linenos="256 "></span>            <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;wn(cm-1)&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">between</span><span class="p">(</span><span class="mi">5000</span><span class="p">,</span> <span class="mi">50000</span><span class="p">)][</span><span class="s2">&quot;wn(cm-1)&quot;</span><span class="p">]</span>
+<span class="linenos" data-linenos="257 "></span>        <span class="p">)</span>
+<span class="linenos" data-linenos="258 "></span>        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;ritz_wl_air(nm)&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;ritz_wl_vac(nm)&quot;</span><span class="p">]</span>
+<span class="linenos" data-linenos="259 "></span>        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;ritz_wl_air(nm)&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;wn(cm-1)&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">between</span><span class="p">(</span><span class="mi">5000</span><span class="p">,</span> <span class="mi">50000</span><span class="p">)][</span><span class="s2">&quot;ritz_wl_air(nm)&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="bp">cls</span><span class="o">.</span><span class="n">wn_to_n_refractive</span><span class="p">(</span>
+<span class="linenos" data-linenos="260 "></span>            <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;wn(cm-1)&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">between</span><span class="p">(</span><span class="mi">5000</span><span class="p">,</span> <span class="mi">50000</span><span class="p">)][</span><span class="s2">&quot;wn(cm-1)&quot;</span><span class="p">]</span>
+<span class="linenos" data-linenos="261 "></span>        <span class="p">)</span>
+<span class="linenos" data-linenos="262 "></span>        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="s2">&quot;Unnamed&quot;</span> <span class="ow">in</span> <span class="n">c</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="linenos" data-linenos="263 "></span>        <span class="k">if</span> <span class="s2">&quot;element&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+<span class="linenos" data-linenos="264 "></span>            <span class="n">expr</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;spectra=([\w]+)\+?([IVX]+)?&quot;</span><span class="p">)</span>
+<span class="linenos" data-linenos="265 "></span>            <span class="n">element</span><span class="p">,</span> <span class="n">numeral</span> <span class="o">=</span> <span class="n">expr</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
+<span class="linenos" data-linenos="266 "></span>            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;element&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">element</span>
+<span class="linenos" data-linenos="267 "></span>            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;sp_num&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">numeral</span>
+<span class="linenos" data-linenos="268 "></span>            <span class="c1"># cast roman numerals to int for consistency with queries with multiple ionization states, e.g. Ar I vs Ar I-II</span>
+<span class="linenos" data-linenos="269 "></span>            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;sp_num&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;sp_num&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">roman_to_int</span><span class="p">)</span>
+<span class="linenos" data-linenos="270 "></span>        <span class="n">df</span> <span class="o">=</span> <span class="p">(</span>
+<span class="linenos" data-linenos="271 "></span>            <span class="n">df</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">unc_obs_wl</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;unc_obs_wl&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">),</span> <span class="n">unc_ritz_wl</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;unc_ritz_wl&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">))</span>
+<span class="linenos" data-linenos="272 "></span>            <span class="k">if</span> <span class="s2">&quot;unc_obs_wl&quot;</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span>
+<span class="linenos" data-linenos="273 "></span>            <span class="k">else</span> <span class="n">df</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">unc_obs_wl</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">unc_ritz_wl</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+<span class="linenos" data-linenos="274 "></span>        <span class="p">)</span>
+<span class="linenos" data-linenos="275 "></span>        <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">column_order</span><span class="p">]</span>
+<span class="linenos" data-linenos="276 "></span>
+<span class="linenos" data-linenos="277 "></span>    <span class="nd">@classmethod</span>
+<span class="linenos" data-linenos="278 "></span>    <span class="k">def</span><span class="w"> </span><span class="nf">_from_polars</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">response</span><span class="p">:</span> <span class="s2">&quot;CachedResponse&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;pl.DataFrame&quot;</span><span class="p">:</span>
+<span class="linenos" data-linenos="279 "></span><span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Transform a (cached) NIST ASD response into a polars DataFrame.</span>
+<span class="linenos" data-linenos="280 "></span>
+<span class="linenos" data-linenos="281 "></span><span class="sd">        Calculates the air equivalent wavelength from the vacuum wavelength using the same Sellmeier equation as the NIST ASD.</span>
+<span class="linenos" data-linenos="282 "></span>
+<span class="linenos" data-linenos="283 "></span><span class="sd">        Note that this conversion is only performed for lines with $200 nm &lt; \lambda &lt; 2000 nm$, like the ASD.</span>
+<span class="linenos" data-linenos="284 "></span>
+<span class="linenos" data-linenos="285 "></span><span class="sd">        For lines outside of this range, the conversion falls back to their vacuum wavelength.</span>
+<span class="linenos" data-linenos="286 "></span><span class="sd">        &quot;&quot;&quot;</span>
+<span class="linenos" data-linenos="287 "></span>        <span class="n">schema</span> <span class="o">=</span> <span class="p">{</span>
+<span class="linenos" data-linenos="288 "></span>            <span class="s2">&quot;obs_wl_vac(nm)&quot;</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">String</span><span class="p">,</span>
+<span class="linenos" data-linenos="289 "></span>            <span class="s2">&quot;ritz_wl_vac(nm)&quot;</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">String</span><span class="p">,</span>
+<span class="linenos" data-linenos="290 "></span>            <span class="s2">&quot;wn(cm-1)&quot;</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">Float64</span><span class="p">,</span>
+<span class="linenos" data-linenos="291 "></span>            <span class="s2">&quot;intens&quot;</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">String</span><span class="p">,</span>
+<span class="linenos" data-linenos="292 "></span>            <span class="s2">&quot;Aki(s^-1)&quot;</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">Float64</span><span class="p">,</span>
+<span class="linenos" data-linenos="293 "></span>            <span class="s2">&quot;fik&quot;</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">Float64</span><span class="p">,</span>
+<span class="linenos" data-linenos="294 "></span>            <span class="s2">&quot;S(a.u.)&quot;</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">Float64</span><span class="p">,</span>
+<span class="linenos" data-linenos="295 "></span>            <span class="s2">&quot;log_gf&quot;</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">Float64</span><span class="p">,</span>
+<span class="linenos" data-linenos="296 "></span>            <span class="s2">&quot;Acc&quot;</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">String</span><span class="p">,</span>
+<span class="linenos" data-linenos="297 "></span>            <span class="s2">&quot;Ei(cm-1)&quot;</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">String</span><span class="p">,</span>
+<span class="linenos" data-linenos="298 "></span>            <span class="s2">&quot;Ek(cm-1)&quot;</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">String</span><span class="p">,</span>
+<span class="linenos" data-linenos="299 "></span>            <span class="s2">&quot;conf_i&quot;</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">String</span><span class="p">,</span>
+<span class="linenos" data-linenos="300 "></span>            <span class="s2">&quot;conf_k&quot;</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">String</span><span class="p">,</span>
+<span class="linenos" data-linenos="301 "></span>            <span class="s2">&quot;term_i&quot;</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">String</span><span class="p">,</span>
+<span class="linenos" data-linenos="302 "></span>            <span class="s2">&quot;term_k&quot;</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">String</span><span class="p">,</span>
+<span class="linenos" data-linenos="303 "></span>            <span class="s2">&quot;g_i&quot;</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">Float64</span><span class="p">,</span>
+<span class="linenos" data-linenos="304 "></span>            <span class="s2">&quot;g_k&quot;</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">Float64</span><span class="p">,</span>
+<span class="linenos" data-linenos="305 "></span>            <span class="s2">&quot;J_i&quot;</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">String</span><span class="p">,</span>
+<span class="linenos" data-linenos="306 "></span>            <span class="s2">&quot;J_k&quot;</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">String</span><span class="p">,</span>
+<span class="linenos" data-linenos="307 "></span>            <span class="s2">&quot;&quot;</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">String</span><span class="p">,</span>
+<span class="linenos" data-linenos="308 "></span>        <span class="p">}</span>
+<span class="linenos" data-linenos="309 "></span>        <span class="c1"># annotation_chars_to_strip = &quot;(?i)()[]?*w,bGhilmprsq:+xzgacHd &quot;</span>
+<span class="linenos" data-linenos="310 "></span>        <span class="n">df</span> <span class="o">=</span> <span class="p">(</span>
+<span class="linenos" data-linenos="311 "></span>            <span class="n">pl</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
+<span class="linenos" data-linenos="312 "></span>                <span class="n">StringIO</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">),</span>
+<span class="linenos" data-linenos="313 "></span>                <span class="n">separator</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span>
+<span class="linenos" data-linenos="314 "></span>                <span class="n">schema_overrides</span><span class="o">=</span><span class="n">schema</span><span class="p">,</span>
+<span class="linenos" data-linenos="315 "></span>                <span class="n">null_values</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="linenos" data-linenos="316 "></span>            <span class="p">)</span>
+<span class="linenos" data-linenos="317 "></span>            <span class="o">.</span><span class="n">with_columns</span><span class="p">(</span>
+<span class="linenos" data-linenos="318 "></span>                <span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;obs_wl_vac(nm)&quot;</span><span class="p">,</span> <span class="s2">&quot;Ei(cm-1)&quot;</span><span class="p">,</span> <span class="s2">&quot;Ek(cm-1)&quot;</span><span class="p">,</span> <span class="s2">&quot;intens&quot;</span><span class="p">)</span>
+<span class="linenos" data-linenos="319 "></span>                <span class="c1"># .str.strip_chars(annotation_chars_to_strip).str.replace(&quot;&amp;dagger;&quot;, &quot;&quot;, literal=True)</span>
+<span class="linenos" data-linenos="320 "></span>                <span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;([+-]?\d*\.?\d+(?:[eE][+-]?\d+)?)&quot;</span><span class="p">)</span>
+<span class="linenos" data-linenos="321 "></span>                <span class="c1"># .str.extract(r&quot;([+-]?\d*\.?\d+e[+-]?\d+)&quot;)</span>
+<span class="linenos" data-linenos="322 "></span>                <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+<span class="linenos" data-linenos="323 "></span>                <span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">Float64</span><span class="p">),</span>
+<span class="linenos" data-linenos="324 "></span>                <span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;ritz_wl_vac(nm)&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">strip_chars</span><span class="p">(</span><span class="s1">&#39;&quot;+*&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">Float64</span><span class="p">),</span>
+<span class="linenos" data-linenos="325 "></span>                <span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;S(a.u.)&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">Float64</span><span class="p">),</span>
+<span class="linenos" data-linenos="326 "></span>                <span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;Type&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;E1&quot;</span><span class="p">),</span>
+<span class="linenos" data-linenos="327 "></span>                <span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;tp_ref&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+<span class="linenos" data-linenos="328 "></span>            <span class="p">)</span>
+<span class="linenos" data-linenos="329 "></span>            <span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s2">&quot;&quot;</span><span class="p">])</span>
+<span class="linenos" data-linenos="330 "></span>        <span class="p">)</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span>
+<span class="linenos" data-linenos="331 "></span>            <span class="n">pl</span><span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;wn(cm-1)&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">is_between</span><span class="p">(</span><span class="mi">5000</span><span class="p">,</span> <span class="mi">50000</span><span class="p">))</span>
+<span class="linenos" data-linenos="332 "></span>            <span class="o">.</span><span class="n">then</span><span class="p">(</span>
+<span class="linenos" data-linenos="333 "></span>                <span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;obs_wl_vac(nm)&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">Float64</span><span class="p">)</span>
+<span class="linenos" data-linenos="334 "></span>                <span class="o">/</span> <span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;wn(cm-1)&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">map_elements</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">wn_to_n_refractive</span><span class="p">,</span> <span class="n">return_dtype</span><span class="o">=</span><span class="n">pl</span><span class="o">.</span><span class="n">Float64</span><span class="p">)</span>
+<span class="linenos" data-linenos="335 "></span>            <span class="p">)</span>
+<span class="linenos" data-linenos="336 "></span>            <span class="o">.</span><span class="n">otherwise</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;obs_wl_vac(nm)&quot;</span><span class="p">))</span>
+<span class="linenos" data-linenos="337 "></span>            <span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">Float64</span><span class="p">)</span>
+<span class="linenos" data-linenos="338 "></span>            <span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;obs_wl_air(nm)&quot;</span><span class="p">),</span>
+<span class="linenos" data-linenos="339 "></span>            <span class="n">pl</span><span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;wn(cm-1)&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">is_between</span><span class="p">(</span><span class="mi">5000</span><span class="p">,</span> <span class="mi">50000</span><span class="p">))</span>
+<span class="linenos" data-linenos="340 "></span>            <span class="o">.</span><span class="n">then</span><span class="p">(</span>
+<span class="linenos" data-linenos="341 "></span>                <span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;ritz_wl_vac(nm)&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">Float64</span><span class="p">)</span>
+<span class="linenos" data-linenos="342 "></span>                <span class="o">/</span> <span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;wn(cm-1)&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">map_elements</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">wn_to_n_refractive</span><span class="p">,</span> <span class="n">return_dtype</span><span class="o">=</span><span class="n">pl</span><span class="o">.</span><span class="n">Float64</span><span class="p">)</span>
+<span class="linenos" data-linenos="343 "></span>            <span class="p">)</span>
+<span class="linenos" data-linenos="344 "></span>            <span class="o">.</span><span class="n">otherwise</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;ritz_wl_vac(nm)&quot;</span><span class="p">))</span>
+<span class="linenos" data-linenos="345 "></span>            <span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">Float64</span><span class="p">)</span>
+<span class="linenos" data-linenos="346 "></span>            <span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;ritz_wl_air(nm)&quot;</span><span class="p">),</span>
+<span class="linenos" data-linenos="347 "></span>        <span class="p">)</span>
+<span class="linenos" data-linenos="348 "></span>        <span class="k">if</span> <span class="s2">&quot;element&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+<span class="linenos" data-linenos="349 "></span>            <span class="n">expr</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;spectra=([\w]+)\+?([IVX]+)?&quot;</span><span class="p">)</span>
+<span class="linenos" data-linenos="350 "></span>            <span class="n">element</span><span class="p">,</span> <span class="n">numeral</span> <span class="o">=</span> <span class="n">expr</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
+<span class="linenos" data-linenos="351 "></span>            <span class="c1"># cast roman numerals to int for consistency with queries with multiple ionization states, e.g. Ar I vs Ar I-II</span>
+<span class="linenos" data-linenos="352 "></span>            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span>
+<span class="linenos" data-linenos="353 "></span>                <span class="n">pl</span><span class="o">.</span><span class="n">lit</span><span class="p">(</span><span class="n">element</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;element&quot;</span><span class="p">),</span>
+<span class="linenos" data-linenos="354 "></span>                <span class="n">pl</span><span class="o">.</span><span class="n">lit</span><span class="p">(</span><span class="s2">&quot;I&quot;</span> <span class="k">if</span> <span class="n">numeral</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">numeral</span><span class="p">)</span>
+<span class="linenos" data-linenos="355 "></span>                <span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">String</span><span class="p">)</span>
+<span class="linenos" data-linenos="356 "></span>                <span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;sp_num&quot;</span><span class="p">)</span>
+<span class="linenos" data-linenos="357 "></span>                <span class="o">.</span><span class="n">map_elements</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">roman_to_int</span><span class="p">,</span> <span class="n">return_dtype</span><span class="o">=</span><span class="n">pl</span><span class="o">.</span><span class="n">Int64</span><span class="p">),</span>
+<span class="linenos" data-linenos="358 "></span>            <span class="p">)</span>
+<span class="linenos" data-linenos="359 "></span>        <span class="n">df</span> <span class="o">=</span> <span class="p">(</span>
+<span class="linenos" data-linenos="360 "></span>            <span class="n">df</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;unc_obs_wl&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">Float64</span><span class="p">),</span> <span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;unc_ritz_wl&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">Float64</span><span class="p">))</span>
+<span class="linenos" data-linenos="361 "></span>            <span class="k">if</span> <span class="s2">&quot;unc_obs_wl&quot;</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span>
+<span class="linenos" data-linenos="362 "></span>            <span class="k">else</span> <span class="n">df</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span>
+<span class="linenos" data-linenos="363 "></span>                <span class="n">pl</span><span class="o">.</span><span class="n">lit</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">Float64</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;unc_obs_wl&quot;</span><span class="p">),</span> <span class="n">pl</span><span class="o">.</span><span class="n">lit</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">Float64</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;unc_ritz_wl&quot;</span><span class="p">)</span>
+<span class="linenos" data-linenos="364 "></span>            <span class="p">)</span>
+<span class="linenos" data-linenos="365 "></span>        <span class="p">)</span>
+<span class="linenos" data-linenos="366 "></span>
+<span class="linenos" data-linenos="367 "></span>        <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="o">*</span><span class="bp">cls</span><span class="o">.</span><span class="n">column_order</span><span class="p">)</span>
+<span class="linenos" data-linenos="368 "></span>
+<span class="linenos" data-linenos="369 "></span>    <span class="nd">@staticmethod</span>
+<span class="linenos" data-linenos="370 "></span>    <span class="k">def</span><span class="w"> </span><span class="nf">roman_to_int</span><span class="p">(</span><span class="n">roman</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="linenos" data-linenos="371 "></span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Transform Roman numerals to integers.</span>
+<span class="linenos" data-linenos="372 "></span>
+<span class="linenos" data-linenos="373 "></span><span class="sd">        Does only support numerals including up to `L`.</span>
+<span class="linenos" data-linenos="374 "></span><span class="sd">        &quot;&quot;&quot;</span>
+<span class="linenos" data-linenos="375 "></span>        <span class="n">roman_numerals</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;I&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;V&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;X&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;L&quot;</span><span class="p">:</span> <span class="mi">50</span><span class="p">}</span>
+<span class="linenos" data-linenos="376 "></span>        <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="linenos" data-linenos="377 "></span>        <span class="n">previous</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="linenos" data-linenos="378 "></span>        <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">roman</span><span class="p">):</span>
+<span class="linenos" data-linenos="379 "></span>            <span class="n">current_value</span> <span class="o">=</span> <span class="n">roman_numerals</span><span class="p">[</span><span class="n">char</span><span class="p">]</span>
+<span class="linenos" data-linenos="380 "></span>            <span class="k">if</span> <span class="n">current_value</span> <span class="o">&lt;</span> <span class="n">previous</span><span class="p">:</span>
+<span class="linenos" data-linenos="381 "></span>                <span class="n">total</span> <span class="o">-=</span> <span class="n">current_value</span>  <span class="c1"># Subtract if the current value is less than the previous value</span>
+<span class="linenos" data-linenos="382 "></span>            <span class="k">else</span><span class="p">:</span>
+<span class="linenos" data-linenos="383 "></span>                <span class="n">total</span> <span class="o">+=</span> <span class="n">current_value</span>
+<span class="linenos" data-linenos="384 "></span>            <span class="n">previous</span> <span class="o">=</span> <span class="n">current_value</span>
+<span class="linenos" data-linenos="385 "></span>        <span class="k">return</span> <span class="n">total</span>
+<span class="linenos" data-linenos="386 "></span>
+<span class="linenos" data-linenos="387 "></span>    <span class="nd">@staticmethod</span>
+<span class="linenos" data-linenos="388 "></span>    <span class="k">def</span><span class="w"> </span><span class="nf">wn_to_n_refractive</span><span class="p">(</span><span class="n">wavenumbers</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="linenos" data-linenos="389 "></span><span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the refractive index $n$ in air for a transition, using the 5-term Sellmeier formula used by NIST.</span>
+<span class="linenos" data-linenos="390 "></span>
+<span class="linenos" data-linenos="391 "></span><span class="sd">        The used Sellmeier formula is the one from E.R. Peck and K. Reeder [J. Opt. Soc. Am. 62, 958 (1972)](http://dx.doi.org/10.1364/JOSA.62.000958).</span>
+<span class="linenos" data-linenos="392 "></span>
+<span class="linenos" data-linenos="393 "></span><span class="sd">        This formula is fitted to data in the range of 185 nm to 1700 nm for  air at 15 °C, 101 325 Pa pressure, with 0.033 % CO2.</span>
+<span class="linenos" data-linenos="394 "></span>
+<span class="linenos" data-linenos="395 "></span><span class="sd">        This is the same formula used by the NIST ASD to calculate air wavelengths in the interval of 200 nm to 2000 nm.</span>
+<span class="linenos" data-linenos="396 "></span>
+<span class="linenos" data-linenos="397 "></span><span class="sd">        See also [the ASD documentation on the topic](https://physics.nist.gov/PhysRefData/ASD/Html/lineshelp.html#Conversion%20between%20air%20and%20vacuum%20wavelengths).</span>
+<span class="linenos" data-linenos="398 "></span>
+<span class="linenos" data-linenos="399 "></span><span class="sd">        Using this refractive index, air equivalent wavelengths consistent with the ASD can be calculated, without the need to query them separately.</span>
+<span class="linenos" data-linenos="400 "></span><span class="sd">        &quot;&quot;&quot;</span>
+<span class="linenos" data-linenos="401 "></span>        <span class="n">sigma</span> <span class="o">=</span> <span class="n">wavenumbers</span> <span class="o">*</span> <span class="mf">1e-4</span>  <span class="c1"># um^-1</span>
+<span class="linenos" data-linenos="402 "></span>        <span class="k">return</span> <span class="mi">1</span> <span class="o">+</span> <span class="mf">1e-8</span> <span class="o">*</span> <span class="p">(</span><span class="mf">8060.51</span> <span class="o">+</span> <span class="mi">2480990</span> <span class="o">/</span> <span class="p">(</span><span class="mf">132.274</span> <span class="o">-</span> <span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mf">17455.7</span> <span class="o">/</span> <span class="p">(</span><span class="mf">39.32957</span> <span class="o">-</span> <span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+<span class="linenos" data-linenos="403 "></span>
+<span class="linenos" data-linenos="404 "></span>    <span class="k">def</span><span class="w"> </span><span class="nf">get_all_cached</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;pd.DataFrame|pl.DataFrame&quot;</span><span class="p">:</span>
+<span class="linenos" data-linenos="405 "></span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve all cached data into a single dataframe.&quot;&quot;&quot;</span>
+<span class="linenos" data-linenos="406 "></span>        <span class="n">cached_frames</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">create_dataframe</span><span class="p">(</span><span class="n">cached</span><span class="p">)</span> <span class="k">for</span> <span class="n">cached</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">filter</span><span class="p">()]</span>
+<span class="linenos" data-linenos="407 "></span>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_polars</span><span class="p">:</span>
+<span class="linenos" data-linenos="408 "></span>            <span class="k">return</span> <span class="n">pl</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">cached_frames</span><span class="p">)</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+<span class="linenos" data-linenos="409 "></span>        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">cached_frames</span><span class="p">)</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+              </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="ASDCache.SpectraCache.cache_expiry" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">cache_expiry</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+<a href="#ASDCache.SpectraCache.cache_expiry" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">cache_expiry</span> <span class="o">=</span> <span class="n">cache_expiry</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="ASDCache.SpectraCache.column_order" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">column_order</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+<a href="#ASDCache.SpectraCache.column_order" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">column_order</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;element&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;sp_num&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;obs_wl_vac(nm)&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;unc_obs_wl&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;obs_wl_air(nm)&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ritz_wl_vac(nm)&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;unc_ritz_wl&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ritz_wl_air(nm)&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;wn(cm-1)&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;intens&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Aki(s^-1)&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;fik&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;S(a.u.)&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;log_gf&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Acc&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Ei(cm-1)&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Ek(cm-1)&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;conf_i&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;term_i&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;J_i&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;conf_k&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;term_k&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;J_k&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;g_i&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;g_k&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Type&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;tp_ref&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;line_ref&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Fixed order of columns for consistent schema of data.</p>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="ASDCache.SpectraCache.known_species" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">known_species</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+<a href="#ASDCache.SpectraCache.known_species" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">known_species</span> <span class="o">=</span> <span class="n">list_cached_species</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="ASDCache.SpectraCache.nist_url" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">nist_url</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+<a href="#ASDCache.SpectraCache.nist_url" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">nist_url</span> <span class="o">=</span> <span class="s1">&#39;https://physics.nist.gov/cgi-bin/ASD/lines1.pl&#39;</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="ASDCache.SpectraCache.query_params" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">query_params</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+<a href="#ASDCache.SpectraCache.query_params" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">query_params</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;unit&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;de&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">&quot;plot_out&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">&quot;I_scale_type&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;format&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="s2">&quot;line_out&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">&quot;remove_js&quot;</span><span class="p">:</span> <span class="s2">&quot;on&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;no_spaces&quot;</span><span class="p">:</span> <span class="s2">&quot;on&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;en_unit&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">&quot;output&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">&quot;bibrefs&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;show_obs_wl&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;show_calc_wl&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;show_wn&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;unc_out&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;order_out&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">&quot;show_av&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="s2">&quot;tsb_value&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">&quot;A_out&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">&quot;S_out&quot;</span><span class="p">:</span> <span class="s2">&quot;on&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;f_out&quot;</span><span class="p">:</span> <span class="s2">&quot;on&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;loggf_out&quot;</span><span class="p">:</span> <span class="s2">&quot;on&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;intens_out&quot;</span><span class="p">:</span> <span class="s2">&quot;on&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;conf_out&quot;</span><span class="p">:</span> <span class="s2">&quot;on&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;term_out&quot;</span><span class="p">:</span> <span class="s2">&quot;on&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;enrg_out&quot;</span><span class="p">:</span> <span class="s2">&quot;on&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;J_out&quot;</span><span class="p">:</span> <span class="s2">&quot;on&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;g_out&quot;</span><span class="p">:</span> <span class="s2">&quot;on&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;diag_out&quot;</span><span class="p">:</span> <span class="s2">&quot;on&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;allowed_out&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;forbid_out&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;submit&quot;</span><span class="p">:</span> <span class="s2">&quot;Retrieve Data&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Request parameters used by the NIST ASD form.</p>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="ASDCache.SpectraCache.session" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">session</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+<a href="#ASDCache.SpectraCache.session" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">session</span> <span class="o">=</span> <span class="n">CachedSession</span><span class="p">(</span>
+    <span class="s2">&quot;NIST_ASD_cache&quot;</span><span class="p">,</span>
+    <span class="n">use_cache_dir</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">expire_after</span><span class="o">=</span><span class="n">cache_expiry</span><span class="p">,</span>
+    <span class="n">stale_if_error</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">filter_fn</span><span class="o">=</span><span class="n">_check_response_success</span><span class="p">,</span>
+    <span class="n">ignored_parameters</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">keys</span><span class="p">())</span> <span class="k">if</span> <span class="n">strict_matching</span> <span class="ow">is</span> <span class="kc">False</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="ASDCache.SpectraCache.species_expr" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">species_expr</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+<a href="#ASDCache.SpectraCache.species_expr" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">species_expr</span> <span class="o">=</span> <span class="nb">compile</span><span class="p">(</span><span class="s1">&#39;spectra=([</span><span class="se">\\</span><span class="s1">w</span><span class="se">\\</span><span class="s1">+</span><span class="se">\\</span><span class="s1">-</span><span class="se">\\</span><span class="s1">%3]+)&amp;&#39;</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="ASDCache.SpectraCache.strict_matching" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">strict_matching</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+<a href="#ASDCache.SpectraCache.strict_matching" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">strict_matching</span> <span class="o">=</span> <span class="n">strict_matching</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="ASDCache.SpectraCache.use_polars" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">use_polars</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+<a href="#ASDCache.SpectraCache.use_polars" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">use_polars</span> <span class="o">=</span> <span class="kc">False</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+    </div>
+
+</div>
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="ASDCache.SpectraCache.__init__" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">__init__</span>
+
+
+<a href="#ASDCache.SpectraCache.__init__" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="fm">__init__</span><span class="p">(</span>
+    <span class="nf">use_polars_backend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">cache_expiry</span><span class="o">=</span><span class="n">timedelta</span><span class="p">(</span><span class="n">weeks</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+    <span class="n">strict_matching</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Initialize an instance that handles cached data lookup of the NIST ASD.</p>
+
+            <details class="quote">
+              <summary>Source code in <code>src/ASDCache/ASDCache.py</code></summary>
+              <div class="highlight"><pre><span></span><code><span class="linenos" data-linenos="146 "></span><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">use_polars_backend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cache_expiry</span><span class="o">=</span><span class="n">timedelta</span><span class="p">(</span><span class="n">weeks</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">strict_matching</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="linenos" data-linenos="147 "></span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize an instance that handles cached data lookup of the NIST ASD.&quot;&quot;&quot;</span>
+<span class="linenos" data-linenos="148 "></span>    <span class="bp">self</span><span class="o">.</span><span class="n">strict_matching</span> <span class="o">=</span> <span class="n">strict_matching</span>
+<span class="linenos" data-linenos="149 "></span>    <span class="bp">self</span><span class="o">.</span><span class="n">cache_expiry</span> <span class="o">=</span> <span class="n">cache_expiry</span>
+<span class="linenos" data-linenos="150 "></span>    <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="n">CachedSession</span><span class="p">(</span>
+<span class="linenos" data-linenos="151 "></span>        <span class="s2">&quot;NIST_ASD_cache&quot;</span><span class="p">,</span>
+<span class="linenos" data-linenos="152 "></span>        <span class="n">use_cache_dir</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="linenos" data-linenos="153 "></span>        <span class="n">expire_after</span><span class="o">=</span><span class="n">cache_expiry</span><span class="p">,</span>
+<span class="linenos" data-linenos="154 "></span>        <span class="n">stale_if_error</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="linenos" data-linenos="155 "></span>        <span class="n">filter_fn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_check_response_success</span><span class="p">,</span>
+<span class="linenos" data-linenos="156 "></span>        <span class="n">ignored_parameters</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">query_params</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">strict_matching</span> <span class="ow">is</span> <span class="kc">False</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+<span class="linenos" data-linenos="157 "></span>    <span class="p">)</span>
+<span class="linenos" data-linenos="158 "></span>    <span class="k">if</span> <span class="p">(</span><span class="n">use_polars_backend</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="ow">not</span> <span class="n">POLARS_AVAILABLE</span><span class="p">):</span>
+<span class="linenos" data-linenos="159 "></span>        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Cannot find `polars` as a backend, falling back to `pandas`&quot;</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="linenos" data-linenos="160 "></span>        <span class="bp">self</span><span class="o">.</span><span class="n">use_polars</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="linenos" data-linenos="161 "></span>    <span class="k">else</span><span class="p">:</span>
+<span class="linenos" data-linenos="162 "></span>        <span class="bp">self</span><span class="o">.</span><span class="n">use_polars</span> <span class="o">=</span> <span class="n">use_polars_backend</span>
+<span class="linenos" data-linenos="163 "></span>
+<span class="linenos" data-linenos="164 "></span>    <span class="bp">self</span><span class="o">.</span><span class="n">known_species</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_cached_species</span><span class="p">()</span>
+</code></pre></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="ASDCache.SpectraCache.create_dataframe" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">create_dataframe</span>
+
+
+<a href="#ASDCache.SpectraCache.create_dataframe" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">create_dataframe</span><span class="p">(</span><span class="n">response</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">|</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Create a dataframe from the (cached) NIST ASD response, using the chosen backend at class instantiation.</p>
+
+            <details class="quote">
+              <summary>Source code in <code>src/ASDCache/ASDCache.py</code></summary>
+              <div class="highlight"><pre><span></span><code><span class="linenos" data-linenos="211 "></span><span class="k">def</span><span class="w"> </span><span class="nf">create_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;pd.DataFrame|pl.DataFrame&quot;</span><span class="p">:</span>
+<span class="linenos" data-linenos="212 "></span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a dataframe from the (cached) NIST ASD response, using the chosen backend at class instantiation.&quot;&quot;&quot;</span>
+<span class="linenos" data-linenos="213 "></span>    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_polars</span><span class="p">:</span>
+<span class="linenos" data-linenos="214 "></span>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_from_polars</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+<span class="linenos" data-linenos="215 "></span>    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_from_pandas</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+</code></pre></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="ASDCache.SpectraCache.fetch" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">fetch</span>
+
+
+<a href="#ASDCache.SpectraCache.fetch" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">fetch</span><span class="p">(</span>
+    <span class="n">species</span><span class="p">,</span> <span class="n">wl_range</span><span class="o">=</span><span class="p">(</span><span class="mi">170</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">|</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">|</span> <span class="n">CachedResponse</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Fetch information on a species from the ASD, first checking the cache.</p>
+<p>This supports loading multiple species in one go by using the same notation as the NIST ASD page.</p>
+<p>Note however that cache keys are computed for unique options for <code>species</code> and <code>wl_range</code>.</p>
+<p>This means that you won't get caching benefits by using different queries.</p>
+<p>In other words: the cache cannot deduplicate queries such as <code>ASD.fetch('H', (200,1000))</code> followed by <code>ASD.fetch('H I', (650,660))</code>.</p>
+<p>Both these operations will fetch data online and be stored as separate cache entries.</p>
+
+            <details class="quote">
+              <summary>Source code in <code>src/ASDCache/ASDCache.py</code></summary>
+              <div class="highlight"><pre><span></span><code><span class="linenos" data-linenos="182 "></span><span class="k">def</span><span class="w"> </span><span class="nf">fetch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">species</span><span class="p">,</span> <span class="n">wl_range</span><span class="o">=</span><span class="p">(</span><span class="mi">170</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;pd.DataFrame|pl.DataFrame|CachedResponse&quot;</span><span class="p">:</span>
+<span class="linenos" data-linenos="183 "></span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Fetch information on a species from the ASD, first checking the cache.</span>
+<span class="linenos" data-linenos="184 "></span>
+<span class="linenos" data-linenos="185 "></span><span class="sd">    This supports loading multiple species in one go by using the same notation as the NIST ASD page.</span>
+<span class="linenos" data-linenos="186 "></span>
+<span class="linenos" data-linenos="187 "></span><span class="sd">    Note however that cache keys are computed for unique options for `species` and `wl_range`.</span>
+<span class="linenos" data-linenos="188 "></span>
+<span class="linenos" data-linenos="189 "></span><span class="sd">    This means that you won&#39;t get caching benefits by using different queries.</span>
+<span class="linenos" data-linenos="190 "></span>
+<span class="linenos" data-linenos="191 "></span><span class="sd">    In other words: the cache cannot deduplicate queries such as `ASD.fetch(&#39;H&#39;, (200,1000))` followed by `ASD.fetch(&#39;H I&#39;, (650,660))`.</span>
+<span class="linenos" data-linenos="192 "></span>
+<span class="linenos" data-linenos="193 "></span><span class="sd">    Both these operations will fetch data online and be stored as separate cache entries.</span>
+<span class="linenos" data-linenos="194 "></span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos" data-linenos="195 "></span>    <span class="n">query_params</span> <span class="o">=</span> <span class="p">{</span>
+<span class="linenos" data-linenos="196 "></span>        <span class="s2">&quot;spectra&quot;</span><span class="p">:</span> <span class="n">species</span><span class="p">,</span>
+<span class="linenos" data-linenos="197 "></span>        <span class="s2">&quot;output_type&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+<span class="linenos" data-linenos="198 "></span>        <span class="s2">&quot;low_w&quot;</span><span class="p">:</span> <span class="nb">min</span><span class="p">(</span><span class="n">wl_range</span><span class="p">),</span>
+<span class="linenos" data-linenos="199 "></span>        <span class="s2">&quot;upp_w&quot;</span><span class="p">:</span> <span class="nb">max</span><span class="p">(</span><span class="n">wl_range</span><span class="p">),</span>
+<span class="linenos" data-linenos="200 "></span>        <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">query_params</span><span class="p">,</span>
+<span class="linenos" data-linenos="201 "></span>    <span class="p">}</span>
+<span class="linenos" data-linenos="202 "></span>    <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nist_url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">query_params</span><span class="p">)</span>
+<span class="linenos" data-linenos="203 "></span>
+<span class="linenos" data-linenos="204 "></span>    <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+<span class="linenos" data-linenos="205 "></span>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_dataframe</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+<span class="linenos" data-linenos="206 "></span>    <span class="k">else</span><span class="p">:</span>
+<span class="linenos" data-linenos="207 "></span>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error: Received status code </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="linenos" data-linenos="208 "></span>        <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+<span class="linenos" data-linenos="209 "></span>        <span class="k">return</span> <span class="n">response</span>
+</code></pre></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="ASDCache.SpectraCache.get_all_cached" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">get_all_cached</span>
+
+
+<a href="#ASDCache.SpectraCache.get_all_cached" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">get_all_cached</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">|</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Retrieve all cached data into a single dataframe.</p>
+
+            <details class="quote">
+              <summary>Source code in <code>src/ASDCache/ASDCache.py</code></summary>
+              <div class="highlight"><pre><span></span><code><span class="linenos" data-linenos="404 "></span><span class="k">def</span><span class="w"> </span><span class="nf">get_all_cached</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;pd.DataFrame|pl.DataFrame&quot;</span><span class="p">:</span>
+<span class="linenos" data-linenos="405 "></span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Retrieve all cached data into a single dataframe.&quot;&quot;&quot;</span>
+<span class="linenos" data-linenos="406 "></span>    <span class="n">cached_frames</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">create_dataframe</span><span class="p">(</span><span class="n">cached</span><span class="p">)</span> <span class="k">for</span> <span class="n">cached</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">filter</span><span class="p">()]</span>
+<span class="linenos" data-linenos="407 "></span>    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_polars</span><span class="p">:</span>
+<span class="linenos" data-linenos="408 "></span>        <span class="k">return</span> <span class="n">pl</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">cached_frames</span><span class="p">)</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+<span class="linenos" data-linenos="409 "></span>    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">cached_frames</span><span class="p">)</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="ASDCache.SpectraCache.list_cached_species" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">list_cached_species</span>
+
+
+<a href="#ASDCache.SpectraCache.list_cached_species" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">list_cached_species</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>List all species in the cache, based on the string of the original query URL.</p>
+
+            <details class="quote">
+              <summary>Source code in <code>src/ASDCache/ASDCache.py</code></summary>
+              <div class="highlight"><pre><span></span><code><span class="linenos" data-linenos="174 "></span><span class="k">def</span><span class="w"> </span><span class="nf">list_cached_species</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="linenos" data-linenos="175 "></span><span class="w">    </span><span class="sd">&quot;&quot;&quot;List all species in the cache, based on the string of the original query URL.&quot;&quot;&quot;</span>
+<span class="linenos" data-linenos="176 "></span>    <span class="k">return</span> <span class="p">[</span>
+<span class="linenos" data-linenos="177 "></span>        <span class="n">elem</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
+<span class="linenos" data-linenos="178 "></span>        <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">urls</span><span class="p">()</span>
+<span class="linenos" data-linenos="179 "></span>        <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">species_expr</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;%3B&quot;</span><span class="p">)</span>
+<span class="linenos" data-linenos="180 "></span>    <span class="p">]</span>
+</code></pre></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="ASDCache.SpectraCache.roman_to_int" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">roman_to_int</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small>
+  </span>
+
+<a href="#ASDCache.SpectraCache.roman_to_int" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">roman_to_int</span><span class="p">(</span><span class="n">roman</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Transform Roman numerals to integers.</p>
+<p>Does only support numerals including up to <code>L</code>.</p>
+
+            <details class="quote">
+              <summary>Source code in <code>src/ASDCache/ASDCache.py</code></summary>
+              <div class="highlight"><pre><span></span><code><span class="linenos" data-linenos="369 "></span><span class="nd">@staticmethod</span>
+<span class="linenos" data-linenos="370 "></span><span class="k">def</span><span class="w"> </span><span class="nf">roman_to_int</span><span class="p">(</span><span class="n">roman</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="linenos" data-linenos="371 "></span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Transform Roman numerals to integers.</span>
+<span class="linenos" data-linenos="372 "></span>
+<span class="linenos" data-linenos="373 "></span><span class="sd">    Does only support numerals including up to `L`.</span>
+<span class="linenos" data-linenos="374 "></span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos" data-linenos="375 "></span>    <span class="n">roman_numerals</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;I&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;V&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;X&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;L&quot;</span><span class="p">:</span> <span class="mi">50</span><span class="p">}</span>
+<span class="linenos" data-linenos="376 "></span>    <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="linenos" data-linenos="377 "></span>    <span class="n">previous</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="linenos" data-linenos="378 "></span>    <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">roman</span><span class="p">):</span>
+<span class="linenos" data-linenos="379 "></span>        <span class="n">current_value</span> <span class="o">=</span> <span class="n">roman_numerals</span><span class="p">[</span><span class="n">char</span><span class="p">]</span>
+<span class="linenos" data-linenos="380 "></span>        <span class="k">if</span> <span class="n">current_value</span> <span class="o">&lt;</span> <span class="n">previous</span><span class="p">:</span>
+<span class="linenos" data-linenos="381 "></span>            <span class="n">total</span> <span class="o">-=</span> <span class="n">current_value</span>  <span class="c1"># Subtract if the current value is less than the previous value</span>
+<span class="linenos" data-linenos="382 "></span>        <span class="k">else</span><span class="p">:</span>
+<span class="linenos" data-linenos="383 "></span>            <span class="n">total</span> <span class="o">+=</span> <span class="n">current_value</span>
+<span class="linenos" data-linenos="384 "></span>        <span class="n">previous</span> <span class="o">=</span> <span class="n">current_value</span>
+<span class="linenos" data-linenos="385 "></span>    <span class="k">return</span> <span class="n">total</span>
+</code></pre></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="ASDCache.SpectraCache.wn_to_n_refractive" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">wn_to_n_refractive</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small>
+  </span>
+
+<a href="#ASDCache.SpectraCache.wn_to_n_refractive" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">wn_to_n_refractive</span><span class="p">(</span><span class="n">wavenumbers</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Calculate the refractive index <span class="arithmatex"><span class="MathJax_Preview">n</span><script type="math/tex">n</script></span> in air for a transition, using the 5-term Sellmeier formula used by NIST.</p>
+<p>The used Sellmeier formula is the one from E.R. Peck and K. Reeder <a href="http://dx.doi.org/10.1364/JOSA.62.000958">J. Opt. Soc. Am. 62, 958 (1972)</a>.</p>
+<p>This formula is fitted to data in the range of 185 nm to 1700 nm for  air at 15 °C, 101 325 Pa pressure, with 0.033 % CO2.</p>
+<p>This is the same formula used by the NIST ASD to calculate air wavelengths in the interval of 200 nm to 2000 nm.</p>
+<p>See also <a href="https://physics.nist.gov/PhysRefData/ASD/Html/lineshelp.html#Conversion%20between%20air%20and%20vacuum%20wavelengths">the ASD documentation on the topic</a>.</p>
+<p>Using this refractive index, air equivalent wavelengths consistent with the ASD can be calculated, without the need to query them separately.</p>
+
+            <details class="quote">
+              <summary>Source code in <code>src/ASDCache/ASDCache.py</code></summary>
+              <div class="highlight"><pre><span></span><code><span class="linenos" data-linenos="387 "></span><span class="nd">@staticmethod</span>
+<span class="linenos" data-linenos="388 "></span><span class="k">def</span><span class="w"> </span><span class="nf">wn_to_n_refractive</span><span class="p">(</span><span class="n">wavenumbers</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="linenos" data-linenos="389 "></span><span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the refractive index $n$ in air for a transition, using the 5-term Sellmeier formula used by NIST.</span>
+<span class="linenos" data-linenos="390 "></span>
+<span class="linenos" data-linenos="391 "></span><span class="sd">    The used Sellmeier formula is the one from E.R. Peck and K. Reeder [J. Opt. Soc. Am. 62, 958 (1972)](http://dx.doi.org/10.1364/JOSA.62.000958).</span>
+<span class="linenos" data-linenos="392 "></span>
+<span class="linenos" data-linenos="393 "></span><span class="sd">    This formula is fitted to data in the range of 185 nm to 1700 nm for  air at 15 °C, 101 325 Pa pressure, with 0.033 % CO2.</span>
+<span class="linenos" data-linenos="394 "></span>
+<span class="linenos" data-linenos="395 "></span><span class="sd">    This is the same formula used by the NIST ASD to calculate air wavelengths in the interval of 200 nm to 2000 nm.</span>
+<span class="linenos" data-linenos="396 "></span>
+<span class="linenos" data-linenos="397 "></span><span class="sd">    See also [the ASD documentation on the topic](https://physics.nist.gov/PhysRefData/ASD/Html/lineshelp.html#Conversion%20between%20air%20and%20vacuum%20wavelengths).</span>
+<span class="linenos" data-linenos="398 "></span>
+<span class="linenos" data-linenos="399 "></span><span class="sd">    Using this refractive index, air equivalent wavelengths consistent with the ASD can be calculated, without the need to query them separately.</span>
+<span class="linenos" data-linenos="400 "></span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos" data-linenos="401 "></span>    <span class="n">sigma</span> <span class="o">=</span> <span class="n">wavenumbers</span> <span class="o">*</span> <span class="mf">1e-4</span>  <span class="c1"># um^-1</span>
+<span class="linenos" data-linenos="402 "></span>    <span class="k">return</span> <span class="mi">1</span> <span class="o">+</span> <span class="mf">1e-8</span> <span class="o">*</span> <span class="p">(</span><span class="mf">8060.51</span> <span class="o">+</span> <span class="mi">2480990</span> <span class="o">/</span> <span class="p">(</span><span class="mf">132.274</span> <span class="o">-</span> <span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mf">17455.7</span> <span class="o">/</span> <span class="p">(</span><span class="mf">39.32957</span> <span class="o">-</span> <span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+</code></pre></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../../citing/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Citing">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Citing
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="ASDCache/" class="md-footer__link md-footer__link--next" aria-label="Next: ASDCache">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                ASDCache
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; Antoine Salden 2024-present
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/AntoineTUE/ASDCache" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 512"><!--! Font Awesome Free 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M186.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1M480 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2m-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3m-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.sections", "navigation.tabs.sticky", "navigation.footer", "toc.integrate", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+        <script src="../../assets/javascript/mathjax.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS_CHTML-full,Safe"></script>
+      
+    
+  </body>
+</html>
