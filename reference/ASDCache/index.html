@@ -740,7 +740,7 @@
 <span class="linenos" data-linenos="450 "></span>        <span class="k">return</span> <span class="n">is_success</span>
 <span class="linenos" data-linenos="451 "></span>
 <span class="linenos" data-linenos="452 "></span>    <span class="nd">@classmethod</span>
-<span class="linenos" data-linenos="453 "></span>    <span class="k">def</span><span class="w"> </span><span class="nf">parse_reference_code</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">reference_code</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="linenos" data-linenos="453 "></span>    <span class="k">def</span><span class="w"> </span><span class="nf">parse_reference_code</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">reference_code</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="linenos" data-linenos="454 "></span><span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Parse a reference code from the NIST ASD into the constituent parts that can be used to look up references.</span>
 <span class="linenos" data-linenos="455 "></span>
 <span class="linenos" data-linenos="456 "></span><span class="sd">        Args:</span>
@@ -1155,7 +1155,7 @@
   </span>
 
 <a href="#ASDCache.BibCache.parse_reference_code" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="doc-signature highlight"><pre><span></span><code><span class="nf">parse_reference_code</span><span class="p">(</span><span class="n">reference_code</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">parse_reference_code</span><span class="p">(</span><span class="n">reference_code</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">]</span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
@@ -1217,7 +1217,7 @@
           </tr>
           <tr class="doc-section-item">
             <td>
-                  <code>str | None</code>
+                  <code><span title="typing.Optional">Optional</span>[str]</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -1245,7 +1245,7 @@
             <details class="quote">
               <summary>Source code in <code>src/ASDCache/ASDCache.py</code></summary>
               <div class="highlight"><pre><span></span><code><span class="linenos" data-linenos="452 "></span><span class="nd">@classmethod</span>
-<span class="linenos" data-linenos="453 "></span><span class="k">def</span><span class="w"> </span><span class="nf">parse_reference_code</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">reference_code</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="linenos" data-linenos="453 "></span><span class="k">def</span><span class="w"> </span><span class="nf">parse_reference_code</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">reference_code</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="linenos" data-linenos="454 "></span><span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Parse a reference code from the NIST ASD into the constituent parts that can be used to look up references.</span>
 <span class="linenos" data-linenos="455 "></span>
 <span class="linenos" data-linenos="456 "></span><span class="sd">    Args:</span>
