@@ -1,6 +1,6 @@
 # Changelog
 
-## Version 0.1.0
+## Version 0.1.*
 Initial development release.
 
 * Support fetching and caching from the NIST ASD
@@ -18,3 +18,13 @@ Initial development release.
 * Set up CI/CD
   * Documentation automatic generation and deploy of latest version
   * Automated run of test suite
+* Add bibliography lookups
+* Archive releases to Zenodo
+* Renamed project to `ASDCache`
+
+## Version 0.2.*
+Public release version
+
+* Release to PyPI
+* Update documentation only on new release
+  
