@@ -42,8 +42,10 @@ from io import StringIO
 from datetime import timedelta
 import re
 import numpy as np
+from bs4 import BeautifulSoup
 import sys
 import logging
+from typing import Any
 
 if importlib.util.find_spec("polars"):
     POLARS_AVAILABLE = True
@@ -201,12 +203,13 @@ class SpectraCache:
         }
         response = self.session.get(self.nist_url, params=query_params)
 
-        if response.status_code == 200:
-            return self.create_dataframe(response)
-        else:
-            print(f"Error: Received status code {response.status_code}")
-            print(response.url)
-            return response
+        # if response.status_code == 200:
+        response.raise_for_status()
+        return self.create_dataframe(response)
+        # else:
+        #     print(f"Error: Received status code {response.status_code}")
+        #     print(response.url)
+        #     return response
 
     def create_dataframe(self, response) -> "pd.DataFrame|pl.DataFrame":
         """Create a dataframe from the (cached) NIST ASD response, using the chosen backend at class instantiation."""
@@ -407,3 +410,129 @@ class SpectraCache:
         if self.use_polars:
             return pl.concat(cached_frames).unique()
         return pd.concat(cached_frames).drop_duplicates().reset_index(drop=True)
+
+
+class BibCache:
+    r"""A class for handling lookups of bibliographic metadata from the NIST ASD.
+
+    Supports both bibliographic reference databases curated by NIST:
+
+        * Atomic Transition Probability Bibliographic Database: [10.18434/T46C7N](https://doi.org/10.18434/T46C7N)
+        * Atomic Energy Levels and Spectral Bibliographic Database: [10.18434/T40K53](https://doi.org/10.18434/T40K53)
+
+    References to these databases in the NIST ASD data can be looked up and will be cached.
+    """
+
+    nist_url = "https://physics.nist.gov/cgi-bin/ASBib1/get_ASBib_ref.cgi"
+    reference_expr = re.compile(r"([A-Z])?([\d]+)?([a-z]+[\d]*)?")
+
+    def __init__(self, cache_expiry=timedelta(weeks=1)):
+        """Initialize an instance that handles cached retrieval of ASD bibliographic references."""
+        self.cache_expiry = cache_expiry
+        self.session = CachedSession(
+            "NIST_ASD_Bibliography_cache",
+            use_cache_dir=True,
+            expire_after=cache_expiry,
+            stale_if_error=True,
+            filter_fn=self._check_response_success,
+            ignored_parameters=["element", "spectr_charge", "type", "ref"],
+        )
+
+    @staticmethod
+    def _check_response_success(response: "CachedResponse") -> bool:
+        """Validate that data has been fetched succesfully.
+
+        If this check fails, the cache should not update with this response, even when marked as stale.
+        """
+        is_success = (response.status_code == 200) & (b"There was a problem" not in response.content)
+        if not is_success:
+            logging.warning(f"Request was unsuccesful status:{response.status_code} , url:{response.url}")
+        return is_success
+
+    @classmethod
+    def parse_reference_code(cls, reference_code: str) -> tuple[str, str | None, str]:
+        r"""Parse a reference code from the NIST ASD into the constituent parts that can be used to look up references.
+
+        Args:
+            * reference_code (str): A NIST ASD bibliographic reference string, such as `L13456n3`, or `T6936n`.
+
+        Returns:
+            * db    (str)   :   A label for which bibliographic database to target
+            * ref   (str)   :   The database ID for the reference to look up
+            * comment (str) :   An additional comment included in the reference, can be fetched separately.
+        """
+        if reference_code.startswith("n"):
+            db, ref, comment = "T", None, "n"
+        elif (not reference_code.startswith("LS")) & (cls.reference_expr.match(reference_code) is not None):
+            db, ref, comment = cls.reference_expr.match(reference_code).groups()
+            comment = comment if "LS" not in reference_code else "LS"
+        else:
+            db, ref, comment = "T", None, "LS"
+        return db, ref, comment if comment is not None else ""
+
+    def lookup(self, element: str, sp_num: int, reference_code: str) -> dict[str, Any]:
+        """Look up a reference code for a given element state.
+
+        Args:
+            element (str)           :   The element name, e.g. `H`
+            sp_num (int)            :   The ionization state of the element, with 1 corresponding to the atom
+            reference_code (str)    :   The bibliographic reference code from the ASD columns `tp_ref` or `line_ref`.
+
+        Returns:
+            bib_data (dict)         : A dictionary containing bibliographic metadata for the reference, if available/applicable. Contains a url to look it up.
+        """
+        db, ref, comment = self.parse_reference_code(reference_code)
+        params = {
+            "db": "tp" if db == "T" else "el",
+            "db_id": ref,
+            "comment_code": "",
+            "element": element,
+            "spectr_charge": sp_num,
+        }
+        if ref is not None:
+            response = self.session.get(self.nist_url, params=params)
+            response.raise_for_status()
+            soup = BeautifulSoup(response.text, features="html.parser")
+            title = soup.find("font", {"size": "+1"})
+            doi = soup.find("a", {"id": "ad"})
+            authors = soup.find_all("a", {"id": "aa"})
+            title = "" if title is None else title.text.replace("\xa0", " ").strip()
+            doi = "" if doi is None else doi.text.strip()
+            authors = authors if authors == [] else [author.text.replace("\xa0", " ").strip() for author in authors]
+            text = "\n".join([tr.text.strip() for tr in soup.find("table").find_all("tr")]).strip()
+            url = (
+                response.url.replace("REDACTED", f"{element}", 1).replace("REDACTED", f"{sp_num}", 1)
+                + f"&comment_code={comment}"
+            )
+        else:
+            title = ""
+            doi = ""
+            authors = []
+            text = ""
+            url = None
+
+        # separately look up comments such that we benefit from the cache here as well
+        if comment != "":
+            comment_params = {
+                "db": "tp" if db == "T" else "el",
+                "db_id": "",
+                "comment_code": comment,
+                "element": "H",  # not cached
+                "spectr_charge": 1,  # not cached
+            }
+            comment_response = self.session.get(self.nist_url, params=comment_params)
+            comment_response.raise_for_status()
+            text += BeautifulSoup(comment_response.text, features="html.parser").table.find("td", {"colspan": "2"}).text
+            url = (
+                comment_response.url.replace("REDACTED", f"{element}", 1).replace("REDACTED", f"{sp_num}", 1)
+                + f"&db_id={'' if ref is None else ref}"
+            )
+
+        bib_data = {
+            "title": title,
+            "doi": doi,
+            "authors": authors,
+            "text": text,
+            "url": url,
+        }
+        return bib_data

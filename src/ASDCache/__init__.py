@@ -5,6 +5,6 @@ To make the most use out of the cache, `ASDCache` is opinionated in the informat
 The `SpectraCache` class acts as the entrypoint to retrieve this data.
 """
 
-from .ASDCache import SpectraCache
+from .ASDCache import SpectraCache, BibCache
 
-__all__ = ["SpectraCache"]
+__all__ = ["SpectraCache", "BibCache"]
