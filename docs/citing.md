@@ -1,6 +1,6 @@
 # Citing and Acknowledging
 
-When using `readASD` in your research or work in general, please make sure to cite the following works, using the appropriate citation format and conventions.
+When using `ASDCache` in your research or work in general, please make sure to cite the following works, using the appropriate citation format and conventions.
 
 First and foremost, cite the [NIST Atomic Spectra Database](https://www.nist.gov/pml/atomic-spectra-database) that curates and publishes the relevant data.
 
@@ -33,22 +33,27 @@ Below is a summary of these, but be sure to update the version information if ne
     }
     ```
 
-In addition, you can cite `readASD` itself, using the Zenodo DOI identifier:
+In addition, you can cite `ASDCache` itself, using the Zenodo DOI identifier [10.5281/zenodo.14673489](https://doi.org/10.5281/zenodo.14673489), which points to all versions archived on Zenodo.
+
+You can also use the following suggested citations below, making sure to reference the correct version/release.
 
 
-=== "Cite `readASD`"
+=== "`ASDCache` citation"
     !!! quote "Citation"
-        Salden A. (2024)...
+        Salden, A., (2025), *[AntoineTUE/ASDCache: retrieve data from the NIST ASD, using caching](https://github.com/AntoineTUE/ASDCache).* Zenodo. Available: https://github.com/AntoineTUE/ASDCache, DOI: [10.5281/zenodo.14673489](https://doi.org/10.5281/zenodo.14673489)
 
 === "BibTeX"
     ```bibtex
     @software{Salden2024readASD,
-        doi = {10.5281/ZENODO.},
-        url = {https://github.com/AntoineTUE/readasd},
+        doi = {10.5281/zenodo.14673488},
+        url = {https://github.com/AntoineTUE/ASDCache},
         author = {Salden, Antoine},
-        title = {readASD: retrieve data from the NIST ASD, using caching},
+        title = {ASDCache: retrieve data from the NIST ASD, using caching},
         publisher = {Zenodo},
-        version = {},
+        version = {0.2.0},
         year = {2024},
+        note = {Available on PyPI: \url{https://pypi.org/project/ASDCache}}
     }
     ```
+
+    

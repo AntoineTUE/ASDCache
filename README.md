@@ -2,10 +2,10 @@
 
 ![ASDCache logo](./docs/assets/logo.svg)
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.svg)](https://doi.org/10.5281/zenodo)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14673488.svg)](https://doi.org/10.5281/zenodo.14673488)
 [![GitHub License](https://img.shields.io/github/license/AntoineTUE/ASDCache)](https//www.github.com/AntoineTUE/ASDCache/blob/main/LICENSE)
-![GitHub Workflow Status build](https://img.shields.io/github/actions/workflow/status/AntoineTUE/ASDCache/build.yml?label=PyPI%20build)
-![GitHub Workflow Status docs](https://img.shields.io/github/actions/workflow/status/AntoineTUE/ASDCache/documentation.yml?label=Documentation%20build)
+[![GitHub Workflow Status build](https://img.shields.io/github/actions/workflow/status/AntoineTUE/ASDCache/build.yml?label=PyPI%20build)](https://pypi.python.org/pypi/ASDCache)
+[![GitHub Workflow Status docs](https://img.shields.io/github/actions/workflow/status/AntoineTUE/ASDCache/documentation.yml?label=Documentation%20build)](https://antoinetue.github.io/ASDCache)
 [![PyPI - Version](https://img.shields.io/pypi/v/ASDCache)](https://pypi.python.org/pypi/ASDCache)
 [![PyPI - Python versions](https://img.shields.io/pypi/pyversions/ASDCache.svg)](https://pypi.python.org/pypi/ASDCache)
 [![PyPI - Downloads](https://img.shields.io/pypi/dw/ASDCache)](https://pypistats.org/packages/ASDCache)
@@ -86,7 +86,7 @@ plt.legend()
 
 Be sure to cite the NIST ASD when using `ASDCache` in your work, since it is the source of the data.
 
-`ASDCache` itself can be cited using the following DOI provided via Zenodo:
+`ASDCache` itself can be cited using the following DOI provided via Zenodo: [10.5281/zenodo.14673488](https://doi.org/10.5281/zenodo.14673488)
 
 See also [this page for more information](https://antoinetue.github.io/ASDCache/citing)
 

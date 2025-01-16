@@ -58,3 +58,23 @@ jobs:
         uses: pypa/gh-action-pypi-publish@v1.12.3
         with:
           repository-url: https://test.pypi.org/legacy/
+
+  pypi-publish:
+    name: Upload release to PyPI
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+    needs:
+      - build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/asdcache
+    permissions:
+      id-token: write
+    steps:
+      - name: Download python artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: python-artifacts
+          path: dist/
+      - name: Publish package distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@v1.12.3
