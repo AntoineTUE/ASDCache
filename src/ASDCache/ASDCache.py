@@ -1,4 +1,6 @@
-r"""Implementation of a module to fetch data from the  NIST Atomic Spectra Database (ASD).
+r"""`ASDcache` is a module to fetch data from the  NIST Atomic Spectra Database (ASD), utlizing caching for fast responses.
+
+To make the most use out of the cache, `ASDcache` is opinionated in the information it retrieves from the ASD; it always requests the same schema of information and locally computes additional fields.
 
 Data is initially fetched from the online published NIST page, using the tab-separated ASCII output format.
 The benefit of this format is that it is more 'machine readable' than the formatted ASCII of HTML options.
@@ -6,7 +8,7 @@ This means it requires far less bespoke parsing to get rid of 'human readable' f
 To ensure a consistent schema of the retrieved data, lines are always retrieved as a function of wavelength, using `vacuum wavelength`, even between 200 to 2000 nm.
 Wavenumbers and Ritz wavelength will be included in the response.
 
-In the range $5000 \mathrm{cm}^{-1}<\nu<50000 \mathrm{cm}^{-1}$ the air equivalent observed and Ritz wavelengths are calculated using the same Sellmeier equation as the NIST ASD (see [here][readasd.readASD.ASDCache.wn_to_n_refractive]).
+In the range $5000 \mathrm{cm}^{-1}<\nu<50000 \mathrm{cm}^{-1}$ the air equivalent observed and Ritz wavelengths are calculated using the same Sellmeier equation as the NIST ASD (see [here][ASDcache.readASD.ASDCache.wn_to_n_refractive]).
 This is consistent with the approach of the ASD.
 
 Each response from the NIST page is cached (1 week by default) on the local system.
@@ -40,6 +42,8 @@ from io import StringIO
 from datetime import timedelta
 import re
 import numpy as np
+import sys
+import logging
 
 if importlib.util.find_spec("polars"):
     POLARS_AVAILABLE = True
@@ -48,8 +52,15 @@ if importlib.util.find_spec("polars"):
 else:
     POLARS_AVAILABLE = False
 
+logging.basicConfig(
+    level=logging.INFO,
+    format="[%(asctime)s] %(levelname)s [%(name)s.%(funcName)s:%(lineno)d] %(message)s",
+    datefmt="%d/%b/%Y %H:%M:%S",
+    stream=sys.stdout,
+)
 
-class ASDCache:
+
+class SpectraCache:
     """A class acting as the entrypoint to retrieve data from the NIST Atomic Spectra Database that uses caching.
 
     The `ASDCache` instance acts as an access point to the cache, which stores responses on the local system in a SQLite database.

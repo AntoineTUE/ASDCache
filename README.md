@@ -1,24 +1,26 @@
-# readASD
+# ASDCache
+
+![ASDCache logo](./docs/assets/logo.svg)
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.svg)](https://doi.org/10.5281/zenodo)
-[![GitHub License](https://img.shields.io/github/license/AntoineTUE/readASD)](https//www.github.com/AntoineTUE/readasd/blob/main/LICENSE)
-![GitHub Workflow Status build](https://img.shields.io/github/actions/workflow/status/AntoineTUE/readASD/build.yml?label=PyPI%20build)
-![GitHub Workflow Status docs](https://img.shields.io/github/actions/workflow/status/AntoineTUE/readASD/documentation.yml?label=Documentation%20build)
-[![PyPI - Version](https://img.shields.io/pypi/v/readASD)](https://pypi.python.org/pypi/readASD)
-[![PyPI - Python versions](https://img.shields.io/pypi/pyversions/readASD.svg)](https://pypi.python.org/pypi/readASD)
-[![PyPI - Downloads](https://img.shields.io/pypi/dw/readasd)](https://pypistats.org/packages/readasd)
+[![GitHub License](https://img.shields.io/github/license/AntoineTUE/ASDCache)](https//www.github.com/AntoineTUE/ASDCache/blob/main/LICENSE)
+![GitHub Workflow Status build](https://img.shields.io/github/actions/workflow/status/AntoineTUE/ASDCache/build.yml?label=PyPI%20build)
+![GitHub Workflow Status docs](https://img.shields.io/github/actions/workflow/status/AntoineTUE/ASDCache/documentation.yml?label=Documentation%20build)
+[![PyPI - Version](https://img.shields.io/pypi/v/ASDCache)](https://pypi.python.org/pypi/ASDCache)
+[![PyPI - Python versions](https://img.shields.io/pypi/pyversions/ASDCache.svg)](https://pypi.python.org/pypi/ASDCache)
+[![PyPI - Downloads](https://img.shields.io/pypi/dw/ASDCache)](https://pypistats.org/packages/ASDCache)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![Hatch project](https://img.shields.io/badge/%F0%9F%A5%9A-Hatch-4051b5.svg)](https://github.com/pypa/hatch)
 
-`readASD` is a Python project to retrieve data from the NIST Atomic Spectra Database (ASD), using caching for fast, efficient data handling.
+`ASDCache` is a Python project to retrieve data from the NIST Atomic Spectra Database (ASD), using caching for fast, efficient data handling.
 
-To make the most use out of the cache, `readASD` is opinionated in the information it retrieves from the ASD; it always requests the same schema of information and locally computes additional fields, to provide a more 'machine-useable' experience.
+To make the most use out of the cache, `ASDCache` is opinionated in the information it retrieves from the ASD; it always requests the same schema of information and locally computes additional fields, to provide a more 'machine-useable' experience.
 
 It also coerces most of the retrieved data to be of a strictly numeric type, which strips out footnotes and annotations, but preserves e.g. bibliographic reference labels.
 
-You should thus still be sure to check and attribute the NIST ASD when making use of `readASD`!
+You should thus still be sure to check and attribute the NIST ASD when making use of `ASDCache`!
 
-The main goals and benefits of `readASD` are:
+The main goals and benefits of `ASDCache` are:
 
 - [x] Make the data from the NIST ASD locally accessible as a Dataframe for use in analysis of spectra
 - [x] Retrieve a consistent schema of the data that represents the 'human readable' format, but enforce strictly numeric data for important columns
@@ -30,38 +32,38 @@ The main goals and benefits of `readASD` are:
     - [x] The cache is only updated when a request for new data succeeds
 - [x] Limit repeated queries for the same information, avoiding network overhead and server load.
 
-`readASD` is not affiliated with NIST or the NIST ASD in any way, it simply tries to help make it more accessible.
+`ASDCache` is not affiliated with NIST or the NIST ASD in any way, it simply tries to help make it more accessible.
 
 ## Installing
-`readASD` can be installed with `pip`.
+`ASDCache` can be installed with `pip`.
 
 ```console
-pip install readasd
+pip install ASDCache
 ```
 
-Further optional features can be installed by specifying the `polars` or `docs` feature flag, as defined in [pyproject.toml](https://github.com/AntoineTUE/readasd/blob/main/pyproject.toml).
+Further optional features can be installed by specifying the `polars` or `docs` feature flag, as defined in [pyproject.toml](https://github.com/AntoineTUE/ASDCache/blob/main/pyproject.toml).
 
 To install all dependencies to locally serve and update the documentation for instance, you can run:
 
 ```console
-pip install readasd[docs]
+pip install ASDCache[docs]
 ```
 
-Installing the `polars` feature is not required, in case `polars` is already installed in the active environment, it is possible to use `polars` instead of `pandas` as a Dataframe backend for `readasd`.
+Installing the `polars` feature is not required, in case `polars` is already installed in the active environment, it is possible to use `polars` instead of `pandas` as a Dataframe backend for `ASDCache`.
 
 ## Documentation
 
-Documentation for `readASD` is available on [this page](https://antoinetue.github.io/readasd).
+Documentation for `ASDCache` is available on [this page](https://antoinetue.github.io/ASDCache).
 
 ### Example
-A brief example below demonstrates how to use `readASD` to query the NIST ASD for spectroscopic data for different species and plot their respective relative intensities.
+A brief example below demonstrates how to use `SpectraCache` to query the NIST ASD for spectroscopic data for different species and plot their respective relative intensities.
 
 Note that these relative intensities are in principle not comparable between different species or sources and merely serve as a guide.
 
-More elaborate examples can be found in the [example section of the documentation](https://antoinetue.github.io/readasd/examples)
+More elaborate examples can be found in the [example section of the documentation](https://antoinetue.github.io/ASDCache/examples)
 
 ```python
-from readasd.readASD import ASDCache
+from ASDCache import SpectraCache, BibCache
 import matplotlib.pyplot as plt
 
 nist = ASDCache()
@@ -82,14 +84,12 @@ plt.legend()
 
 ## Citing
 
-Be sure to cite the NIST ASD when using `readasd` in your work, since it is the source of the data.
+Be sure to cite the NIST ASD when using `ASDCache` in your work, since it is the source of the data.
 
-`readasd` itself can be cited using the following DOI provided via Zenodo:
+`ASDCache` itself can be cited using the following DOI provided via Zenodo:
 
-See also [this page for more information](https://antoinetue.github.io/readasd/citing)
+See also [this page for more information](https://antoinetue.github.io/ASDCache/citing)
 
 ## License
 
-readASD is licensed under the MIT license.
-
-See [LICENSE](./LICENSE).
+ASDCache is licensed under the MIT license.

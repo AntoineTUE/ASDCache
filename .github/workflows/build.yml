@@ -1,4 +1,4 @@
-name: build readasd
+name: build asdcache
 on:
   push:
     tags:
@@ -44,7 +44,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: testpypi
-      url: https://test.pypi.org/p/readasd
+      url: https://test.pypi.org/p/asdcache
     permissions:
       id-token: write
     steps:

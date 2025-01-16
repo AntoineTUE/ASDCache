@@ -14,40 +14,40 @@ import re
 from datetime import timedelta
 from io import StringIO
 from requests_cache import CachedSession
-from readasd.readASD import ASDCache
+from ASDCache import SpectraCache
 
 
 def test_check_response_success(mock_response):
-    assert ASDCache._check_response_success(mock_response) is True
+    assert SpectraCache._check_response_success(mock_response) is True
 
 
 def test_check_response_status_not_200(mock_response_status_not_200):
-    assert ASDCache._check_response_success(mock_response_status_not_200) is False
+    assert SpectraCache._check_response_success(mock_response_status_not_200) is False
 
 
 def test_check_response_contains_error(mock_response_error_in_content):
-    assert ASDCache._check_response_success(mock_response_error_in_content) is False
+    assert SpectraCache._check_response_success(mock_response_error_in_content) is False
 
 
 def test_from_pandas(mock_response):
-    result = ASDCache._from_pandas(mock_response)
+    result = SpectraCache._from_pandas(mock_response)
     assert isinstance(result, pd.DataFrame)
 
 
 def test_from_polars(mock_response):
     print(WITH_POLARS, importlib.util.find_spec("polars"))
-    result = ASDCache(use_polars_backend=True)._from_polars(mock_response)
+    result = SpectraCache(use_polars_backend=True)._from_polars(mock_response)
     assert isinstance(result, pl.DataFrame)
 
 
 def test_create_dataframe(mock_response):
-    asd = ASDCache(use_polars_backend=False)
+    asd = SpectraCache(use_polars_backend=False)
     result = asd.create_dataframe(mock_response)
     assert isinstance(result, pd.DataFrame)
 
     # Test Polars backend
     if WITH_POLARS:
-        asd_polars = ASDCache(use_polars_backend=True)
+        asd_polars = SpectraCache(use_polars_backend=True)
         result_polars = asd_polars.create_dataframe(mock_response)
         assert isinstance(result_polars, pl.DataFrame)
 
@@ -64,7 +64,7 @@ def test_create_dataframe(mock_response):
     ],
 )
 def test_roman_to_int(roman, expected):
-    result = ASDCache.roman_to_int(roman)
+    result = SpectraCache.roman_to_int(roman)
     assert result == expected
 
 
@@ -79,7 +79,7 @@ def test_roman_to_int(roman, expected):
 )
 def test_wn_to_lambda_air(wavenumber, air_equivalent):
     decimals = len(str(air_equivalent).split(".")[1])
-    assert round(1e7 / wavenumber / ASDCache.wn_to_n_refractive(wavenumber), decimals) == air_equivalent
+    assert round(1e7 / wavenumber / SpectraCache.wn_to_n_refractive(wavenumber), decimals) == air_equivalent
 
 
 @pytest.mark.parametrize(
@@ -96,7 +96,7 @@ def test_wn_to_lambda_air_not_valid(wavenumber, air_equivalent):
     The ASD will report/fall back to vacuum wavelengths.
     For values below 185, $n$ tends to be !=1, thus values will deviate."""
     decimals = len(str(air_equivalent).split(".")[1])
-    assert round(1e7 / wavenumber / ASDCache.wn_to_n_refractive(wavenumber), decimals) != air_equivalent
+    assert round(1e7 / wavenumber / SpectraCache.wn_to_n_refractive(wavenumber), decimals) != air_equivalent
 
 
 @pytest.mark.full

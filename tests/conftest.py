@@ -8,18 +8,18 @@ import pytest
 import importlib
 import re
 from requests_cache import CachedResponse
-from readasd.readASD import ASDCache
+from ASDCache import SpectraCache
 
 
 @pytest.fixture(scope="session")
 def nist_pandas():
-    nist = ASDCache()
+    nist = SpectraCache()
     yield nist
 
 
 @pytest.fixture(scope="session")
 def nist_polars():
-    nist = ASDCache(use_polars_backend=True)
+    nist = SpectraCache(use_polars_backend=True)
     yield nist
 
 
@@ -79,8 +79,8 @@ def mock_response_error_in_content(mocker):
 def full_nist_backends():
     interval = (500, 600)
     expr = re.compile(rf".*low_w=({interval[0]}).*spectra=(All\+spectra).*upp_w=({interval[1]}).*")
-    nist_pandas = ASDCache()
-    nist_polars = ASDCache(use_polars_backend=True)
+    nist_pandas = SpectraCache()
+    nist_polars = SpectraCache(use_polars_backend=True)
     nist_pandas.fetch("All spectra", wl_range=interval)
     yield (nist_pandas, nist_polars, interval)
     key = [cached.cache_key for cached in nist_pandas.session.cache.filter() if expr.search(cached.url)][0]

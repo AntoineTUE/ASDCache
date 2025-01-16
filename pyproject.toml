@@ -3,7 +3,7 @@ requires = ["hatchling", "hatch-vcs", "hatch-fancy-pypi-readme"]
 build-backend = "hatchling.build"
 
 [project]
-name = "readasd"
+name = "ASDCache"
 description = "A Python module to retrieve data from the NIST Atomic Spectra Database (ASD), using caching for fast, efficient data handling"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -45,8 +45,8 @@ docs = [
 ]
 
 [project.urls]
-Documentation = "https://antoinetue.github.io/readasd"
-Source = "https://github.com/AntoineTUE/readasd"
+Documentation = "https://antoinetue.github.io/asdcache"
+Source = "https://github.com/AntoineTUE/asdcache"
 
 [tool.hatch.metadata]
 # direct dependency references, e.g `pip @ git+https://github.com/pypa/pip.git@master`
@@ -57,10 +57,10 @@ source = "vcs"
 fallback-version = "0.0.1dev"
 
 [tool.hatch.build.hooks.vcs]
-version-file = "src/readasd/_version.py"
+version-file = "src/ASDCache/_version.py"
 
 [tool.hatch.build]
-packages = ["src/readasd"]
+packages = ["src/ASDCache"]
 
 [tool.hatch.build.targets.sdist]
 exclude = ["/.github"]
@@ -73,7 +73,7 @@ markers = ["full: test using the full NIST ASD"]
 
 [tool.coverage.run]
 branch = true
-source = ["src/readasd"]
+source = ["src/ASDCache"]
 omit = ["_version.py"]
 
 [tool.coverage.paths]
@@ -115,7 +115,7 @@ ignore = ["PD901","F401"]
 convention = "pep257"
 
 [tool.ruff.lint.isort]
-known-first-party = ["readasd"]
+known-first-party = ["ASDCache"]
 
 [tool.ruff.lint.per-file-ignores]
 "examples/*" = ["T201"]

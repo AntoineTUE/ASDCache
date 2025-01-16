@@ -1,10 +1,10 @@
-site_name: readASD
+site_name: ASDCache documentation
 site_description: A Python project to retrieve data from the NIST Atomic Spectra Database (ASD), using caching for fast, efficient data handling
 site_author: Antoine Salden
-site_url: https://antoinetue.github.io/readasd
+site_url: https://antoinetue.github.io/ASDCache
 copyright: 'Copyright &copy; Antoine Salden 2024-present'
-repo_name: readasd
-repo_url: https://github.com/AntoineTUE/readasd
+repo_name: ASDCache
+repo_url: https://github.com/AntoineTUE/ASDCache
 
 
 docs_dir: docs
@@ -44,7 +44,7 @@ theme:
     - content.code.copy
 
 watch:
-- src/readasd
+- src/ASDCache
 
 # Extensions
 plugins:
@@ -139,7 +139,7 @@ markdown_extensions:
       normalize_issue_symbols: true
       provider: github
       user: AntoineTUE
-      repo: readasd
+      repo: ASDCache
   - pymdownx.mark:
   - pymdownx.progressbar:
   - pymdownx.saneheaders:
@@ -156,7 +156,7 @@ extra:
     provider: mike
   social:
     - icon: fontawesome/brands/github-alt
-      link: https://github.com/AntoineTUE/readasd
+      link: https://github.com/AntoineTUE/ASDCache
 
 extra_javascript:
   - assets/javascript/mathjax.js
@@ -169,6 +169,6 @@ nav:
   - Examples: examples.ipynb
   - Citing: citing.md
   # defer to gen-files + literate-nav
-  - Reference: reference/readasd/
+  - Reference: reference/ASDCache/
   - Changelog: changelog.md
   - License: license.md
