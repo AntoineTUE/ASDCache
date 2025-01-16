@@ -45,7 +45,7 @@ import numpy as np
 from bs4 import BeautifulSoup
 import sys
 import logging
-from typing import Any
+from typing import Any, Optional
 
 if importlib.util.find_spec("polars"):
     POLARS_AVAILABLE = True
@@ -450,7 +450,7 @@ class BibCache:
         return is_success
 
     @classmethod
-    def parse_reference_code(cls, reference_code: str) -> tuple[str, str | None, str]:
+    def parse_reference_code(cls, reference_code: str) -> tuple[str, Optional[str], str]:
         r"""Parse a reference code from the NIST ASD into the constituent parts that can be used to look up references.
 
         Args:
