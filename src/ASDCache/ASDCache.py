@@ -60,6 +60,8 @@ logging.basicConfig(
     datefmt="%d/%b/%Y %H:%M:%S",
     stream=sys.stdout,
 )
+STATE_EXPR = r"spectra=([\w]+)\+?([IVX]+)?"
+"""Regex pattern for extracting (element,charge) tuple for a single-state query, which uses roman numerals."""
 
 
 class SpectraCache:
@@ -264,8 +266,7 @@ class SpectraCache:
         )
         df = df.drop([c for c in df.columns if "Unnamed" in c], axis=1).reset_index(drop=True)
         if "element" not in df.columns:
-            expr = re.compile(r"spectra=([\w]+)\+?([IVX]+)?")
-            element, numeral = expr.search(response.url).groups()
+            element, numeral = re.search(STATE_EXPR, response.url).groups()
             df["element"] = element
             df["sp_num"] = numeral
             # cast roman numerals to int for consistency with queries with multiple ionization states, e.g. Ar I vs Ar I-II
@@ -349,23 +350,16 @@ class SpectraCache:
             .alias("ritz_wl_air(nm)"),
         )
         if "element" not in df.columns:
-            expr = re.compile(r"spectra=([\w]+)\+?([IVX]+)?")
-            element, numeral = expr.search(response.url).groups()
+            element, numeral = re.search(STATE_EXPR, response.url).groups()
             # cast roman numerals to int for consistency with queries with multiple ionization states, e.g. Ar I vs Ar I-II
             df = df.with_columns(
                 pl.lit(element).alias("element"),
                 pl.lit("I" if numeral is None else numeral)
                 .cast(pl.String)
                 .alias("sp_num")
-                .map_elements(cls.roman_to_int, return_dtype=pl.Int64),
+                .map_elements(cls.roman_to_int, return_dtype=pl.Int64)
+                .first(),
             )
-        df = (
-            df.with_columns(pl.col("unc_obs_wl").cast(pl.Float64), pl.col("unc_ritz_wl").cast(pl.Float64))
-            if "unc_obs_wl" in df.columns
-            else df.with_columns(
-                pl.lit(None).cast(pl.Float64).alias("unc_obs_wl"), pl.lit(None).cast(pl.Float64).alias("unc_ritz_wl")
-            )
-        )
 
         return df.select(*cls.column_order)
 
