@@ -21,7 +21,7 @@ jobs:
           version: "latest"
           activate-environment: true
       - name: Install build frontend
-        run: uv pip install hatch --upgrade --system hatch
+        run: uv pip install hatch
       - name: Build
         run: hatch build
       - name: Minimize uv cache
