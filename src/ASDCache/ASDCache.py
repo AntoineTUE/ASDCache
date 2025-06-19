@@ -60,8 +60,42 @@ logging.basicConfig(
     datefmt="%d/%b/%Y %H:%M:%S",
     stream=sys.stdout,
 )
+
+ASDSchema = {
+    "element": str,
+    "sp_num": int,
+    "obs_wl_vac(nm)": float,
+    "unc_obs_wl": float,
+    "obs_wl_air(nm)": float,
+    "ritz_wl_vac(nm)": float,
+    "unc_ritz_wl": float,
+    "ritz_wl_air(nm)": float,
+    "wn(cm-1)": float,
+    "intens": float,
+    "Aki(s^-1)": float,
+    "fik": float,
+    "S(a.u.)": float,
+    "log_gf": float,
+    "Acc": str,
+    "Ei(cm-1)": float,
+    "Ek(cm-1)": float,
+    "conf_i": str,
+    "term_i": str,
+    "J_i": str,
+    "conf_k": str,
+    "term_k": str,
+    "J_k": str,
+    "g_i": float,
+    "g_k": float,
+    "Type": str,
+    "tp_ref": str,
+    "line_ref": str,
+}
+
 STATE_EXPR = r"spectra=([\w]+)\+?([IVX]+)?"
 """Regex pattern for extracting (element,charge) tuple for a single-state query, which uses roman numerals."""
+SCI_EXPR = r"([+-]?\d*\.?\d+(?:[eE][+-]?\d+)?)"
+"""Regex pattern for processing scientific notation"""
 
 
 class SpectraCache:
@@ -150,7 +184,6 @@ class SpectraCache:
     def __init__(self, use_polars_backend=False, cache_expiry=timedelta(weeks=1), strict_matching=True):
         """Initialize an instance that handles cached data lookup of the NIST ASD."""
         self.strict_matching = strict_matching
-        self.cache_expiry = cache_expiry
         self.session = CachedSession(
             "NIST_ASD_cache",
             use_cache_dir=True,
@@ -167,6 +200,24 @@ class SpectraCache:
 
         self.known_species = self.list_cached_species()
 
+    @property
+    def cache_expiry(self) -> timedelta:
+        """The cache expiry time.
+
+        Queries that are older than this time are considered stale and marked for updating, by quering the NIST ASD.
+        In case the query for new data fails, the stale, cached response will still be parsed.
+        """
+        return self.session.settings.expire_after
+
+    def set_cache_expiry(self, new: timedelta = None, **kwargs):
+        """Set the cache expiry to a different interval (default: 1 week).
+
+        Can be done by either passing in a `timedelta` object, or valid keyword arguments for `timedelta` itself.
+        """
+        if new is None:
+            new = timedelta(**kwargs)
+        self.session.settings.expire_after = new
+
     @staticmethod
     def _check_response_success(response: "CachedResponse") -> bool:
         """Validate that data has been fetched succesfully.
@@ -174,6 +225,11 @@ class SpectraCache:
         If this check fails, the cache should not update with this response, even when marked as stale.
         """
         return (response.status_code == 200) & (b"Error Message" not in response.content)
+
+    @property
+    def cached_species(self) -> list[str]:
+        """A list of all cached species."""
+        return self.list_cached_species()
 
     def list_cached_species(self) -> list[str]:
         """List all species in the cache, based on the string of the original query URL."""
@@ -249,11 +305,14 @@ class SpectraCache:
             "g_k": float,
             "J_i": str,
             "J_k": str,
+            "Type": str,
+            "tp_ref": str,
+            "line_ref": str,
             "": str,
         }
         df = pd.read_csv(StringIO(response.text), sep="\t", dtype=schema)
         for col in ["obs_wl_vac(nm)", "ritz_wl_vac(nm)", "intens", "Ei(cm-1)", "Ek(cm-1)"]:
-            df[col] = df.loc[:, col].str.extract(r"([+-]?\d*\.?\d+(?:[eE][+-]?\d+)?)").astype(float)
+            df[col] = df.loc[:, col].str.extract(SCI_EXPR).astype(float)
         df["Type"] = df.loc[:, "Type"].astype(str).replace("nan", "E1")
         df["tp_ref"] = df.loc[:, "tp_ref"].fillna("")
         df["obs_wl_air(nm)"] = df["obs_wl_vac(nm)"]
@@ -271,11 +330,8 @@ class SpectraCache:
             df["sp_num"] = numeral
             # cast roman numerals to int for consistency with queries with multiple ionization states, e.g. Ar I vs Ar I-II
             df["sp_num"] = df["sp_num"].map(cls.roman_to_int)
-        df = (
-            df.assign(unc_obs_wl=df["unc_obs_wl"].astype(float), unc_ritz_wl=df["unc_ritz_wl"].astype(float))
-            if "unc_obs_wl" in df.columns
-            else df.assign(unc_obs_wl=np.nan, unc_ritz_wl=np.nan)
-        )
+        df["unc_obs_wl"] = pd.to_numeric(df["unc_obs_wl"]) if "unc_obs_wl" in df.columns else np.nan
+        df["unc_ritz_wl"] = pd.to_numeric(df["unc_ritz_wl"]) if "unc_ritz_wl" in df.columns else np.nan
         return df.loc[:, cls.column_order]
 
     @classmethod
@@ -321,7 +377,7 @@ class SpectraCache:
             .with_columns(
                 pl.col("obs_wl_vac(nm)", "Ei(cm-1)", "Ek(cm-1)", "intens")
                 # .str.strip_chars(annotation_chars_to_strip).str.replace("&dagger;", "", literal=True)
-                .str.extract(r"([+-]?\d*\.?\d+(?:[eE][+-]?\d+)?)")
+                .str.extract(SCI_EXPR)
                 # .str.extract(r"([+-]?\d*\.?\d+e[+-]?\d+)")
                 .replace("", None)
                 .cast(pl.Float64),
@@ -360,6 +416,10 @@ class SpectraCache:
                 .map_elements(cls.roman_to_int, return_dtype=pl.Int64)
                 .first(),
             )
+        df = df.with_columns(
+            unc_obs_wl=pl.col("unc_obs_wl") if "unc_obs_wl" in df.columns else None,
+            unc_ritz_wl=pl.col("unc_ritz_wl") if "unc_ritz_wl" in df.columns else None,
+        ).with_columns(pl.col("unc_obs_wl").cast(pl.Float64), pl.col("unc_ritz_wl").cast(pl.Float64))
 
         return df.select(*cls.column_order)
 
@@ -402,8 +462,16 @@ class SpectraCache:
         """Retrieve all cached data into a single dataframe."""
         cached_frames = [self.create_dataframe(cached) for cached in self.session.cache.filter()]
         if self.use_polars:
-            return pl.concat(cached_frames).unique()
-        return pd.concat(cached_frames).drop_duplicates().reset_index(drop=True)
+            return (
+                pl.concat(cached_frames).unique()
+                if len(cached_frames) > 0
+                else pl.DataFrame({k: [] for k in ASDSchema}, schema=ASDSchema)
+            )
+        return (
+            pd.concat(cached_frames).drop_duplicates().reset_index(drop=True)
+            if len(cached_frames) > 0
+            else pd.DataFrame({k: pd.Series(dtype=v) for k, v in ASDSchema.items()})
+        )
 
 
 class BibCache:
@@ -422,7 +490,6 @@ class BibCache:
 
     def __init__(self, cache_expiry=timedelta(weeks=1)):
         """Initialize an instance that handles cached retrieval of ASD bibliographic references."""
-        self.cache_expiry = cache_expiry
         self.session = CachedSession(
             "NIST_ASD_Bibliography_cache",
             use_cache_dir=True,
@@ -431,6 +498,24 @@ class BibCache:
             filter_fn=self._check_response_success,
             ignored_parameters=["element", "spectr_charge", "type", "ref"],
         )
+
+    @property
+    def cache_expiry(self) -> timedelta:
+        """The cache expiry time.
+
+        Queries that are older than this time are considered stale and marked for updating, by quering the NIST ASD.
+        In case the query for new data fails, the stale, cached response will still be parsed.
+        """
+        return self.session.settings.expire_after
+
+    def set_cache_expiry(self, new: timedelta = None, **kwargs):
+        """Set the cache expiry to a different interval (default: 1 week).
+
+        Can be done by either passing in a `timedelta` object, or valid keyword arguments for `timedelta` itself.
+        """
+        if new is None:
+            new = timedelta(**kwargs)
+        self.session.settings.expire_after = new
 
     @staticmethod
     def _check_response_success(response: "CachedResponse") -> bool:

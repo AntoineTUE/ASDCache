@@ -78,10 +78,15 @@ def mock_response_error_in_content(mocker):
 @pytest.fixture(scope="session")
 def full_nist_backends():
     interval = (500, 600)
-    expr = re.compile(rf".*low_w=({interval[0]}).*spectra=(All\+spectra).*upp_w=({interval[1]}).*")
+    expr_all = re.compile(rf".*low_w=({interval[0]}).*spectra=(All\+spectra).*upp_w=({interval[1]}).*")
+    expr_F = re.compile(rf".*low_w=({interval[0]}).*spectra=(F\+I\-II).*upp_w=({interval[1]}).*")
     nist_pandas = SpectraCache()
     nist_polars = SpectraCache(use_polars_backend=True)
     nist_pandas.fetch("All spectra", wl_range=interval)
     yield (nist_pandas, nist_polars, interval)
-    key = [cached.cache_key for cached in nist_pandas.session.cache.filter() if expr.search(cached.url)][0]
-    nist_pandas.session.cache.delete(key)
+    # clean up of the two limited-range queries above such that tests run with a clean slate and we don't polute the cache
+    for expr in [expr_all, expr_F]:
+        keys = [cached.cache_key for cached in nist_pandas.session.cache.filter() if expr.search(cached.url)]
+        if len(keys) > 0:
+            for key in keys:
+                nist_pandas.session.cache.delete(key)
