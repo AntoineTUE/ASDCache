@@ -215,7 +215,7 @@ class SpectraCache:
         """
         return self.session.settings.expire_after
 
-    def set_cache_expiry(self, new: timedelta = None, **kwargs):
+    def set_cache_expiry(self, new: Optional[timedelta] = None, **kwargs):
         """Set the cache expiry to a different interval (default: 1 week).
 
         Can be done by either passing in a `timedelta` object, or valid keyword arguments for `timedelta` itself.
@@ -404,28 +404,25 @@ class SpectraCache:
             "J_k": pl.String,
             "": pl.String,
         }
-        # annotation_chars_to_strip = "(?i)()[]?*w,bGhilmprsq:+xzgacHd "
-        df = (
-            pl.read_csv(
-                StringIO(response.text),
-                separator="\t",
-                schema_overrides=schema,
-                null_values="",
-            )
-            .with_columns(
-                pl.col("obs_wl_vac(nm)", "Ei(cm-1)", "Ek(cm-1)", "intens")
-                # .str.strip_chars(annotation_chars_to_strip).str.replace("&dagger;", "", literal=True)
-                .str.extract(SCI_EXPR)
-                # .str.extract(r"([+-]?\d*\.?\d+e[+-]?\d+)")
-                .replace("", None)
-                .cast(pl.Float64),
-                pl.col("ritz_wl_vac(nm)").str.strip_chars('"+*').replace("", None).cast(pl.Float64),
-                pl.col("S(a.u.)").cast(pl.Float64),
-                pl.col("Type").replace(None, "E1"),
-                pl.col("tp_ref").replace(None, ""),
-            )
-            .drop([""])
-        ).with_columns(
+
+        df = pl.read_csv(
+            StringIO(response.text),
+            separator="\t",
+            schema_overrides=schema,
+            null_values="",
+        )
+        sci_cols = ["obs_wl_vac(nm)", "Ei(cm-1)", "Ek(cm-1)", "intens", "ritz_wl_vac(nm)"]
+        cast_to_scientific_notation = [
+            pl.col(c).str.extract(SCI_EXPR).replace("", None).cast(pl.Float64).alias(c) for c in sci_cols
+        ]
+        df = df.with_columns(
+            *cast_to_scientific_notation,
+            pl.col("S(a.u.)").cast(pl.Float64),
+            pl.col("Type").replace(None, "E1"),
+            pl.col("tp_ref").replace(None, ""),
+        ).drop([""])
+        # compute air wavelengths between 5000 cm-1 and 50000 cm-1
+        df = df.with_columns(
             pl.when(pl.col("wn(cm-1)").is_between(5000, 50000))
             .then(
                 pl.col("obs_wl_vac(nm)").cast(pl.Float64)
@@ -445,20 +442,11 @@ class SpectraCache:
         )
         if "element" not in df.columns:
             element, numeral = re.search(STATE_EXPR, response.url).groups()
+            numeric: int = cls.roman_to_int(numeral) if numeral else 1
             # cast roman numerals to int for consistency with queries with multiple ionization states, e.g. Ar I vs Ar I-II
-            df = df.with_columns(
-                pl.lit(element).alias("element"),
-                pl.lit("I" if numeral is None else numeral)
-                .cast(pl.String)
-                .alias("sp_num")
-                .map_elements(cls.roman_to_int, return_dtype=pl.Int64)
-                .first(),
-            )
-        df = df.with_columns(
-            unc_obs_wl=pl.col("unc_obs_wl") if "unc_obs_wl" in df.columns else None,
-            unc_ritz_wl=pl.col("unc_ritz_wl") if "unc_ritz_wl" in df.columns else None,
-        ).with_columns(pl.col("unc_obs_wl").cast(pl.Float64), pl.col("unc_ritz_wl").cast(pl.Float64))
-
+            df = df.with_columns(pl.lit(element).alias("element"), pl.lit(numeric, dtype=pl.Int64).alias("sp_num"))
+        exprs = [pl.col(c).cast(pl.Float64) for c in ["unc_obs_wl", "unc_ritz_wl"] if c in df.columns]
+        df = df.with_columns(exprs)
         return df.select(*cls.column_order)
 
     @staticmethod
@@ -546,7 +534,7 @@ class BibCache:
         """
         return self.session.settings.expire_after
 
-    def set_cache_expiry(self, new: timedelta = None, **kwargs):
+    def set_cache_expiry(self, new: Optional[timedelta] = None, **kwargs):
         """Set the cache expiry to a different interval (default: 1 week).
 
         Can be done by either passing in a `timedelta` object, or valid keyword arguments for `timedelta` itself.
