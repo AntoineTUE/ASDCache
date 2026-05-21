@@ -34,7 +34,7 @@ Queries to the NIST ASD are hashed by the keys (or parameters) of the requests.
 This means that any change to either one of these parameters, will result in a new cache entry, even if the returned data is equivalent.
 """
 
-import importlib
+import importlib.util
 import warnings
 import pandas as pd
 from requests_cache import CachedSession, Response
@@ -119,6 +119,7 @@ class SpectraCache:
     nist_url = "https://physics.nist.gov/cgi-bin/ASD/lines1.pl"
     species_expr = re.compile(r"spectra=([\w\+\-\%3]+)&")
     query_params = {
+        "submit": "Retrieve Data",
         "unit": 1,
         "de": 0,
         "plot_out": 0,
@@ -147,11 +148,11 @@ class SpectraCache:
         "enrg_out": "on",
         "J_out": "on",
         "g_out": "on",
-        "diag_out": "on",
+        # "diag_out": "on",  # avoid diagnostic data, it leads to multi-species queries failing; which can appear as if keys below are needed. See issue #1
         "allowed_out": 1,
         "forbid_out": 1,
-        "show_diff_obs_calc": 1,
-        "include_Ritz_E1": 1,
+        # "show_diff_obs_calc": 1, # Does not appear mandatory in retrospect,  see issue #1
+        # "include_Ritz_E1": 1, # Does not appear mandatory in retrospect,  see issue #1
     }
     """Request parameters used by the NIST ASD form."""
     column_order = [
@@ -293,13 +294,13 @@ class SpectraCache:
     def fetch(self, species, wl_range=(170, 1000), **kwargs) -> "pd.DataFrame|pl.DataFrame":
         """Fetch information on a species from the ASD, first checking the cache.
 
-        This supports loading multiple species in one go by using the same notation as the NIST ASD page.
+        This supports loading multiple species in one go by using the same notation as the NIST ASD form.
 
         Note however that cache keys are computed for unique options for `species` and `wl_range`.
 
         This means that you won't get caching benefits by using different queries.
 
-        In other words: the cache cannot deduplicate queries such as `ASD.fetch('H', (200,1000))` followed by `ASD.fetch('H I', (650,660))`.
+        In other words: the cache cannot deduplicate queries such as `ASD.fetch('H', (200,1000))` followed by `ASD.fetch('H I', (650,660))` (or vice versa).
 
         Both these operations will fetch data online and be stored as separate cache entries.
         """
