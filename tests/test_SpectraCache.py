@@ -13,7 +13,6 @@ else:
 import re
 from datetime import timedelta
 from io import StringIO
-from requests_cache import CachedSession
 from ASDCache import SpectraCache
 
 
@@ -101,9 +100,9 @@ def test_wn_to_lambda_air_not_valid(wavenumber, air_equivalent):
 
 @pytest.mark.full
 def test_equivalent_result_for_backends(full_nist_backends):
-    nist_pandas, nist_polars, interval = full_nist_backends
-    df_all = nist_pandas.fetch("All spectra", wl_range=interval)
-    pdf_all = nist_polars.fetch("All spectra", wl_range=interval)
+    nist_pandas, nist_polars, interval, species = full_nist_backends
+    df_all = nist_pandas.fetch(species, wl_range=interval)
+    pdf_all = nist_polars.fetch(species, wl_range=interval)
     assert df_all.shape == pdf_all.shape
     for col in df_all.columns:
         if df_all[col].dtype != object:
@@ -114,18 +113,18 @@ def test_equivalent_result_for_backends(full_nist_backends):
 
 @pytest.mark.full
 def test_list_cached_species(full_nist_backends):
-    nist_pandas, nist_polars, interval = full_nist_backends
+    nist_pandas, nist_polars, interval, species = full_nist_backends
     cached_species_pandas = nist_pandas.list_cached_species()
     cached_species_polars = nist_polars.list_cached_species()
     for cached in [cached_species_pandas, cached_species_polars]:
         assert len(cached) > 0
-        assert "All spectra" in cached
+        assert species in cached
 
 
 @pytest.mark.filterwarnings("ignore::pandas.errors.DtypeWarning")
 @pytest.mark.full
 def test_get_all_cached_pandas(full_nist_backends):
-    nist_pandas, _, interval = full_nist_backends
+    nist_pandas, *_ = full_nist_backends
     df_all = nist_pandas.get_all_cached()
     assert df_all.shape[0] > 0
     assert df_all["element"].nunique() > 0
@@ -133,7 +132,7 @@ def test_get_all_cached_pandas(full_nist_backends):
 
 @pytest.mark.full
 def test_get_all_cached_polars(full_nist_backends):
-    _, nist_polars, interval = full_nist_backends
+    _, nist_polars, *_ = full_nist_backends
     df_all = nist_polars.get_all_cached()
     assert df_all.shape[0] > 0
     assert df_all["element"].n_unique() > 0

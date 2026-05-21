@@ -94,15 +94,13 @@ def mock_response_HTML_in_content(mocker):
 @pytest.fixture(scope="session")
 def full_nist_backends():
     interval = (500, 600)
-    expr_all = re.compile(rf".*low_w=({interval[0]}).*spectra=(All\+spectra).*upp_w=({interval[1]}).*")
-    expr_F = re.compile(rf".*low_w=({interval[0]}).*spectra=(F\+I\-II).*upp_w=({interval[1]}).*")
+    species = "All spectra"
     nist_pandas = SpectraCache()
+    # Persist keys of pre-existing cached items; allow cleanup of items retrieved for tests.
+    # Avoids tests clearing data that has legitimately been cached as well.
+    already_cached = set(nist_pandas.session.cache.responses)
     nist_polars = SpectraCache(use_polars_backend=True)
-    nist_pandas.fetch("All spectra", wl_range=interval)
-    yield (nist_pandas, nist_polars, interval)
-    # clean up of the two limited-range queries above such that tests run with a clean slate and we don't polute the cache
-    for expr in [expr_all, expr_F]:
-        keys = [cached.cache_key for cached in nist_pandas.session.cache.filter() if expr.search(cached.url)]
-        if len(keys) > 0:
-            for key in keys:
-                nist_pandas.session.cache.delete(key)
+    nist_pandas._get_data(species, wl_range=interval)  # populates cache, avoids parsing.
+    yield (nist_pandas, nist_polars, interval, species)
+    for key in set(nist_pandas.session.cache.responses) - already_cached:
+        nist_pandas.session.cache.delete(key)
