@@ -1,5 +1,5 @@
 import pytest
-import importlib
+import importlib.util
 
 import pandas as pd
 from numpy.testing import assert_almost_equal
@@ -21,8 +21,8 @@ def test_check_response_success(mock_response):
     assert SpectraCache._check_response_success(mock_response) is True
 
 
-def test_check_response_status_not_200(mock_response_status_not_200):
-    assert SpectraCache._check_response_success(mock_response_status_not_200) is False
+def test_check_response_status_not_200(mock_response_status_not_OK):
+    assert SpectraCache._check_response_success(mock_response_status_not_OK) is False
 
 
 def test_check_response_contains_error(mock_response_error_in_content):

@@ -37,7 +37,7 @@ This means that any change to either one of these parameters, will result in a n
 import importlib
 import warnings
 import pandas as pd
-from requests_cache import CachedSession, CachedResponse
+from requests_cache import CachedSession, Response
 from io import StringIO
 from datetime import timedelta
 import re
@@ -98,6 +98,10 @@ SCI_EXPR = r"([+-]?\d*\.?\d+(?:[eE][+-]?\d+)?)"
 """Regex pattern for processing scientific notation"""
 
 
+class ASDQueryError(Exception):
+    """Exception raised when the NIST ASD has indicated an error with a query."""
+
+
 class SpectraCache:
     """A class acting as the entrypoint to retrieve data from the NIST Atomic Spectra Database that uses caching.
 
@@ -146,7 +150,8 @@ class SpectraCache:
         "diag_out": "on",
         "allowed_out": 1,
         "forbid_out": 1,
-        "submit": "Retrieve Data",
+        "show_diff_obs_calc": 1,
+        "include_Ritz_E1": 1,
     }
     """Request parameters used by the NIST ASD form."""
     column_order = [
@@ -219,12 +224,58 @@ class SpectraCache:
         self.session.settings.expire_after = new
 
     @staticmethod
-    def _check_response_success(response: "CachedResponse") -> bool:
+    def _check_response_success(response: Response) -> bool:
         """Validate that data has been fetched succesfully.
 
         If this check fails, the cache should not update with this response, even when marked as stale.
+
+        The first obvious way to check success is if an error is indicated by the HTTP status code.
+
+        However, when a query for data is incorrect, the NIST ASD returns a HTML page indicating `<title>NIST ASD : Input Error</title>` in the `<head>` tag, or "Error Message".
+
+        A successfull query would not receive HTML as a response, but raw ASCII values instead.
+
+        We can thus check for the start of a HTML document.
+
+        Note that this only works for data queries, not for bibliographic metadata by `BibCache`.
         """
-        return (response.status_code == 200) & (b"Error Message" not in response.content)
+        return not (
+            not response.ok or response.content.startswith(b"<!DOCTYPE") or b"Error Message" in response.content
+        )
+
+    def _get_data(self, species: str, wl_range: tuple[float, float] = (170, 1000), **kwargs) -> Response:
+        """Retrieve raw, ASCII-formatted data from the NIST ASD with a GET request.
+
+        To retrieve data and parse it into a DataFrame, use [fetch][..] instead.
+
+        Returns the raw response, which will be cached if it contains valid data (see [_check_response_success][..]).
+
+        If the response does not contain ASCII data, but HTML instead, an [ASDQueryError][..] will be raised.
+
+        It is possible to override any standard query parameter (see [query_params][c.]]) by passing them as kwargs.
+        """
+        query_params = {
+            "spectra": species,
+            "output_type": 0,
+            "low_w": min(wl_range),
+            "upp_w": max(wl_range),
+            **{k: v for k, v in self.query_params.items() if k not in kwargs},
+            **{k: v for k, v in kwargs.items() if k in self.query_params},
+        }
+        response: Response = self.session.get(self.nist_url, params=query_params)
+        response.raise_for_status()
+        # Check if response is not a HTML document instead of ASCII formatted data, indicating query error.
+        if response.content.startswith(b"<!DOCTYPE"):
+            logging.error(
+                "NIST ASD responded with HTML instead of ASCII-data for species=%s, wl_range=%s\nQuery: %s",
+                species,
+                wl_range,
+                response.url,
+            )
+            raise ASDQueryError(
+                f"Query for {species=} {wl_range=} did not receive ASCII-data. This means the ASD could not interpret your query. Check if your query is malformed."
+            )
+        return response
 
     @property
     def cached_species(self) -> list[str]:
@@ -239,7 +290,7 @@ class SpectraCache:
             for elem in self.species_expr.search(u).group(1).split("%3B")
         ]
 
-    def fetch(self, species, wl_range=(170, 1000), **kwargs) -> "pd.DataFrame|pl.DataFrame|CachedResponse":
+    def fetch(self, species, wl_range=(170, 1000), **kwargs) -> "pd.DataFrame|pl.DataFrame":
         """Fetch information on a species from the ASD, first checking the cache.
 
         This supports loading multiple species in one go by using the same notation as the NIST ASD page.
@@ -252,22 +303,8 @@ class SpectraCache:
 
         Both these operations will fetch data online and be stored as separate cache entries.
         """
-        query_params = {
-            "spectra": species,
-            "output_type": 0,
-            "low_w": min(wl_range),
-            "upp_w": max(wl_range),
-            **self.query_params,
-        }
-        response = self.session.get(self.nist_url, params=query_params)
-
-        # if response.status_code == 200:
-        response.raise_for_status()
+        response = self._get_data(species, wl_range, **kwargs)
         return self.create_dataframe(response)
-        # else:
-        #     print(f"Error: Received status code {response.status_code}")
-        #     print(response.url)
-        #     return response
 
     def create_dataframe(self, response) -> "pd.DataFrame|pl.DataFrame":
         """Create a dataframe from the (cached) NIST ASD response, using the chosen backend at class instantiation."""
@@ -276,7 +313,7 @@ class SpectraCache:
         return self._from_pandas(response)
 
     @classmethod
-    def _from_pandas(cls, response: "CachedResponse") -> "pd.DataFrame":
+    def _from_pandas(cls, response: Response) -> "pd.DataFrame":
         r"""Transform a (cached) NIST ASD response into a pandas DataFrame.
 
         Calculates the air equivalent wavelength from the vacuum wavelength using the same Sellmeier equation as the NIST ASD.
@@ -335,7 +372,7 @@ class SpectraCache:
         return df.loc[:, cls.column_order]
 
     @classmethod
-    def _from_polars(cls, response: "CachedResponse") -> "pl.DataFrame":
+    def _from_polars(cls, response: Response) -> "pl.DataFrame":
         r"""Transform a (cached) NIST ASD response into a polars DataFrame.
 
         Calculates the air equivalent wavelength from the vacuum wavelength using the same Sellmeier equation as the NIST ASD.
@@ -518,7 +555,7 @@ class BibCache:
         self.session.settings.expire_after = new
 
     @staticmethod
-    def _check_response_success(response: "CachedResponse") -> bool:
+    def _check_response_success(response: Response) -> bool:
         """Validate that data has been fetched succesfully.
 
         If this check fails, the cache should not update with this response, even when marked as stale.
