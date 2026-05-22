@@ -31,18 +31,20 @@ dynamic = ["version"]
 polars = ["polars[pandas]"]
 polars-lts = ["polars[rtcompat,pandas]"]
 docs = [
-    "mkdocs",
+    "properdocs>=1.6.7",
+    "mkdocs-material==9.7.6",
     "mkdocs-autorefs",
-    "mkdocs-gen-files",
+    # "mkdocs-gen-files",
     "mkdocs-git-revision-date-localized-plugin",
     "mkdocs-include-markdown-plugin",
-    "mkdocs-jupyter",
-    "mkdocs-literate-nav",
-    "mkdocs-material",
+    "mkdocs-jupyter>=0.26.3",
+    # "mkdocs-literate-nav",
     "mkdocs-section-index",
     "mkdocstrings",
-    "mkdocstrings-python",
-    "black"
+    "mkdocstrings-python-xref>=2.1.1",
+    "mkdocs-api-autonav",
+    "ruff>=0.15.13",
+    "pygments>=2.20.0"
 ]
 
 [project.urls]
@@ -159,9 +161,9 @@ features = ["docs"]
 dependencies = ["mike"]
 
 [tool.hatch.envs.docs.scripts]
-serve = "mkdocs serve -f mkdocs.yml {args}"
-build = "mkdocs build --clean -f mkdocs.yml {args}"
-ci-build = "mike deploy --config-file mkdocs.yml --update-aliases {args}"
+serve = "properdocs serve -f mkdocs.yml {args}"
+build = "properdocs build --clean -f mkdocs.yml {args}"
+ci-build = "mike deploy --config-file mkdocs.yml {args}"
 
 [tool.hatch.envs.lint]
 template = "lint"

@@ -1,37 +1,6 @@
-r"""`ASDcache` is a module to fetch data from the  NIST Atomic Spectra Database (ASD), utlizing caching for fast responses.
+"""The ASDCache module.
 
-To make the most use out of the cache, `ASDcache` is opinionated in the information it retrieves from the ASD; it always requests the same schema of information and locally computes additional fields.
-
-Data is initially fetched from the online published NIST page, using the tab-separated ASCII output format.
-The benefit of this format is that it is more 'machine readable' than the formatted ASCII of HTML options.
-This means it requires far less bespoke parsing to get rid of 'human readable' features such as repeated page column headers, or empty lines.
-To ensure a consistent schema of the retrieved data, lines are always retrieved as a function of wavelength, using `vacuum wavelength`, even between 200 to 2000 nm.
-Wavenumbers and Ritz wavelength will be included in the response.
-
-In the range $5000 \mathrm{cm}^{-1}<\nu<50000 \mathrm{cm}^{-1}$ the air equivalent observed and Ritz wavelengths are calculated using the same Sellmeier equation as the NIST ASD (see [here][ASDcache.readASD.ASDCache.wn_to_n_refractive]).
-This is consistent with the approach of the ASD.
-
-Each response from the NIST page is cached (1 week by default) on the local system.
-This makes it much faster to load the same data, even across different script runs and/or user programs/sessions.
-As an example: reading all spectra between 200 and 1000 nm can take over 2 minutes without using the cache, but can be as fast as 0.2 seconds using the `polars` backend.
-In addition, it means that an internet connection is not required after initial data fetching.
-The cached response is only updated upon succesfull retrieval of a new response of the NIST page.
-If unable to succesfully fetch new data, we fall back to a 'stale' cached response.
-
-The cache can be shared to another system, to give offline/airgapped systems access to the same data.
-To that end, the file `NIST_ASD_cache.sqlite` in the user's cache directory has to be copied over.
-
-The standard cache directories are as follows:
-
-=== "Windows"
-    `%USERPROFILE%/AppData/Local`
-=== "Linux"
-    `~/.cache/http_cache/`
-=== "MacOS"
-    `/Users/user/Library/Caches/http_cache/`
-
-Queries to the NIST ASD are hashed by the keys (or parameters) of the requests.
-This means that any change to either one of these parameters, will result in a new cache entry, even if the returned data is equivalent.
+It contains both the [SpectraCache][(m).] and [BibCache][(m).] classes which allow you to interact with the ASD and the relevant bibliographic databases.
 """
 
 import importlib.util
@@ -251,9 +220,9 @@ class SpectraCache:
 
         Returns the raw response, which will be cached if it contains valid data (see [_check_response_success][..]).
 
-        If the response does not contain ASCII data, but HTML instead, an [ASDQueryError][..] will be raised.
+        If the response does not contain ASCII data, but HTML instead, an [ASDQueryError][(m).] will be raised.
 
-        It is possible to override any standard query parameter (see [query_params][c.]]) by passing them as kwargs.
+        It is possible to override any standard query parameter (see [query_params][..]]) by passing them as kwargs.
         """
         query_params = {
             "spectra": species,
@@ -559,12 +528,12 @@ class BibCache:
         r"""Parse a reference code from the NIST ASD into the constituent parts that can be used to look up references.
 
         Args:
-            * reference_code (str): A NIST ASD bibliographic reference string, such as `L13456n3`, or `T6936n`.
+            reference_code (str): A NIST ASD bibliographic reference string, such as `L13456n3`, or `T6936n`.
 
         Returns:
-            * db    (str)   :   A label for which bibliographic database to target
-            * ref   (str)   :   The database ID for the reference to look up
-            * comment (str) :   An additional comment included in the reference, can be fetched separately.
+            db (str):   A label for which bibliographic database to target
+            ref (str|None):   The database ID for the reference to look up
+            comment (str):   An additional comment included in the reference, can be fetched separately.
         """
         if reference_code.startswith("n"):
             db, ref, comment = "T", None, "n"
@@ -579,12 +548,12 @@ class BibCache:
         """Look up a reference code for a given element state.
 
         Args:
-            element (str)           :   The element name, e.g. `H`
-            sp_num (int)            :   The ionization state of the element, with 1 corresponding to the atom
-            reference_code (str)    :   The bibliographic reference code from the ASD columns `tp_ref` or `line_ref`.
+            element (str):   The element name, e.g. `H`
+            sp_num (int):   The ionization state of the element, with 1 corresponding to the atom
+            reference_code (str):   The bibliographic reference code from the ASD columns `tp_ref` or `line_ref`.
 
         Returns:
-            bib_data (dict)         : A dictionary containing bibliographic metadata for the reference, if available/applicable. Contains a url to look it up.
+            bib_data (dict[str,Any]): A dictionary containing bibliographic metadata for the reference, if available/applicable. Contains a url to look it up.
         """
         db, ref, comment = self.parse_reference_code(reference_code)
         params = {

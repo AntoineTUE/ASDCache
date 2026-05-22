@@ -56,24 +56,39 @@ plugins:
     rewrite_relative_urls: true
   mike:
     alias_type: copy
+    canonical_version: "latest"
+    version_selector: true
   git-revision-date-localized:
     exclude:
       - reference/*
     fallback_to_build_date: true
     enable_creation_date: true
-  gen-files:
-    scripts:
-      - docs/assets/scripts/gen_ref_pages.py
-  literate-nav:
-    nav_file: SUMMARY.md
+  # gen-files:
+  #   scripts:
+  #     - docs/assets/scripts/gen_ref_pages.py
+  # literate-nav:
+  #   nav_file: SUMMARY.md
+  api-autonav:
+    modules: ['src/ASDCache']
+    exclude_private: false
+    nav_section_title: API Reference
   section-index: {}
   mkdocstrings:
-    default_handler: python
+    default_handler: python_xref
     handlers:
-      python:
+      python_xref:
+        inventories:
+          - https://numpy.org/doc/stable/objects.inv
+          - https://pandas.pydata.org/docs/objects.inv
+          - https://docs.pola.rs/api/python/stable/objects.inv
         paths:
           - src
         options:
+          compatibility_check: warn
+          filters: []
+          members_order: source
+          relative_crossrefs: true
+          signature_crossrefs: true
           heading_level: 1
           summary: true
           docstring_style: google
@@ -92,12 +107,14 @@ plugins:
           # Signatures/annotations
           annotations_path: brief
           separate_signature: true
-          line_length: 80
+          line_length: 120
           show_signature_annotations: true
           # Other
           show_bases: true
           show_symbol_type_heading: true
           show_symbol_type_toc: true
+          extra:
+            show_docstrings_modules: true
   mkdocs-jupyter:
     include_requirejs: true
     custom_mathjax_url: "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS_CHTML-full,Safe" #https://github.com/danielfrg/mkdocs-jupyter/issues/227
@@ -160,7 +177,6 @@ extra:
 
 extra_javascript:
   - assets/javascript/mathjax.js
-  # - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
   - "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS_CHTML-full,Safe"
 
 nav:
@@ -169,6 +185,6 @@ nav:
   - Examples: examples.ipynb
   - Citing: citing.md
   # defer to gen-files + literate-nav
-  - Reference: reference/ASDCache/
+  # - Reference: reference/ASDCache/
   - Changelog: changelog.md
   - License: license.md
