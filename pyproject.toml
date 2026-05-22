@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 name = "ASDCache"
 description = "A Python module to retrieve data from the NIST Atomic Spectra Database (ASD), using caching for fast, efficient data handling"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 license = { text = "MIT"}
 keywords = ["NIST", "ASD","Atomic Spectra Database", "spectra","spectrum","spectroscopy","atoms"]
 authors = [
@@ -19,17 +19,17 @@ classifiers = [
     "Topic :: Scientific/Engineering",
     "Intended Audience :: Science/Research",
     "Operating System :: OS Independent",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
 ]
-dependencies = ["requests","requests_cache", "pandas","numpy", "bs4"]
+dependencies = ["requests_cache>=1.2.0", "pandas>=2.0","numpy>=2.0", "beautifulsoup4>=4.12"]
 dynamic = ["version"]
 
 [project.optional-dependencies]
-polars = ["polars"]
+polars = ["polars[pandas]"]
+polars-lts = ["polars[rtcompat,pandas]"]
 docs = [
     "mkdocs",
     "mkdocs-autorefs",
@@ -49,9 +49,6 @@ docs = [
 Documentation = "https://antoinetue.github.io/asdcache"
 Source = "https://github.com/AntoineTUE/asdcache"
 
-[tool.hatch.metadata]
-# direct dependency references, e.g `pip @ git+https://github.com/pypa/pip.git@master`
-allow-direct-references = true
 
 [tool.hatch.version]
 source = "vcs"
@@ -96,7 +93,7 @@ exclude_lines = [
 ]
 
 [tool.ruff]
-target-version = "py39"
+target-version = "py310"
 line-length = 120
 indent-width = 4
 include = [
@@ -110,7 +107,7 @@ extend-exclude = ["docs/assets/scripts/gen_ref_pages.py"]
 
 [tool.ruff.lint]
 select = ["E4", "E7", "E9", "F","C4", "SIM", "NPY", "PD","B","UP","D"]
-ignore = ["PD901","F401"]
+ignore = ["F401"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "pep257"
@@ -168,7 +165,7 @@ ci-build = "mike deploy --config-file mkdocs.yml --update-aliases {args}"
 
 [tool.hatch.envs.lint]
 template = "lint"
-dependencies = ["ruff>=0.7.0"]
+dependencies = ["ruff>=0.15.13"]
 
 [tool.hatch.envs.lint.scripts]
 style = [
@@ -182,5 +179,25 @@ fix = [
     "style",  # feedback on what is not fixable
 ]
 
+
+[tool.hatch.envs.hatch-test.overrides]
+matrix.pandas.dependencies = [
+    { value = "pandas>=2.0.0", if = ["pandas-2.0"] },
+    { value = "numpy>=2.0", if = ["pandas-2.0"] },
+    { value = "pandas>=3.0.0", if = ["pandas-3.0"] },
+    { value = "numpy>=2.0", if = ["pandas-3.0"] },
+]
+matrix.polars.features = [
+    { value = "polars", if = ["polars"]},
+    { value = "polars-lts", if = ["polars-lts"]},
+]
+
 [[tool.hatch.envs.hatch-test.matrix]]
-python = ["3.9", "3.10", "3.11", "3.12","3.13"]
+python = ["3.10"]
+pandas = ["pandas-2.0"]
+polars = ["polars","polars-lts"]
+
+[[tool.hatch.envs.hatch-test.matrix]]
+python = ["3.11","3.12","3.13"]
+pandas = ["pandas-2.0","pandas-3.0"]
+polars = ["polars","polars-lts"]
