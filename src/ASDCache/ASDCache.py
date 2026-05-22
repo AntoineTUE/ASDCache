@@ -318,9 +318,18 @@ class SpectraCache:
             "": str,
         }
         df = pd.read_csv(StringIO(response.text), sep="\t", dtype=schema)
+        # Detect if pandas uses new `StringDtype`, or legacy `object` dtype for strings.
+        # This affects NaN handling for strings.
+        # Pandas 3.0 and up use the StringDtype, while pandas 2 can opt-in to this
+        # The 'Type' column should exist, 'element' may not.
+        uses_new_string_dtype = pd.api.types.is_string_dtype(df["Type"])
         for col in ["obs_wl_vac(nm)", "ritz_wl_vac(nm)", "intens", "Ei(cm-1)", "Ek(cm-1)"]:
             df[col] = df.loc[:, col].str.extract(SCI_EXPR).astype(float)
-        df["Type"] = df.loc[:, "Type"].astype(str).replace("nan", "E1")
+        # Any missing value implies line is an E1 (electric dipole) transition
+        if uses_new_string_dtype:
+            df["Type"] = df.loc[:, "Type"].fillna("E1")
+        else:
+            df["Type"] = df.loc[:, "Type"].astype(str).replace("nan", "E1")
         df["tp_ref"] = df.loc[:, "tp_ref"].fillna("")
         df["obs_wl_air(nm)"] = df["obs_wl_vac(nm)"]
         df["obs_wl_air(nm)"] = df[df["wn(cm-1)"].between(5000, 50000)]["obs_wl_air(nm)"] / cls.wn_to_n_refractive(
@@ -332,11 +341,12 @@ class SpectraCache:
         )
         df = df.drop([c for c in df.columns if "Unnamed" in c], axis=1).reset_index(drop=True)
         if "element" not in df.columns:
-            element, numeral = re.search(STATE_EXPR, response.url).groups()
-            df["element"] = element
-            df["sp_num"] = numeral
             # cast roman numerals to int for consistency with queries with multiple ionization states, e.g. Ar I vs Ar I-II
-            df["sp_num"] = df["sp_num"].map(cls.roman_to_int)
+            # As 'element' and 'sp_num' columns are only missing for single-species queries, assign as constants, not vectors.
+            element, numeral = re.search(STATE_EXPR, response.url).groups()
+            numeric: int = cls.roman_to_int(numeral)
+            df["element"] = element
+            df["sp_num"] = numeric
         df["unc_obs_wl"] = pd.to_numeric(df["unc_obs_wl"]) if "unc_obs_wl" in df.columns else np.nan
         df["unc_ritz_wl"] = pd.to_numeric(df["unc_ritz_wl"]) if "unc_ritz_wl" in df.columns else np.nan
         return df.loc[:, cls.column_order]

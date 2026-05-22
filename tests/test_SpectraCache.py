@@ -3,13 +3,11 @@ import importlib.util
 
 import pandas as pd
 from numpy.testing import assert_almost_equal
+from pandas.testing import assert_frame_equal as pandas_assert_frame_equal
 
-if importlib.util.find_spec("polars"):
-    import polars as pl
-
-    WITH_POLARS = True
-else:
-    WITH_POLARS = False
+# if importlib.util.find_spec("polars"):
+import polars as pl
+from polars.testing import assert_frame_equal as polars_assert_frame_equal
 import re
 from datetime import timedelta
 from io import StringIO
@@ -34,7 +32,6 @@ def test_from_pandas(mock_response):
 
 
 def test_from_polars(mock_response):
-    print(WITH_POLARS, importlib.util.find_spec("polars"))
     result = SpectraCache(use_polars_backend=True)._from_polars(mock_response)
     assert isinstance(result, pl.DataFrame)
 
@@ -45,10 +42,9 @@ def test_create_dataframe(mock_response):
     assert isinstance(result, pd.DataFrame)
 
     # Test Polars backend
-    if WITH_POLARS:
-        asd_polars = SpectraCache(use_polars_backend=True)
-        result_polars = asd_polars.create_dataframe(mock_response)
-        assert isinstance(result_polars, pl.DataFrame)
+    asd_polars = SpectraCache(use_polars_backend=True)
+    result_polars = asd_polars.create_dataframe(mock_response)
+    assert isinstance(result_polars, pl.DataFrame)
 
 
 @pytest.mark.parametrize(
@@ -104,11 +100,8 @@ def test_equivalent_result_for_backends(full_nist_backends):
     df_all = nist_pandas.fetch(species, wl_range=interval)
     pdf_all = nist_polars.fetch(species, wl_range=interval)
     assert df_all.shape == pdf_all.shape
-    for col in df_all.columns:
-        if df_all[col].dtype != object:
-            assert_almost_equal(pdf_all[col].to_numpy(), df_all[col].to_numpy())
-        else:
-            assert (df_all[col].fillna("").to_numpy() == pdf_all.select(pl.col(col).fill_null("")).to_numpy().T).all()
+    polars_assert_frame_equal(pl.from_pandas(df_all), pdf_all)
+    pandas_assert_frame_equal(pdf_all.to_pandas(), df_all)
 
 
 @pytest.mark.full
