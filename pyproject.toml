@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 name = "ASDCache"
 description = "A Python module to retrieve data from the NIST Atomic Spectra Database (ASD), using caching for fast, efficient data handling"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.9"
 license = { text = "MIT"}
 keywords = ["NIST", "ASD","Atomic Spectra Database", "spectra","spectrum","spectroscopy","atoms"]
 authors = [
@@ -95,7 +95,7 @@ exclude_lines = [
 ]
 
 [tool.ruff]
-target-version = "py310"
+target-version = "py39"
 line-length = 120
 indent-width = 4
 include = [
@@ -137,16 +137,6 @@ dependencies = ["matplotlib", "ipython","ipykernel","pre-commit"]
 installer = "uv"
 features = ["polars"]
 
-[tool.hatch.envs.test]
-dependencies = [
-    "coverage[toml]>=6.2",
-    "pytest",
-    "pytest-cov",
-    "pytest-mock",
-    "pytest-recording",
-    "pytest-sugar",
-    "hypothesis",
-]
 
 [tool.hatch.envs.hatch-test]
 randomize = false
@@ -154,6 +144,23 @@ parallel = false # avoid cache access conflicts
 retries = 2
 retry-delay = 1
 features = ["polars"]
+dependencies = [
+    "coverage-enable-subprocess==1.0",
+    'coverage[toml]>=6.2,<7.11; python_version<"3.10"',
+    'coverage[toml]~=7.11; python_version>="3.10"',
+    'pytest~=8.4; python_version<"3.10"',
+    'pytest~=9.0; python_version>="3.10"',
+    "pytest-mock~=3.12",
+    "pytest-randomly~=3.15",
+    "pytest-rerunfailures~=14.0",
+    "pytest-xdist[psutil]~=3.5",
+    'pytest-cov~=7.1.0; python_version>="3.10"',
+    "pytest-recording",
+    "pytest-sugar~=1.1.1",
+    "hypothesis",
+    'virtualenv<21; python_version<"3.10"',
+]
+
 
 [tool.hatch.envs.docs]
 skip-install = true
@@ -195,7 +202,7 @@ matrix.polars.features = [
 ]
 
 [[tool.hatch.envs.hatch-test.matrix]]
-python = ["3.10"]
+python = ["3.9","3.10"]
 pandas = ["pandas-2.0"]
 polars = ["polars","polars-lts"]
 

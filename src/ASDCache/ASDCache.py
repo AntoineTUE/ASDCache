@@ -14,7 +14,7 @@ import numpy as np
 from bs4 import BeautifulSoup
 import sys
 import logging
-from typing import Any
+from typing import Any, Optional, Union
 
 if importlib.util.find_spec("polars"):
     POLARS_AVAILABLE = True
@@ -184,7 +184,7 @@ class SpectraCache:
         """
         return self.session.settings.expire_after
 
-    def set_cache_expiry(self, new: timedelta | None = None, **kwargs):
+    def set_cache_expiry(self, new: Optional[timedelta] = None, **kwargs):
         """Set the cache expiry to a different interval (default: 1 week).
 
         Can be done by either passing in a `timedelta` object, or valid keyword arguments for `timedelta` itself.
@@ -534,7 +534,7 @@ class BibCache:
         return is_success
 
     @classmethod
-    def parse_reference_code(cls, reference_code: str) -> tuple[str, str | None, str]:
+    def parse_reference_code(cls, reference_code: str) -> tuple[str, Optional[str], str]:
         r"""Parse a reference code from the NIST ASD into the constituent parts that can be used to look up references.
 
         Args:
