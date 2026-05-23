@@ -1,4 +1,4 @@
-name: documentation release version
+name: documentation development version
 on:
   push:
     branches:
