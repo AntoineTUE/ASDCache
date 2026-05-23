@@ -513,7 +513,7 @@ class BibCache:
         """
         return self.session.settings.expire_after
 
-    def set_cache_expiry(self, new: timedelta | None = None, **kwargs):
+    def set_cache_expiry(self, new: Optional[timedelta] = None, **kwargs):
         """Set the cache expiry to a different interval (default: 1 week).
 
         Can be done by either passing in a `timedelta` object, or valid keyword arguments for `timedelta` itself.
