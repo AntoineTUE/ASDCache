@@ -18,12 +18,12 @@ def test_check_response_success(mock_response):
     assert SpectraCache._check_response_success(mock_response) is True
 
 
-def test_check_response_status_not_200(mock_response_status_not_OK):
+def test_check_response_status_not_ok(mock_response_status_not_OK):
     assert SpectraCache._check_response_success(mock_response_status_not_OK) is False
 
 
-def test_check_response_contains_error(mock_response_error_in_content):
-    assert SpectraCache._check_response_success(mock_response_error_in_content) is False
+def test_check_response_contains_error(mock_response_HTML_in_content):
+    assert SpectraCache._check_response_success(mock_response_HTML_in_content) is False
 
 
 def test_from_pandas(mock_response):
