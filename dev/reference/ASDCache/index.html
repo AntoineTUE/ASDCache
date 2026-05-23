@@ -1154,7 +1154,7 @@ This is consistent with the approach of the ASD.</p>
 <span class="linenos" data-linenos="184 "></span><span class="sd">        &quot;&quot;&quot;</span>
 <span class="linenos" data-linenos="185 "></span>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">expire_after</span>
 <span class="linenos" data-linenos="186 "></span>
-<span class="linenos" data-linenos="187 "></span>    <span class="k">def</span><span class="w"> </span><span class="nf">set_cache_expiry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">:</span> <span class="n">timedelta</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="linenos" data-linenos="187 "></span>    <span class="k">def</span><span class="w"> </span><span class="nf">set_cache_expiry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">timedelta</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="linenos" data-linenos="188 "></span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the cache expiry to a different interval (default: 1 week).</span>
 <span class="linenos" data-linenos="189 "></span>
 <span class="linenos" data-linenos="190 "></span><span class="sd">        Can be done by either passing in a `timedelta` object, or valid keyword arguments for `timedelta` itself.</span>
@@ -1815,7 +1815,7 @@ In case the query for new data fails, the stale, cached response will still be p
 
 
 <a href="#ASDCache.SpectraCache.set_cache_expiry" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="doc-signature highlight"><pre><span></span><code><span class="nf">set_cache_expiry</span><span class="p">(</span><span class="n">new</span><span class="p">:</span> <span class="n"><span title="datetime.timedelta">timedelta</span></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">set_cache_expiry</span><span class="p">(</span><span class="n">new</span><span class="p">:</span> <span class="n"><span title="typing.Optional">Optional</span></span><span class="p">[</span><span class="n"><span title="datetime.timedelta">timedelta</span></span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
@@ -1826,7 +1826,7 @@ In case the query for new data fails, the stale, cached response will still be p
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/ASDCache/ASDCache.py</code></summary>
-              <div class="highlight"><pre><span></span><code><span class="linenos" data-linenos="187 "></span><span class="k">def</span><span class="w"> </span><span class="nf">set_cache_expiry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">:</span> <span class="n">timedelta</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+              <div class="highlight"><pre><span></span><code><span class="linenos" data-linenos="187 "></span><span class="k">def</span><span class="w"> </span><span class="nf">set_cache_expiry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">timedelta</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="linenos" data-linenos="188 "></span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the cache expiry to a different interval (default: 1 week).</span>
 <span class="linenos" data-linenos="189 "></span>
 <span class="linenos" data-linenos="190 "></span><span class="sd">    Can be done by either passing in a `timedelta` object, or valid keyword arguments for `timedelta` itself.</span>
@@ -2634,7 +2634,7 @@ In case the query for new data fails, the stale, cached response will still be p
 <span class="linenos" data-linenos="534 "></span>        <span class="k">return</span> <span class="n">is_success</span>
 <span class="linenos" data-linenos="535 "></span>
 <span class="linenos" data-linenos="536 "></span>    <span class="nd">@classmethod</span>
-<span class="linenos" data-linenos="537 "></span>    <span class="k">def</span><span class="w"> </span><span class="nf">parse_reference_code</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">reference_code</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="linenos" data-linenos="537 "></span>    <span class="k">def</span><span class="w"> </span><span class="nf">parse_reference_code</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">reference_code</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="linenos" data-linenos="538 "></span><span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Parse a reference code from the NIST ASD into the constituent parts that can be used to look up references.</span>
 <span class="linenos" data-linenos="539 "></span>
 <span class="linenos" data-linenos="540 "></span><span class="sd">        Args:</span>
@@ -2955,7 +2955,7 @@ In case the query for new data fails, the stale, cached response will still be p
   </span>
 
 <a href="#ASDCache.BibCache.parse_reference_code" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="doc-signature highlight"><pre><span></span><code><span class="nf">parse_reference_code</span><span class="p">(</span><span class="n">reference_code</span><span class="p">:</span> <span class="n"><span title="str">str</span></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><span title="tuple">tuple</span></span><span class="p">[</span><span class="n"><span title="str">str</span></span><span class="p">,</span> <span class="n"><span title="str">str</span></span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n"><span title="str">str</span></span><span class="p">]</span>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">parse_reference_code</span><span class="p">(</span><span class="n">reference_code</span><span class="p">:</span> <span class="n"><span title="str">str</span></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><span title="tuple">tuple</span></span><span class="p">[</span><span class="n"><span title="str">str</span></span><span class="p">,</span> <span class="n"><span title="typing.Optional">Optional</span></span><span class="p">[</span><span class="n"><span title="str">str</span></span><span class="p">],</span> <span class="n"><span title="str">str</span></span><span class="p">]</span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
@@ -3040,7 +3040,7 @@ In case the query for new data fails, the stale, cached response will still be p
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/ASDCache/ASDCache.py</code></summary>
               <div class="highlight"><pre><span></span><code><span class="linenos" data-linenos="536 "></span><span class="nd">@classmethod</span>
-<span class="linenos" data-linenos="537 "></span><span class="k">def</span><span class="w"> </span><span class="nf">parse_reference_code</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">reference_code</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="linenos" data-linenos="537 "></span><span class="k">def</span><span class="w"> </span><span class="nf">parse_reference_code</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">reference_code</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="linenos" data-linenos="538 "></span><span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Parse a reference code from the NIST ASD into the constituent parts that can be used to look up references.</span>
 <span class="linenos" data-linenos="539 "></span>
 <span class="linenos" data-linenos="540 "></span><span class="sd">    Args:</span>
