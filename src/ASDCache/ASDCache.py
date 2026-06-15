@@ -132,7 +132,7 @@ class SpectraCache:
             expire_after=cache_expiry,
             stale_if_error=True,
             filter_fn=self._check_response_success,
-            ignored_parameters=list(self.query_params.keys()) if self.strict_matching is False else None,
+            ignored_parameters=list(self.query_params.keys()) if self.strict_matching is False else [],
         )
         if (use_polars_backend) & (not POLARS_AVAILABLE):
             warnings.warn("Cannot find `polars` as a backend, falling back to `pandas`", stacklevel=2)
@@ -390,7 +390,11 @@ class SpectraCache:
         if "element" not in df.columns:
             element, numeric = extract_state_from_response(response)
             df = df.with_columns(pl.lit(element).alias("element"), pl.lit(numeric, dtype=pl.Int64).alias("sp_num"))
-        exprs = [pl.col(c).cast(pl.Float64) for c in ["unc_obs_wl", "unc_ritz_wl"] if c in df.columns]
+        # Cast to float, or create column filled with `null` if missing.
+        exprs = [
+            (pl.col(c) if c in df.columns else pl.lit(None).alias(c)).cast(pl.Float64)
+            for c in ["unc_obs_wl", "unc_ritz_wl"]
+        ]
         df = df.with_columns(exprs)
         return df.select(*ASDSchema)
 
@@ -494,9 +498,10 @@ class BibCache:
             comment (str):   An additional comment included in the reference, can be fetched separately.
         """
         if reference_code.startswith("n"):
-            db, ref, comment = "T", None, "n"
-        elif (not reference_code.startswith("LS")) & (cls.reference_expr.match(reference_code) is not None):
-            db, ref, comment = cls.reference_expr.match(reference_code).groups()
+            return ("T", None, "n")
+        matched = cls.reference_expr.match(reference_code)
+        if (not reference_code.startswith("LS")) and (matched is not None):
+            db, ref, comment = matched.groups()
             comment = comment if "LS" not in reference_code else "LS"
         else:
             db, ref, comment = "T", None, "LS"
