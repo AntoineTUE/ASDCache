@@ -23,7 +23,7 @@ if importlib.util.find_spec("polars"):
 else:
     POLARS_AVAILABLE = False
 
-from .utils import roman_to_int, wavenumber_to_refractive_index
+from .utils import wavenumber_to_refractive_index, extract_state_from_response
 from ._version import version
 
 Response = Union[CachedResponse, OriginalResponse]
@@ -61,8 +61,6 @@ ASDSchema = {
     "line_ref": str,
 }
 
-STATE_EXPR = r"spectra=([\w]+)\+?([IVX]+)?"
-"""Regex pattern for extracting (element,charge) tuple for a single-state query, which uses roman numerals."""
 SCI_EXPR = r"([+-]?\d*\.?\d+(?:[eE][+-]?\d+)?)"
 """Regex pattern for processing scientific notation"""
 
@@ -91,12 +89,12 @@ class SpectraCache:
         "submit": "Retrieve Data",
         "unit": 1,
         "de": 0,
-        "plot_out": 0,
+        # "plot_out": 0,
         "I_scale_type": 1,
         "format": 3,
         "line_out": 0,
-        "remove_js": "on",
-        "no_spaces": "on",
+        # "remove_js": "on",
+        # "no_spaces": "on",
         "en_unit": 0,
         "output": 0,
         "bibrefs": 1,
@@ -124,37 +122,6 @@ class SpectraCache:
         # "include_Ritz_E1": 1, # Does not appear mandatory in retrospect,  see issue #1
     }
     """Request parameters used by the NIST ASD form."""
-    column_order = [
-        "element",
-        "sp_num",
-        "obs_wl_vac(nm)",
-        "unc_obs_wl",
-        "obs_wl_air(nm)",
-        "ritz_wl_vac(nm)",
-        "unc_ritz_wl",
-        "ritz_wl_air(nm)",
-        "wn(cm-1)",
-        "intens",
-        "Aki(s^-1)",
-        "fik",
-        "S(a.u.)",
-        "log_gf",
-        "Acc",
-        "Ei(cm-1)",
-        "Ek(cm-1)",
-        "conf_i",
-        "term_i",
-        "J_i",
-        "conf_k",
-        "term_k",
-        "J_k",
-        "g_i",
-        "g_k",
-        "Type",
-        "tp_ref",
-        "line_ref",
-    ]
-    """Fixed order of columns for consistent schema of data."""
 
     def __init__(self, use_polars_backend=False, cache_expiry=timedelta(weeks=1), strict_matching=True):
         """Initialize an instance that handles cached data lookup of the NIST ASD."""
@@ -209,9 +176,7 @@ class SpectraCache:
 
         Note that this only works for data queries, not for bibliographic metadata by `BibCache`.
         """
-        return not (
-            not response.ok or response.content.startswith(b"<!DOCTYPE") or b"Error Message" in response.content
-        )
+        return not (not response.ok or response.content.startswith(b"<!DOCTYPE"))
 
     def _get_data(self, species: str, wl_range: tuple[float, float] = (170, 1000), **kwargs) -> Response:
         """Retrieve raw, ASCII-formatted data from the NIST ASD with a GET request.
@@ -263,7 +228,7 @@ class SpectraCache:
             for elem in self.species_expr.search(u).group(1).split("%3B")
         ]
 
-    def fetch(self, species, wl_range=(170, 1000), **kwargs) -> "pd.DataFrame|pl.DataFrame":
+    def fetch(self, species, wl_range=(170, 1000)) -> "pd.DataFrame|pl.DataFrame":
         """Fetch information on a species from the ASD, first checking the cache.
 
         This supports loading multiple species in one go by using the same notation as the NIST ASD form.
@@ -276,7 +241,8 @@ class SpectraCache:
 
         Both these operations will fetch data online and be stored as separate cache entries.
         """
-        response = self._get_data(species, wl_range, **kwargs)
+        # TODO: add kwargs for read-only/offline access etc.
+        response = self._get_data(species, wl_range)
         return self.create_dataframe(response)
 
     def create_dataframe(self, response) -> "pd.DataFrame|pl.DataFrame":
@@ -346,13 +312,12 @@ class SpectraCache:
         if "element" not in df.columns:
             # cast roman numerals to int for consistency with queries with multiple ionization states, e.g. Ar I vs Ar I-II
             # As 'element' and 'sp_num' columns are only missing for single-species queries, assign as constants, not vectors.
-            element, numeral = re.search(STATE_EXPR, response.url).groups()
-            numeric: int = roman_to_int(numeral)
+            element, numeric = extract_state_from_response(response)
             df["element"] = element
             df["sp_num"] = numeric
         df["unc_obs_wl"] = pd.to_numeric(df["unc_obs_wl"]) if "unc_obs_wl" in df.columns else np.nan
         df["unc_ritz_wl"] = pd.to_numeric(df["unc_ritz_wl"]) if "unc_ritz_wl" in df.columns else np.nan
-        return df.loc[:, cls.column_order]
+        return df.loc[:, list(ASDSchema)]
 
     @classmethod
     def _from_polars(cls, response: Response) -> "pl.DataFrame":
@@ -423,9 +388,7 @@ class SpectraCache:
             .alias("ritz_wl_air(nm)"),
         )
         if "element" not in df.columns:
-            element, numeral = re.search(STATE_EXPR, response.url).groups()
-            numeric: int = cls.roman_to_int(numeral) if numeral else 1
-            # cast roman numerals to int for consistency with queries with multiple ionization states, e.g. Ar I vs Ar I-II
+            element, numeric = extract_state_from_response(response)
             df = df.with_columns(pl.lit(element).alias("element"), pl.lit(numeric, dtype=pl.Int64).alias("sp_num"))
         exprs = [pl.col(c).cast(pl.Float64) for c in ["unc_obs_wl", "unc_ritz_wl"] if c in df.columns]
         df = df.with_columns(exprs)

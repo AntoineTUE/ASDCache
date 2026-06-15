@@ -1,6 +1,6 @@
 import pytest
 
-from ASDCache.utils import roman_to_int, wavenumber_to_refractive_index
+from ASDCache.utils import roman_to_int, wavenumber_to_refractive_index, extract_state_from_response
 
 
 @pytest.mark.parametrize(
@@ -48,3 +48,17 @@ def test_wn_to_lambda_air_not_valid(wavenumber, air_equivalent):
     For values below 185, $n$ tends to be !=1, thus values will deviate."""
     decimals = len(str(air_equivalent).split(".")[1])
     assert round(1e7 / wavenumber / wavenumber_to_refractive_index(wavenumber), decimals) != air_equivalent
+
+
+class MockResponse:
+    def __init__(self, url: str):
+        self.url = url
+
+
+@pytest.mark.parametrize("url_part, expected", [("H+I", ("H", 1)), ("3H+I", ("3H", 1)), ("Fe+IV", ("Fe", 4))])
+def test_extract_state_from_response(url_part, expected):
+    query_url = f"https://physics.nist.gov/cgi-bin/ASD/lines1.pl?spectra={url_part}&low_w=200&upp_w=900"
+    response = MockResponse(query_url)
+    element, numeric = extract_state_from_response(response)
+    assert element == expected[0]
+    assert numeric == expected[1]

@@ -1,8 +1,14 @@
 """Module containing small helper utility functions for extracting and processing input from the ASD."""
 
 import re
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from requests import Response
 
 ROMAN_NUMERALS = {"I": 1, "V": 5, "X": 10, "L": 50, "C": 100, "D": 500, "M": 1000}
+STATE_EXPR = r"spectra=([\w]+)\+?([IVX]+)?"
+"""Regex pattern for extracting (element,charge) tuple for a single-state query, which uses roman numerals."""
 
 
 def roman_to_int(roman: str) -> int:
@@ -38,3 +44,23 @@ def wavenumber_to_refractive_index(wavenumbers: float) -> float:
     """
     sigma = wavenumbers * 1e-4  # um^-1
     return 1 + 1e-8 * (8060.51 + 2480990 / (132.274 - sigma**2) + 17455.7 / (39.32957 - sigma**2))
+
+
+def extract_state_from_response(response: "Response") -> tuple[str, int]:
+    """Extract the element and ionization state from the url of a response.
+
+    When querying only a single state, e.g. 'H I', this information will not be present as a column in data: the `element` and `sp_num` columns will not be included.
+
+    This information is parsed from the query url instead, so it can be added.
+
+    Since the `sp_num` column is of an integer type, the roman numerals in the url are converted to integers.
+    """
+    matched = re.search(STATE_EXPR, str(response.url))
+    if not matched:
+        raise ValueError(
+            "URL did not contain a `spectra` parameter satisfying %s; Could not identify element and sp_num",
+            STATE_EXPR,
+        )
+    element, numeral = matched.groups()
+    numeric: int = roman_to_int(numeral) if numeral else 1
+    return element, numeric

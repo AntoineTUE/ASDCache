@@ -1,6 +1,6 @@
 import pytest
 import re
-from ASDCache.ASDCache import STATE_EXPR, SCI_EXPR, SpectraCache
+from ASDCache.ASDCache import SCI_EXPR, SpectraCache
 
 
 @pytest.mark.parametrize(
@@ -47,11 +47,3 @@ def test_scientific_notation_expr(value_string, expected):
     expr = re.compile(SCI_EXPR)
     found = expr.search(value_string).group(1)
     assert float(found) == expected
-
-
-@pytest.mark.parametrize("url_part,expected", [("H+I", ("H", "I")), ("3H+I", ("3H", "I")), ("Fe+IV", ("Fe", "IV"))])
-def test_extract_species_and_numeral_from_url(url_part, expected):
-    query_url = SpectraCache.nist_url + f"?spectra={url_part}&low_w=200&upp_w=900"
-    element, numeral = re.search(STATE_EXPR, query_url).groups()
-    assert element == expected[0]
-    assert numeral == expected[1]
