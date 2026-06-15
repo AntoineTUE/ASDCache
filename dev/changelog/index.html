@@ -436,6 +436,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#version-024" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Version 0.2.4
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#version-023" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -703,6 +714,16 @@
 
 
 <h1 id="changelog">Changelog<a class="headerlink" href="#changelog" title="Permanent link">&para;</a></h1>
+<h2 id="version-024">Version 0.2.4<a class="headerlink" href="#version-024" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Fix <a class="magiclink magiclink-github magiclink-issue" href="https://github.com/AntoineTUE/ASDCache/issues/2" title="GitHub Issue: AntoineTUE/ASDCache #2">#2</a>: a regression when using the polars backend: missing uncertainty data is handled properly again</li>
+<li>Fix <a class="magiclink magiclink-github magiclink-issue" href="https://github.com/AntoineTUE/ASDCache/issues/3" title="GitHub Issue: AntoineTUE/ASDCache #3">#3</a>: Relaxed version pin of numpy from <code>&gt;=2.0</code> to <code>&gt;=1.20.3</code> to maintain support for older environments</li>
+<li>Support Python 3.9 again, reverting type hints etc. to what is supported by this version.</li>
+<li>Add support for Python 3.14</li>
+<li>Increase default cache time-to-live to two weeks</li>
+<li>Update test suite</li>
+<li>Minor refactoring and doc updates</li>
+</ul>
 <h2 id="version-023">Version 0.2.3<a class="headerlink" href="#version-023" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Fix issue <a class="magiclink magiclink-github magiclink-issue" href="https://github.com/AntoineTUE/ASDCache/issues/1" title="GitHub Issue: AntoineTUE/ASDCache #1">#1</a>: update the set of queried parameters so the ASD replies with data again; likely some small internal changes to the ASD were implemented.</li>
