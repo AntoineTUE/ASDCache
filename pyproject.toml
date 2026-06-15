@@ -71,7 +71,7 @@ exclude = ["/.github"]
 minversion = "6.0"
 addopts = "-ra -q --doctest-glob='*.md'"
 testpaths = ["tests"]
-markers = ["full: test using the full NIST ASD"]
+markers = ["online: run test that retrieve data online from the ASD"]
 
 [tool.coverage.run]
 branch = true
