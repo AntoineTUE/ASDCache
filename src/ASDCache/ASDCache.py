@@ -3,14 +3,15 @@
 It contains both the [SpectraCache][(m).] and [BibCache][(m).] classes which allow you to interact with the ASD and the relevant bibliographic databases.
 """
 
+from pathlib import Path
 import importlib.util
 import warnings
+import numpy as np
 import pandas as pd
 from requests_cache import CachedSession, CachedResponse, OriginalResponse
 from io import StringIO
 from datetime import timedelta
 import re
-import numpy as np
 from bs4 import BeautifulSoup
 import sys
 import logging
@@ -123,11 +124,24 @@ class SpectraCache:
     }
     """Request parameters used by the NIST ASD form."""
 
-    def __init__(self, use_polars_backend=False, cache_expiry=timedelta(weeks=1), strict_matching=True):
-        """Initialize an instance that handles cached data lookup of the NIST ASD."""
+    def __init__(
+        self,
+        use_polars_backend=False,
+        cache_expiry=timedelta(weeks=2),
+        strict_matching=True,
+        cache_path: Path | None = None,
+    ):
+        """Initialize an instance that handles cached data lookup of the NIST ASD.
+
+        Args:
+            use_polars_backend (bool): Flag to use polars as DataFrame backend, if available
+            cache_expiry (timedelta): Span of time beyond which an entry will be considered expired, and a refresh attempted
+            strict_matching (bool): If true, use all request parameters to hash urls for cache matching (recommended).
+            cache_path (Path, Optional): Path to a location to store the cache in
+        """
         self.strict_matching = strict_matching
         self.session = CachedSession(
-            "NIST_ASD_cache",
+            "NIST_ASD_cache" if cache_path is None else cache_path,
             use_cache_dir=True,
             expire_after=cache_expiry,
             stale_if_error=True,
@@ -300,14 +314,15 @@ class SpectraCache:
         else:
             df["Type"] = df.loc[:, "Type"].astype(str).replace("nan", "E1")
         df["tp_ref"] = df.loc[:, "tp_ref"].fillna("")
-        df["obs_wl_air(nm)"] = df["obs_wl_vac(nm)"]
-        df["obs_wl_air(nm)"] = df[df["wn(cm-1)"].between(5000, 50000)][
-            "obs_wl_air(nm)"
-        ] / wavenumber_to_refractive_index(df[df["wn(cm-1)"].between(5000, 50000)]["wn(cm-1)"])
-        df["ritz_wl_air(nm)"] = df["ritz_wl_vac(nm)"]
-        df["ritz_wl_air(nm)"] = df[df["wn(cm-1)"].between(5000, 50000)][
-            "ritz_wl_air(nm)"
-        ] / wavenumber_to_refractive_index(df[df["wn(cm-1)"].between(5000, 50000)]["wn(cm-1)"])
+        df["obs_wl_air(nm)"] = np.nan
+        air_equiv_range = df["wn(cm-1)"].between(5000, 50000)  # range where air wavelength is computed.
+        df["obs_wl_air(nm)"] = df.loc[air_equiv_range, "obs_wl_vac(nm)"] / wavenumber_to_refractive_index(
+            df.loc[air_equiv_range, "wn(cm-1)"]
+        )
+        df["ritz_wl_air(nm)"] = np.nan
+        df["ritz_wl_air(nm)"] = df.loc[air_equiv_range, "ritz_wl_vac(nm)"] / wavenumber_to_refractive_index(
+            df.loc[air_equiv_range, "wn(cm-1)"]
+        )
         df = df.drop([c for c in df.columns if "Unnamed" in c], axis=1).reset_index(drop=True)
         if "element" not in df.columns:
             # cast roman numerals to int for consistency with queries with multiple ionization states, e.g. Ar I vs Ar I-II
@@ -369,22 +384,15 @@ class SpectraCache:
             pl.col("tp_ref").replace(None, ""),
         ).drop([""])
         # compute air wavelengths between 5000 cm-1 and 50000 cm-1
+        air_equiv_range = pl.col("wn(cm-1)").is_between(5000, 50000)
         df = df.with_columns(
-            pl.when(pl.col("wn(cm-1)").is_between(5000, 50000))
-            .then(
-                pl.col("obs_wl_vac(nm)").cast(pl.Float64)
-                / pl.col("wn(cm-1)").map_elements(wavenumber_to_refractive_index, return_dtype=pl.Float64)
-            )
-            .otherwise(pl.col("obs_wl_vac(nm)"))
-            .cast(pl.Float64)
+            pl.when(air_equiv_range)
+            .then(pl.col("obs_wl_vac(nm)") / wavenumber_to_refractive_index(pl.col("wn(cm-1)")))
+            .otherwise(np.nan)
             .alias("obs_wl_air(nm)"),
-            pl.when(pl.col("wn(cm-1)").is_between(5000, 50000))
-            .then(
-                pl.col("ritz_wl_vac(nm)").cast(pl.Float64)
-                / pl.col("wn(cm-1)").map_elements(wavenumber_to_refractive_index, return_dtype=pl.Float64)
-            )
-            .otherwise(pl.col("ritz_wl_vac(nm)"))
-            .cast(pl.Float64)
+            pl.when(air_equiv_range)
+            .then(pl.col("ritz_wl_vac(nm)") / wavenumber_to_refractive_index(pl.col("wn(cm-1)")))
+            .otherwise(np.nan)
             .alias("ritz_wl_air(nm)"),
         )
         if "element" not in df.columns:

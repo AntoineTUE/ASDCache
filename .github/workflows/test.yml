@@ -16,12 +16,24 @@ env:
 
 jobs:
   run:
-    name: Python ${{ matrix.python-version }}
+    name: Python ${{ matrix.python-version }} numpy=${{ matrix.numpy }} pandas=${{ matrix.pandas }} polars=${{ matrix.polars }}
     runs-on: "ubuntu-latest"
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.10', '3.11','3.12','3.13']
+        python-version: [3.10, 3.11, 3.12, 3.13, 3.14]
+        numpy: [numpy-2.x, numpy-legacy]
+        pandas: [pandas-2.x, pandas-3.x]
+        polars: [polars, polars-compat]
+        exclude:
+          # pandas-3.x not supported on 3.9/3.10
+          - python-version: 3.10
+            pandas: pandas-3.x
+          # numpy<2 not supported from 3.13 onwards
+          - python-version: 3.13
+            numpy: numpy-legacy
+          - python-version: 3.14
+            numpy: numpy-legacy
 
     steps:
     - uses: actions/checkout@v6.0.2
@@ -38,7 +50,7 @@ jobs:
         enable-cache: true
 
     - name: Run tests for ${{ matrix.python-version }}
-      run: uvx hatch test --python ${{ matrix.python-version }}
+      run: uvx hatch test --python ${{ matrix.python-version }} -i numpy=${{ matrix.numpy }} -i pandas=${{ matrix.pandas }} -i polars=${{ matrix.polars }}
 
   run_tests_python_39:
     name: Python 3.9

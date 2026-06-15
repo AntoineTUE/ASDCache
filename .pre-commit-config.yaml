@@ -3,7 +3,6 @@ repos:
   rev: v6.0.0
   hooks:
   # - id: trailing-whitespace
-  - id: check-added-large-files
   - id: check-merge-conflict
   - id: debug-statements
   - id: check-ast
