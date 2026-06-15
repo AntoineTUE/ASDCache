@@ -6,7 +6,7 @@ It contains both the [SpectraCache][(m).] and [BibCache][(m).] classes which all
 import importlib.util
 import warnings
 import pandas as pd
-from requests_cache import CachedSession, Response
+from requests_cache import CachedSession, CachedResponse, OriginalResponse
 from io import StringIO
 from datetime import timedelta
 import re
@@ -23,12 +23,12 @@ if importlib.util.find_spec("polars"):
 else:
     POLARS_AVAILABLE = False
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="[%(asctime)s] %(levelname)s [%(name)s.%(funcName)s:%(lineno)d] %(message)s",
-    datefmt="%d/%b/%Y %H:%M:%S",
-    stream=sys.stdout,
-)
+from .utils import roman_to_int, wavenumber_to_refractive_index
+from ._version import version
+
+Response = Union[CachedResponse, OriginalResponse]
+
+logger = logging.getLogger("ASDCache")
 
 ASDSchema = {
     "element": str,
@@ -236,14 +236,17 @@ class SpectraCache:
         response.raise_for_status()
         # Check if response is not a HTML document instead of ASCII formatted data, indicating query error.
         if response.content.startswith(b"<!DOCTYPE"):
-            logging.error(
-                "NIST ASD responded with HTML instead of ASCII-data for species=%s, wl_range=%s\nQuery: %s",
+            body = BeautifulSoup(response.text, features="html.parser").body
+            reason = body.text.strip().replace("\n", " ") if body else ""
+            logger.error(
+                "NIST ASD responded with %s instead of ASCII-data for species=%s, wl_range=%s\nQuery: %s",
+                reason,
                 species,
                 wl_range,
                 response.url,
             )
             raise ASDQueryError(
-                f"Query for {species=} {wl_range=} did not receive ASCII-data. This means the ASD could not interpret your query. Check if your query is malformed."
+                f"Query for {species=} {wl_range=} did not receive ASCII-data. {reason=} This means the ASD could not interpret your query. Check if your query is malformed."
             )
         return response
 
@@ -332,19 +335,19 @@ class SpectraCache:
             df["Type"] = df.loc[:, "Type"].astype(str).replace("nan", "E1")
         df["tp_ref"] = df.loc[:, "tp_ref"].fillna("")
         df["obs_wl_air(nm)"] = df["obs_wl_vac(nm)"]
-        df["obs_wl_air(nm)"] = df[df["wn(cm-1)"].between(5000, 50000)]["obs_wl_air(nm)"] / cls.wn_to_n_refractive(
-            df[df["wn(cm-1)"].between(5000, 50000)]["wn(cm-1)"]
-        )
+        df["obs_wl_air(nm)"] = df[df["wn(cm-1)"].between(5000, 50000)][
+            "obs_wl_air(nm)"
+        ] / wavenumber_to_refractive_index(df[df["wn(cm-1)"].between(5000, 50000)]["wn(cm-1)"])
         df["ritz_wl_air(nm)"] = df["ritz_wl_vac(nm)"]
-        df["ritz_wl_air(nm)"] = df[df["wn(cm-1)"].between(5000, 50000)]["ritz_wl_air(nm)"] / cls.wn_to_n_refractive(
-            df[df["wn(cm-1)"].between(5000, 50000)]["wn(cm-1)"]
-        )
+        df["ritz_wl_air(nm)"] = df[df["wn(cm-1)"].between(5000, 50000)][
+            "ritz_wl_air(nm)"
+        ] / wavenumber_to_refractive_index(df[df["wn(cm-1)"].between(5000, 50000)]["wn(cm-1)"])
         df = df.drop([c for c in df.columns if "Unnamed" in c], axis=1).reset_index(drop=True)
         if "element" not in df.columns:
             # cast roman numerals to int for consistency with queries with multiple ionization states, e.g. Ar I vs Ar I-II
             # As 'element' and 'sp_num' columns are only missing for single-species queries, assign as constants, not vectors.
             element, numeral = re.search(STATE_EXPR, response.url).groups()
-            numeric: int = cls.roman_to_int(numeral)
+            numeric: int = roman_to_int(numeral)
             df["element"] = element
             df["sp_num"] = numeric
         df["unc_obs_wl"] = pd.to_numeric(df["unc_obs_wl"]) if "unc_obs_wl" in df.columns else np.nan
@@ -405,7 +408,7 @@ class SpectraCache:
             pl.when(pl.col("wn(cm-1)").is_between(5000, 50000))
             .then(
                 pl.col("obs_wl_vac(nm)").cast(pl.Float64)
-                / pl.col("wn(cm-1)").map_elements(cls.wn_to_n_refractive, return_dtype=pl.Float64)
+                / pl.col("wn(cm-1)").map_elements(wavenumber_to_refractive_index, return_dtype=pl.Float64)
             )
             .otherwise(pl.col("obs_wl_vac(nm)"))
             .cast(pl.Float64)
@@ -413,7 +416,7 @@ class SpectraCache:
             pl.when(pl.col("wn(cm-1)").is_between(5000, 50000))
             .then(
                 pl.col("ritz_wl_vac(nm)").cast(pl.Float64)
-                / pl.col("wn(cm-1)").map_elements(cls.wn_to_n_refractive, return_dtype=pl.Float64)
+                / pl.col("wn(cm-1)").map_elements(wavenumber_to_refractive_index, return_dtype=pl.Float64)
             )
             .otherwise(pl.col("ritz_wl_vac(nm)"))
             .cast(pl.Float64)
@@ -426,25 +429,7 @@ class SpectraCache:
             df = df.with_columns(pl.lit(element).alias("element"), pl.lit(numeric, dtype=pl.Int64).alias("sp_num"))
         exprs = [pl.col(c).cast(pl.Float64) for c in ["unc_obs_wl", "unc_ritz_wl"] if c in df.columns]
         df = df.with_columns(exprs)
-        return df.select(*cls.column_order)
-
-    @staticmethod
-    def roman_to_int(roman: str) -> int:
-        """Transform Roman numerals to integers.
-
-        Does only support numerals including up to `L`.
-        """
-        roman_numerals = {"I": 1, "V": 5, "X": 10, "L": 50}
-        total = 0
-        previous = 0
-        for char in reversed(roman):
-            current_value = roman_numerals[char]
-            if current_value < previous:
-                total -= current_value  # Subtract if the current value is less than the previous value
-            else:
-                total += current_value
-            previous = current_value
-        return total
+        return df.select(*ASDSchema)
 
     @staticmethod
     def wn_to_n_refractive(wavenumbers: float) -> float:
@@ -530,7 +515,7 @@ class BibCache:
         """
         is_success = (response.status_code == 200) & (b"There was a problem" not in response.content)
         if not is_success:
-            logging.warning(f"Request was unsuccesful status:{response.status_code} , url:{response.url}")
+            logger.warning(f"Request was unsuccesful status:{response.status_code} , url:{response.url}")
         return is_success
 
     @classmethod
