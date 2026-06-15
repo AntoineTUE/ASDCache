@@ -9,6 +9,7 @@
 [![PyPI - Version](https://img.shields.io/pypi/v/ASDCache)](https://pypi.python.org/pypi/ASDCache)
 [![PyPI - Python versions](https://img.shields.io/pypi/pyversions/ASDCache.svg)](https://pypi.python.org/pypi/ASDCache)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/ASDCache)](https://pypistats.org/packages/asdcache)
+[![Pepy Total Downloads](https://img.shields.io/pepy/dt/asdcache)](https://pepy.tech/projects/asdcache)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![Hatch project](https://img.shields.io/badge/%F0%9F%A5%9A-Hatch-4051b5.svg)](https://github.com/pypa/hatch)
 
@@ -35,6 +36,7 @@ The main goals and benefits of `ASDCache` are:
 `ASDCache` is not affiliated with NIST or the NIST ASD in any way, it simply tries to help make it more accessible.
 
 ## Installing
+
 `ASDCache` can be installed with `pip`.
 
 ```console
@@ -56,6 +58,7 @@ Installing the `polars` feature is not required, in case `polars` is already ins
 Documentation for `ASDCache` is available on [this page](https://antoinetue.github.io/ASDCache).
 
 ### Example
+
 A brief example below demonstrates how to use `SpectraCache` to query the NIST ASD for spectroscopic data for different species and plot their respective relative intensities.
 
 Note that these relative intensities are in principle not comparable between different species or sources and merely serve as a guide.

@@ -19,17 +19,19 @@ classifiers = [
     "Topic :: Scientific/Engineering",
     "Intended Audience :: Science/Research",
     "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
 ]
-dependencies = ["requests_cache>=1.2.0", "pandas>=2.0","numpy>=2.0", "beautifulsoup4>=4.12"]
+dependencies = ["requests_cache>=1.2.0", "pandas>=2.0","numpy>=1.20.3", "beautifulsoup4>=4.12"]
 dynamic = ["version"]
 
 [project.optional-dependencies]
 polars = ["polars[pandas]"]
-polars-lts = ["polars[rtcompat,pandas]"]
+polars-compat = ["polars[rtcompat,pandas]"]
 docs = [
     "properdocs>=1.6.7",
     "mkdocs-material==9.7.6",
@@ -158,7 +160,6 @@ dependencies = [
     "pytest-recording",
     "pytest-sugar~=1.1.1",
     "hypothesis",
-    'virtualenv<21; python_version<"3.10"',
 ]
 
 
@@ -191,22 +192,26 @@ fix = [
 
 [tool.hatch.envs.hatch-test.overrides]
 matrix.pandas.dependencies = [
-    { value = "pandas>=2.0.0", if = ["pandas-2.0"] },
-    { value = "numpy>=2.0", if = ["pandas-2.0"] },
-    { value = "pandas>=3.0.0", if = ["pandas-3.0"] },
-    { value = "numpy>=2.0", if = ["pandas-3.0"] },
+    { value = "pandas>=2.0", if = ["pandas-2.x"] },
+    { value = "pandas>=3.0", if = ["pandas-3.x"] },
+]
+matrix.numpy.dependencies = [
+    { value = "numpy>=2.0", if = ["numpy-2.x"] },
+    {value = "numpy<2.0", if =  ["numpy-legacy"]},
 ]
 matrix.polars.features = [
     { value = "polars", if = ["polars"]},
-    { value = "polars-lts", if = ["polars-lts"]},
+    { value = "polars-compat", if = ["polars-compat"]},
 ]
 
 [[tool.hatch.envs.hatch-test.matrix]]
 python = ["3.9","3.10"]
-pandas = ["pandas-2.0"]
-polars = ["polars","polars-lts"]
+numpy = ["numpy-2.x","numpy-legacy"]
+pandas = ["pandas-2.x"]
+polars = ["polars","polars-compat"]
 
 [[tool.hatch.envs.hatch-test.matrix]]
-python = ["3.11","3.12","3.13"]
-pandas = ["pandas-2.0","pandas-3.0"]
-polars = ["polars","polars-lts"]
+python = ["3.11","3.12","3.13", "3.14"]
+numpy = ["numpy-2.x","numpy-legacy"]
+pandas = ["pandas-2.x","pandas-3.x"]
+polars = ["polars","polars-compat"]
