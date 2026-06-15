@@ -27,7 +27,7 @@ The main goals and benefits of `ASDCache` are:
 - [x] Retrieve a consistent schema of the data that represents the 'human readable' format, but enforce strictly numeric data for important columns
     - [ ] This removes footnotes and other annotations, be sure to check the ASD itself as well for this information.
 - [x]  Use caching to dramatically speed up data retrieval, from minutes down to milliseconds in some cases
-    - [x] Cache time-to-live is 1 week by default, meaning you still get updates to the ASD in a reasonable time frame
+    - [x] Cache time-to-live is two weeks by default, meaning you still get updates to the ASD in a reasonable time frame
     - [x] The cache time-to-live can be adjusted
 - [x]  Cache data to allow working offline, or even transfering the ASD data to an offline system.
     - [x] The cache is only updated when a request for new data succeeds

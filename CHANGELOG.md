@@ -1,5 +1,15 @@
 # Changelog
 
+## Version 0.2.4
+
+* Fix #2: a regression when using the polars backend: missing uncertainty data is handled properly again
+* Fix #3: Relaxed version pin of numpy from `>=2.0` to `>=1.20.3` to maintain support for older environments
+* Support Python 3.9 again, reverting type hints etc. to what is supported by this version.
+* Add support for Python 3.14
+* Increase default cache time-to-live to two weeks
+* Update test suite
+* Minor refactoring and doc updates
+
 ## Version 0.2.3
 
 * Fix issue #1: update the set of queried parameters so the ASD replies with data again; likely some small internal changes to the ASD were implemented.
@@ -38,4 +48,3 @@ Initial development release.
 * Add bibliography lookups
 * Archive releases to Zenodo
 * Renamed project to `ASDCache`
-  

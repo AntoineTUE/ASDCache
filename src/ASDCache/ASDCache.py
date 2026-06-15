@@ -9,6 +9,7 @@ import warnings
 import numpy as np
 import pandas as pd
 from requests_cache import CachedSession, CachedResponse, OriginalResponse
+from requests import Response
 from io import StringIO
 from datetime import timedelta
 import re
@@ -26,8 +27,6 @@ else:
 
 from .utils import wavenumber_to_refractive_index, extract_state_from_response
 from ._version import version
-
-Response = Union[CachedResponse, OriginalResponse]
 
 logger = logging.getLogger("ASDCache")
 
@@ -75,9 +74,9 @@ class SpectraCache:
 
     The `ASDCache` instance acts as an access point to the cache, which stores responses on the local system in a SQLite database.
 
-    Data retrieval from cache is much faster (order milliseconds) than fetching from the internet (order seconds), and avoids wastefull requests to the server.
+    Data retrieval from cache is much faster (order milliseconds) than fetching from the internet (order of seconds to minutes), and avoids wastefull requests to the server.
 
-    Cache time-to-live is one week by default.
+    Cache time-to-live is two weeks by default.
 
     Since the NIST ASD is usually updated less frequently than that, this is a compromise between having the latest data, and overall fast performance.
 
@@ -273,7 +272,7 @@ class SpectraCache:
 
         Note that this conversion is only performed for lines with $200 nm < \lambda < 2000 nm$, like the ASD.
 
-        For lines outside of this range, the conversion falls back to their vacuum wavelength.
+        For lines outside of this range, it uses NaN values.
         """
         schema = {
             "obs_wl_vac(nm)": str,
@@ -342,7 +341,7 @@ class SpectraCache:
 
         Note that this conversion is only performed for lines with $200 nm < \lambda < 2000 nm$, like the ASD.
 
-        For lines outside of this range, the conversion falls back to their vacuum wavelength.
+        For lines outside of this range, it uses NaN values.
         """
         schema = {
             "obs_wl_vac(nm)": pl.String,
@@ -405,23 +404,6 @@ class SpectraCache:
         ]
         df = df.with_columns(exprs)
         return df.select(*ASDSchema)
-
-    @staticmethod
-    def wn_to_n_refractive(wavenumbers: float) -> float:
-        r"""Calculate the refractive index $n$ in air for a transition, using the 5-term Sellmeier formula used by NIST.
-
-        The used Sellmeier formula is the one from E.R. Peck and K. Reeder [J. Opt. Soc. Am. 62, 958 (1972)](http://dx.doi.org/10.1364/JOSA.62.000958).
-
-        This formula is fitted to data in the range of 185 nm to 1700 nm for  air at 15 °C, 101 325 Pa pressure, with 0.033 % CO2.
-
-        This is the same formula used by the NIST ASD to calculate air wavelengths in the interval of 200 nm to 2000 nm.
-
-        See also [the ASD documentation on the topic](https://physics.nist.gov/PhysRefData/ASD/Html/lineshelp.html#Conversion%20between%20air%20and%20vacuum%20wavelengths).
-
-        Using this refractive index, air equivalent wavelengths consistent with the ASD can be calculated, without the need to query them separately.
-        """
-        sigma = wavenumbers * 1e-4  # um^-1
-        return 1 + 1e-8 * (8060.51 + 2480990 / (132.274 - sigma**2) + 17455.7 / (39.32957 - sigma**2))
 
     def get_all_cached(self) -> "pd.DataFrame|pl.DataFrame":
         """Retrieve all cached data into a single dataframe."""
