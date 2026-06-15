@@ -1762,7 +1762,7 @@
 <span class="linenos" data-linenos="129 "></span>        <span class="n">use_polars_backend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="linenos" data-linenos="130 "></span>        <span class="n">cache_expiry</span><span class="o">=</span><span class="n">timedelta</span><span class="p">(</span><span class="n">weeks</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
 <span class="linenos" data-linenos="131 "></span>        <span class="n">strict_matching</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<span class="linenos" data-linenos="132 "></span>        <span class="n">cache_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="linenos" data-linenos="132 "></span>        <span class="n">cache_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="linenos" data-linenos="133 "></span>    <span class="p">):</span>
 <span class="linenos" data-linenos="134 "></span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize an instance that handles cached data lookup of the NIST ASD.</span>
 <span class="linenos" data-linenos="135 "></span>
@@ -2340,7 +2340,7 @@ In case the query for new data fails, the stale, cached response will still be p
 
 <a href="#ASDCache.ASDCache.SpectraCache.__init__" class="headerlink" title="Permanent link">&para;</a></h3>
 <div class="doc-signature highlight"><pre><span></span><code><span class="nf">__init__</span><span class="p">(</span>
-    <span class="n">use_polars_backend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cache_expiry</span><span class="o">=</span><span class="n"><span title="datetime.timedelta">timedelta</span></span><span class="p">(</span><span class="n"><span title="datetime.timedelta(weeks)">weeks</span></span><span class="o">=</span><span class="mi">2</span><span class="p">),</span> <span class="n">strict_matching</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache_path</span><span class="p">:</span> <span class="n"><span title="pathlib.Path">Path</span></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">use_polars_backend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cache_expiry</span><span class="o">=</span><span class="n"><span title="datetime.timedelta">timedelta</span></span><span class="p">(</span><span class="n"><span title="datetime.timedelta(weeks)">weeks</span></span><span class="o">=</span><span class="mi">2</span><span class="p">),</span> <span class="n">strict_matching</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache_path</span><span class="p">:</span> <span class="n"><span title="typing.Optional">Optional</span></span><span class="p">[</span><span class="n"><span title="pathlib.Path">Path</span></span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span>
 </code></pre></div>
 
@@ -2435,7 +2435,7 @@ In case the query for new data fails, the stale, cached response will still be p
 <span class="linenos" data-linenos="129 "></span>    <span class="n">use_polars_backend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="linenos" data-linenos="130 "></span>    <span class="n">cache_expiry</span><span class="o">=</span><span class="n">timedelta</span><span class="p">(</span><span class="n">weeks</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
 <span class="linenos" data-linenos="131 "></span>    <span class="n">strict_matching</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<span class="linenos" data-linenos="132 "></span>    <span class="n">cache_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="linenos" data-linenos="132 "></span>    <span class="n">cache_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="linenos" data-linenos="133 "></span><span class="p">):</span>
 <span class="linenos" data-linenos="134 "></span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize an instance that handles cached data lookup of the NIST ASD.</span>
 <span class="linenos" data-linenos="135 "></span>
