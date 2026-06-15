@@ -129,7 +129,7 @@ class SpectraCache:
         use_polars_backend=False,
         cache_expiry=timedelta(weeks=2),
         strict_matching=True,
-        cache_path: Path | None = None,
+        cache_path: Optional[Path] = None,
     ):
         """Initialize an instance that handles cached data lookup of the NIST ASD.
 
