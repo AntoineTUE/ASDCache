@@ -1,32 +1,32 @@
-import pytest
 import re
+from urllib import parse
+
+import pytest
+
 from ASDCache.ASDCache import SCI_EXPR, SpectraCache
+from ASDCache.utils import extract_species
 
 
 @pytest.mark.parametrize(
-    "species,expected", [("H I", ["H+I"]), ("H I;O I-III", ["H+I", "O+I-III"]), ("Sc;Fe", ["Sc", "Fe"])]
+    "species,expected",
+    [
+        ("H I", ["H I"]),
+        ("H I;O I-III", ["H I", "O I-III"]),
+        ("Sc;Fe", ["Sc", "Fe"]),
+        ("Sc-Fe", ["Sc-Fe"]),
+        ("Ca-like", ["Ca-like"]),
+        ("198Hg I;mg i-iii", ["198Hg I", "mg i-iii"]),
+    ],
 )
-def test_species_expr(species, expected):
-    query_url = SpectraCache.nist_url + f"?spectra={species.replace(' ', '+').replace(';', '%3B')}&low_w=200&upp_w=900"
-    assert SpectraCache.species_expr.search(query_url).group(1).split("%3B") == expected
+def test_species_parsing(species, expected):
+    """Test extracting the species information from a query URL.
 
+    Note that `Ca-like` and `Sc-Fe`, are valid ways to query the NIST ASD Lines database, even though they may include many species.
 
-@pytest.mark.parametrize(
-    "species,expected,intention", [("Sc-Fe", ["Sc-Fe"], ["Sc", "Fe"]), ("Ca-like", ["Ca-like"], ["Ca", "like"])]
-)
-def test_species_expr_unsupported(species, expected, intention):
-    """ "Though valid as input to the NIST ASD form, these are deliberately not considered valid input for parsing.
-
-    This is because we cannot determine all included species that will be returned from the URL of the request.
-    The request will still succeed and a result will thus be cached, with the appropriate hash.
-    It is however not a case that is considered 'supported'.
-
-    Since these queries will all return a `element` column, they should not prove too problematic.
-    Because in these instances we do not parse the `-` as separator for element ionization state.
+    Since these queries will all return a `element` column, they should not prove too problematic for the cache, though may yield duplicates.
     """
     query_url = SpectraCache.nist_url + f"?spectra={species.replace(' ', '+').replace(';', '%3B')}&low_w=200&upp_w=900"
-    assert SpectraCache.species_expr.search(query_url).group(1).split("%3B") == expected
-    assert SpectraCache.species_expr.search(query_url).group(1).split("%3B") != intention
+    assert extract_species(query_url) == expected
 
 
 @pytest.mark.parametrize(

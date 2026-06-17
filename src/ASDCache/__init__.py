@@ -56,6 +56,6 @@ In other words: the cache cannot deduplicate queries such as `SpectraCache().fet
 It is often better (and faster) to fetch a range of data beyond what you need, and then filter down the dataframe you retrieve according to your needs.
 """
 
-from .ASDCache import SpectraCache, BibCache
+from .ASDCache import BibCache, SpectraCache
 
-__all__ = ["SpectraCache", "BibCache"]
+__all__ = ["BibCache", "SpectraCache"]

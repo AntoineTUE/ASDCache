@@ -3,20 +3,22 @@
 It contains both the [SpectraCache][(m).] and [BibCache][(m).] classes which allow you to interact with the ASD and the relevant bibliographic databases.
 """
 
-from pathlib import Path
 import importlib.util
+import logging
+import re
+import sys
 import warnings
+from datetime import timedelta
+from io import StringIO
+from pathlib import Path
+from typing import Any, Optional, Union
+from urllib import parse
+
 import numpy as np
 import pandas as pd
-from requests_cache import CachedSession, CachedResponse, OriginalResponse
-from requests import Response
-from io import StringIO
-from datetime import timedelta
-import re
 from bs4 import BeautifulSoup
-import sys
-import logging
-from typing import Any, Optional, Union
+from requests import Response
+from requests_cache import CachedResponse, CachedSession, OriginalResponse
 
 if importlib.util.find_spec("polars"):
     POLARS_AVAILABLE = True
@@ -25,8 +27,8 @@ if importlib.util.find_spec("polars"):
 else:
     POLARS_AVAILABLE = False
 
-from .utils import wavenumber_to_refractive_index, extract_state_from_response
 from ._version import version
+from .utils import extract_species, extract_state_from_response, wavenumber_to_refractive_index
 
 logger = logging.getLogger("ASDCache")
 
@@ -84,7 +86,6 @@ class SpectraCache:
     """
 
     nist_url = "https://physics.nist.gov/cgi-bin/ASD/lines1.pl"
-    species_expr = re.compile(r"spectra=([\w\+\-\%3]+)&")
     query_params = {
         "submit": "Retrieve Data",
         "unit": 1,
@@ -235,11 +236,10 @@ class SpectraCache:
 
     def list_cached_species(self) -> list[str]:
         """List all species in the cache, based on the string of the original query URL."""
-        return [
-            elem.replace("+", " ")
-            for u in self.session.cache.urls()
-            for elem in self.species_expr.search(u).group(1).split("%3B")
-        ]
+        species = []
+        for u in self.session.cache.urls():
+            species.extend(extract_species(u))
+        return species
 
     def fetch(self, species, wl_range=(170, 1000)) -> "pd.DataFrame|pl.DataFrame":
         """Fetch information on a species from the ASD, first checking the cache.
@@ -270,7 +270,7 @@ class SpectraCache:
 
         Calculates the air equivalent wavelength from the vacuum wavelength using the same Sellmeier equation as the NIST ASD.
 
-        Note that this conversion is only performed for lines with $200 nm < \lambda < 2000 nm$, like the ASD.
+        Note that this conversion is only performed for lines with $200\ nm < \lambda < 2000\ nm$, like the ASD.
 
         For lines outside of this range, it uses NaN values.
         """
@@ -339,7 +339,7 @@ class SpectraCache:
 
         Calculates the air equivalent wavelength from the vacuum wavelength using the same Sellmeier equation as the NIST ASD.
 
-        Note that this conversion is only performed for lines with $200 nm < \lambda < 2000 nm$, like the ASD.
+        Note that this conversion is only performed for lines with $200\ nm < \lambda < 2000\ nm$, like the ASD.
 
         For lines outside of this range, it uses NaN values.
         """

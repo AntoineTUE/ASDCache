@@ -1,6 +1,6 @@
 import pytest
 
-from ASDCache.utils import roman_to_int, wavenumber_to_refractive_index, extract_state_from_response
+from ASDCache.utils import extract_state_from_response, roman_to_int, wavenumber_to_refractive_index
 
 
 @pytest.mark.parametrize(
@@ -62,3 +62,19 @@ def test_extract_state_from_response(url_part, expected):
     element, numeric = extract_state_from_response(response)
     assert element == expected[0]
     assert numeric == expected[1]
+
+
+@pytest.mark.parametrize("url_part", [("O I-III",), ("All spectra",)])
+def test_extract_state_from_response_invalid_multi_states(url_part):
+    query_url = f"https://physics.nist.gov/cgi-bin/ASD/lines1.pl?spectra={url_part}&low_w=200&upp_w=900"
+    response = MockResponse(query_url)
+    with pytest.raises(KeyError):
+        element, numeric = extract_state_from_response(response)
+
+
+@pytest.mark.parametrize("url_part", [("H+I;O+I")])
+def test_extract_state_from_response_invalid_multi_elements(url_part):
+    query_url = f"https://physics.nist.gov/cgi-bin/ASD/lines1.pl?spectra={url_part}&low_w=200&upp_w=900"
+    response = MockResponse(query_url)
+    with pytest.raises(ValueError, match="Must use a single-species"):
+        element, numeric = extract_state_from_response(response)

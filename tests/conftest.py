@@ -1,26 +1,15 @@
 """
-Test configuration for `readASD`
+Test configuration for `ASDCache`
 """
 
-import pytest
-
-from pathlib import Path
 import importlib
 import re
+from pathlib import Path
+
+import pytest
 from requests_cache import CachedResponse, CachedSession
+
 from ASDCache import SpectraCache
-
-
-@pytest.fixture(scope="session")
-def nist_pandas():
-    nist = SpectraCache()
-    yield nist
-
-
-@pytest.fixture(scope="session")
-def nist_polars():
-    nist = SpectraCache(use_polars_backend=True)
-    yield nist
 
 
 @pytest.fixture

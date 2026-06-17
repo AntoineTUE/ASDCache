@@ -1,16 +1,16 @@
-import pytest
 import importlib.util
+import re
+from datetime import timedelta
+from io import StringIO
 from pathlib import Path
 from urllib import parse
 
 import pandas as pd
+import polars as pl
+import pytest
 from numpy.testing import assert_almost_equal
 from pandas.testing import assert_frame_equal as pandas_assert_frame_equal
-import polars as pl
 from polars.testing import assert_frame_equal as polars_assert_frame_equal
-import re
-from datetime import timedelta
-from io import StringIO
 
 from ASDCache import SpectraCache
 from ASDCache.ASDCache import ASDSchema
