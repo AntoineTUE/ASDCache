@@ -628,28 +628,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#ASDCache.utils.ROMAN_NUMERALS" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;ROMAN_NUMERALS
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#ASDCache.utils.STATE_EXPR" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;STATE_EXPR
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#ASDCache.utils.roman_to_int" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -665,6 +643,17 @@
     <span class="md-ellipsis">
       
         <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;wavenumber_to_refractive_index
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ASDCache.utils.extract_species" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;extract_species
       
     </span>
   </a>
@@ -774,6 +763,14 @@
               </td>
             </tr>
             <tr class="doc-section-item">
+              <td><code><a class="autorefs autorefs-internal" title="            extract_species (ASDCache.utils.extract_species)" href="#ASDCache.utils.extract_species">extract_species</a></code></td>
+              <td>
+                <div class="doc-md-description">
+                  <p>Extract the queried species (or in NIST terminology 'spectra') from a URL request for the NIST ASD.</p>
+                </div>
+              </td>
+            </tr>
+            <tr class="doc-section-item">
               <td><code><a class="autorefs autorefs-internal" title="            extract_state_from_response (ASDCache.utils.extract_state_from_response)" href="#ASDCache.utils.extract_state_from_response">extract_state_from_response</a></code></td>
               <td>
                 <div class="doc-md-description">
@@ -787,50 +784,6 @@
 
 
 
-<p><span class="doc-section-title">Attributes:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Type</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td><code><a class="autorefs autorefs-internal" title="            ROMAN_NUMERALS
-
-
-  
-      module-attribute
-   (ASDCache.utils.ROMAN_NUMERALS)" href="#ASDCache.utils.ROMAN_NUMERALS">ROMAN_NUMERALS</a></code></td>
-            <td>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                
-              </div>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td><code><a class="autorefs autorefs-internal" title="            STATE_EXPR
-
-
-  
-      module-attribute
-   (ASDCache.utils.STATE_EXPR)" href="#ASDCache.utils.STATE_EXPR">STATE_EXPR</a></code></td>
-            <td>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>Regex pattern for extracting (element,charge) tuple for a single-state query, which uses roman numerals.</p>
-              </div>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-
 
 <div class="doc doc-children">
 
@@ -839,52 +792,6 @@
 
 
 
-
-<div class="doc doc-object doc-attribute">
-
-
-
-<h2 id="ASDCache.utils.ROMAN_NUMERALS" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">ROMAN_NUMERALS</span>
-
-
-  <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-module-attribute"><code>module-attribute</code></small>
-  </span>
-
-<a href="#ASDCache.utils.ROMAN_NUMERALS" class="headerlink" title="Permanent link">&para;</a></h2>
-<div class="doc-signature highlight"><pre><span></span><code><span class="n">ROMAN_NUMERALS</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;I&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;V&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">:</span> <span class="mi">500</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">}</span>
-</code></pre></div>
-
-    <div class="doc doc-contents ">
-
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-attribute">
-
-
-
-<h2 id="ASDCache.utils.STATE_EXPR" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">STATE_EXPR</span>
-
-
-  <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-module-attribute"><code>module-attribute</code></small>
-  </span>
-
-<a href="#ASDCache.utils.STATE_EXPR" class="headerlink" title="Permanent link">&para;</a></h2>
-<div class="doc-signature highlight"><pre><span></span><code><span class="n">STATE_EXPR</span> <span class="o">=</span> <span class="s1">&#39;spectra=([</span><span class="se">\\</span><span class="s1">w]+)</span><span class="se">\\</span><span class="s1">+?([IVX]+)?&#39;</span>
-</code></pre></div>
-
-    <div class="doc doc-contents ">
-
-        <p>Regex pattern for extracting (element,charge) tuple for a single-state query, which uses roman numerals.</p>
-
-    </div>
-
-</div>
 
 
 
@@ -908,22 +815,22 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/ASDCache/utils.py</code></summary>
-              <div class="highlight"><pre><span></span><code><span class="linenos" data-linenos="14 "></span><span class="k">def</span><span class="w"> </span><span class="nf">roman_to_int</span><span class="p">(</span><span class="n">roman</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="linenos" data-linenos="15 "></span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse a Roman numeral into an integer.</span>
-<span class="linenos" data-linenos="16 "></span>
-<span class="linenos" data-linenos="17 "></span><span class="sd">    Supports numerals up to &quot;M&quot;.</span>
-<span class="linenos" data-linenos="18 "></span><span class="sd">    &quot;&quot;&quot;</span>
-<span class="linenos" data-linenos="19 "></span>    <span class="n">roman</span> <span class="o">=</span> <span class="n">roman</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-<span class="linenos" data-linenos="20 "></span>    <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="linenos" data-linenos="21 "></span>    <span class="n">previous</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="linenos" data-linenos="22 "></span>    <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">roman</span><span class="p">):</span>
-<span class="linenos" data-linenos="23 "></span>        <span class="n">current_value</span> <span class="o">=</span> <span class="n">ROMAN_NUMERALS</span><span class="p">[</span><span class="n">char</span><span class="p">]</span>
-<span class="linenos" data-linenos="24 "></span>        <span class="k">if</span> <span class="n">current_value</span> <span class="o">&lt;</span> <span class="n">previous</span><span class="p">:</span>
-<span class="linenos" data-linenos="25 "></span>            <span class="n">total</span> <span class="o">-=</span> <span class="n">current_value</span>  <span class="c1"># Subtract if the current value is less than the previous value</span>
-<span class="linenos" data-linenos="26 "></span>        <span class="k">else</span><span class="p">:</span>
-<span class="linenos" data-linenos="27 "></span>            <span class="n">total</span> <span class="o">+=</span> <span class="n">current_value</span>
-<span class="linenos" data-linenos="28 "></span>        <span class="n">previous</span> <span class="o">=</span> <span class="n">current_value</span>
-<span class="linenos" data-linenos="29 "></span>    <span class="k">return</span> <span class="n">total</span>
+              <div class="highlight"><pre><span></span><code><span class="linenos" data-linenos="13 "></span><span class="k">def</span><span class="w"> </span><span class="nf">roman_to_int</span><span class="p">(</span><span class="n">roman</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="linenos" data-linenos="14 "></span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse a Roman numeral into an integer.</span>
+<span class="linenos" data-linenos="15 "></span>
+<span class="linenos" data-linenos="16 "></span><span class="sd">    Supports numerals up to &quot;M&quot;.</span>
+<span class="linenos" data-linenos="17 "></span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos" data-linenos="18 "></span>    <span class="n">roman</span> <span class="o">=</span> <span class="n">roman</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+<span class="linenos" data-linenos="19 "></span>    <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="linenos" data-linenos="20 "></span>    <span class="n">previous</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="linenos" data-linenos="21 "></span>    <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">roman</span><span class="p">):</span>
+<span class="linenos" data-linenos="22 "></span>        <span class="n">current_value</span> <span class="o">=</span> <span class="n">ROMAN_NUMERALS</span><span class="p">[</span><span class="n">char</span><span class="p">]</span>
+<span class="linenos" data-linenos="23 "></span>        <span class="k">if</span> <span class="n">current_value</span> <span class="o">&lt;</span> <span class="n">previous</span><span class="p">:</span>
+<span class="linenos" data-linenos="24 "></span>            <span class="n">total</span> <span class="o">-=</span> <span class="n">current_value</span>  <span class="c1"># Subtract if the current value is less than the previous value</span>
+<span class="linenos" data-linenos="25 "></span>        <span class="k">else</span><span class="p">:</span>
+<span class="linenos" data-linenos="26 "></span>            <span class="n">total</span> <span class="o">+=</span> <span class="n">current_value</span>
+<span class="linenos" data-linenos="27 "></span>        <span class="n">previous</span> <span class="o">=</span> <span class="n">current_value</span>
+<span class="linenos" data-linenos="28 "></span>    <span class="k">return</span> <span class="n">total</span>
 </code></pre></div>
             </details>
     </div>
@@ -953,21 +860,62 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/ASDCache/utils.py</code></summary>
-              <div class="highlight"><pre><span></span><code><span class="linenos" data-linenos="32 "></span><span class="k">def</span><span class="w"> </span><span class="nf">wavenumber_to_refractive_index</span><span class="p">(</span><span class="n">wavenumbers</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="linenos" data-linenos="33 "></span><span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the refractive index $n$ in air for a transition, using the 5-term Sellmeier formula used by NIST.</span>
-<span class="linenos" data-linenos="34 "></span>
-<span class="linenos" data-linenos="35 "></span><span class="sd">    The used Sellmeier formula is the one from E.R. Peck and K. Reeder [J. Opt. Soc. Am. 62, 958 (1972)](http://dx.doi.org/10.1364/JOSA.62.000958).</span>
-<span class="linenos" data-linenos="36 "></span>
-<span class="linenos" data-linenos="37 "></span><span class="sd">    This formula is fitted to data in the range of 185 nm to 1700 nm for  air at 15 °C, 101 325 Pa pressure, with 0.033 % CO2.</span>
-<span class="linenos" data-linenos="38 "></span>
-<span class="linenos" data-linenos="39 "></span><span class="sd">    This is the same formula used by the NIST ASD to calculate air wavelengths in the interval of 200 nm to 2000 nm.</span>
-<span class="linenos" data-linenos="40 "></span>
-<span class="linenos" data-linenos="41 "></span><span class="sd">    See also [the ASD documentation on the topic](https://physics.nist.gov/PhysRefData/ASD/Html/lineshelp.html#Conversion%20between%20air%20and%20vacuum%20wavelengths).</span>
-<span class="linenos" data-linenos="42 "></span>
-<span class="linenos" data-linenos="43 "></span><span class="sd">    Using this refractive index, air equivalent wavelengths consistent with the ASD can be calculated, without the need to query them separately.</span>
-<span class="linenos" data-linenos="44 "></span><span class="sd">    &quot;&quot;&quot;</span>
-<span class="linenos" data-linenos="45 "></span>    <span class="n">sigma</span> <span class="o">=</span> <span class="n">wavenumbers</span> <span class="o">*</span> <span class="mf">1e-4</span>  <span class="c1"># um^-1</span>
-<span class="linenos" data-linenos="46 "></span>    <span class="k">return</span> <span class="mi">1</span> <span class="o">+</span> <span class="mf">1e-8</span> <span class="o">*</span> <span class="p">(</span><span class="mf">8060.51</span> <span class="o">+</span> <span class="mi">2480990</span> <span class="o">/</span> <span class="p">(</span><span class="mf">132.274</span> <span class="o">-</span> <span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mf">17455.7</span> <span class="o">/</span> <span class="p">(</span><span class="mf">39.32957</span> <span class="o">-</span> <span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+              <div class="highlight"><pre><span></span><code><span class="linenos" data-linenos="31 "></span><span class="k">def</span><span class="w"> </span><span class="nf">wavenumber_to_refractive_index</span><span class="p">(</span><span class="n">wavenumbers</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="linenos" data-linenos="32 "></span><span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the refractive index $n$ in air for a transition, using the 5-term Sellmeier formula used by NIST.</span>
+<span class="linenos" data-linenos="33 "></span>
+<span class="linenos" data-linenos="34 "></span><span class="sd">    The used Sellmeier formula is the one from E.R. Peck and K. Reeder [J. Opt. Soc. Am. 62, 958 (1972)](http://dx.doi.org/10.1364/JOSA.62.000958).</span>
+<span class="linenos" data-linenos="35 "></span>
+<span class="linenos" data-linenos="36 "></span><span class="sd">    This formula is fitted to data in the range of 185 nm to 1700 nm for  air at 15 °C, 101 325 Pa pressure, with 0.033 % CO2.</span>
+<span class="linenos" data-linenos="37 "></span>
+<span class="linenos" data-linenos="38 "></span><span class="sd">    This is the same formula used by the NIST ASD to calculate air wavelengths in the interval of 200 nm to 2000 nm.</span>
+<span class="linenos" data-linenos="39 "></span>
+<span class="linenos" data-linenos="40 "></span><span class="sd">    See also [the ASD documentation on the topic](https://physics.nist.gov/PhysRefData/ASD/Html/lineshelp.html#Conversion%20between%20air%20and%20vacuum%20wavelengths).</span>
+<span class="linenos" data-linenos="41 "></span>
+<span class="linenos" data-linenos="42 "></span><span class="sd">    Using this refractive index, air equivalent wavelengths consistent with the ASD can be calculated, without the need to query them separately.</span>
+<span class="linenos" data-linenos="43 "></span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos" data-linenos="44 "></span>    <span class="n">sigma</span> <span class="o">=</span> <span class="n">wavenumbers</span> <span class="o">*</span> <span class="mf">1e-4</span>  <span class="c1"># um^-1</span>
+<span class="linenos" data-linenos="45 "></span>    <span class="k">return</span> <span class="mi">1</span> <span class="o">+</span> <span class="mf">1e-8</span> <span class="o">*</span> <span class="p">(</span><span class="mf">8060.51</span> <span class="o">+</span> <span class="mi">2480990</span> <span class="o">/</span> <span class="p">(</span><span class="mf">132.274</span> <span class="o">-</span> <span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mf">17455.7</span> <span class="o">/</span> <span class="p">(</span><span class="mf">39.32957</span> <span class="o">-</span> <span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+</code></pre></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="ASDCache.utils.extract_species" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">extract_species</span>
+
+
+<a href="#ASDCache.utils.extract_species" class="headerlink" title="Permanent link">&para;</a></h2>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">extract_species</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="n"><span title="str">str</span></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><span title="list">list</span></span><span class="p">[</span><span class="n"><span title="str">str</span></span><span class="p">]</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Extract the queried species (or in NIST terminology 'spectra') from a URL request for the NIST ASD.</p>
+<p>This will be a list of strings, looking like: <code>['H I','O I-III','All spectra','198Hg I']</code></p>
+<p>For the NIST ASD Lines database, this corresponds to the <code>spectra</code> parameter.</p>
+<p>For the NIST ASD Levels database, this corresponds to the <code>spectrum</code> parameter, as it only supports single spectrum lookup.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/ASDCache/utils.py</code></summary>
+              <div class="highlight"><pre><span></span><code><span class="linenos" data-linenos="48 "></span><span class="k">def</span><span class="w"> </span><span class="nf">extract_species</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="linenos" data-linenos="49 "></span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract the queried species (or in NIST terminology &#39;spectra&#39;) from a URL request for the NIST ASD.</span>
+<span class="linenos" data-linenos="50 "></span>
+<span class="linenos" data-linenos="51 "></span><span class="sd">    This will be a list of strings, looking like: `[&#39;H I&#39;,&#39;O I-III&#39;,&#39;All spectra&#39;,&#39;198Hg I&#39;]`</span>
+<span class="linenos" data-linenos="52 "></span>
+<span class="linenos" data-linenos="53 "></span><span class="sd">    For the NIST ASD Lines database, this corresponds to the `spectra` parameter.</span>
+<span class="linenos" data-linenos="54 "></span>
+<span class="linenos" data-linenos="55 "></span><span class="sd">    For the NIST ASD Levels database, this corresponds to the `spectrum` parameter, as it only supports single spectrum lookup.</span>
+<span class="linenos" data-linenos="56 "></span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos" data-linenos="57 "></span>    <span class="n">params</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">parse</span><span class="o">.</span><span class="n">parse_qsl</span><span class="p">(</span><span class="n">parse</span><span class="o">.</span><span class="n">urlsplit</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">query</span><span class="p">))</span>
+<span class="linenos" data-linenos="58 "></span>    <span class="k">if</span> <span class="s2">&quot;spectra&quot;</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+<span class="linenos" data-linenos="59 "></span>        <span class="k">return</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;spectra&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">)</span>
+<span class="linenos" data-linenos="60 "></span>    <span class="c1"># NIST Levels database only supports single spectrum</span>
+<span class="linenos" data-linenos="61 "></span>    <span class="k">return</span> <span class="p">[</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;spectrum&quot;</span><span class="p">]]</span>
 </code></pre></div>
             </details>
     </div>
@@ -988,6 +936,7 @@
     <div class="doc doc-contents ">
 
         <p>Extract the element and ionization state from the url of a response.</p>
+<p>Only supports queries for a single species, i.e. <code>'H I'</code> is valid, but <code>'Ar I-III'</code> is not (3 species).</p>
 <p>When querying only a single state, e.g. 'H I', this information will not be present as a column in data: the <code>element</code> and <code>sp_num</code> columns will not be included.</p>
 <p>This information is parsed from the query url instead, so it can be added.</p>
 <p>Since the <code>sp_num</code> column is of an integer type, the roman numerals in the url are converted to integers.</p>
@@ -995,24 +944,23 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/ASDCache/utils.py</code></summary>
-              <div class="highlight"><pre><span></span><code><span class="linenos" data-linenos="49 "></span><span class="k">def</span><span class="w"> </span><span class="nf">extract_state_from_response</span><span class="p">(</span><span class="n">response</span><span class="p">:</span> <span class="s2">&quot;Response&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
-<span class="linenos" data-linenos="50 "></span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract the element and ionization state from the url of a response.</span>
-<span class="linenos" data-linenos="51 "></span>
-<span class="linenos" data-linenos="52 "></span><span class="sd">    When querying only a single state, e.g. &#39;H I&#39;, this information will not be present as a column in data: the `element` and `sp_num` columns will not be included.</span>
-<span class="linenos" data-linenos="53 "></span>
-<span class="linenos" data-linenos="54 "></span><span class="sd">    This information is parsed from the query url instead, so it can be added.</span>
-<span class="linenos" data-linenos="55 "></span>
-<span class="linenos" data-linenos="56 "></span><span class="sd">    Since the `sp_num` column is of an integer type, the roman numerals in the url are converted to integers.</span>
-<span class="linenos" data-linenos="57 "></span><span class="sd">    &quot;&quot;&quot;</span>
-<span class="linenos" data-linenos="58 "></span>    <span class="n">matched</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">STATE_EXPR</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">url</span><span class="p">))</span>
-<span class="linenos" data-linenos="59 "></span>    <span class="k">if</span> <span class="ow">not</span> <span class="n">matched</span><span class="p">:</span>
-<span class="linenos" data-linenos="60 "></span>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-<span class="linenos" data-linenos="61 "></span>            <span class="s2">&quot;URL did not contain a `spectra` parameter satisfying </span><span class="si">%s</span><span class="s2">; Could not identify element and sp_num&quot;</span><span class="p">,</span>
-<span class="linenos" data-linenos="62 "></span>            <span class="n">STATE_EXPR</span><span class="p">,</span>
-<span class="linenos" data-linenos="63 "></span>        <span class="p">)</span>
-<span class="linenos" data-linenos="64 "></span>    <span class="n">element</span><span class="p">,</span> <span class="n">numeral</span> <span class="o">=</span> <span class="n">matched</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
-<span class="linenos" data-linenos="65 "></span>    <span class="n">numeric</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">roman_to_int</span><span class="p">(</span><span class="n">numeral</span><span class="p">)</span> <span class="k">if</span> <span class="n">numeral</span> <span class="k">else</span> <span class="mi">1</span>
-<span class="linenos" data-linenos="66 "></span>    <span class="k">return</span> <span class="n">element</span><span class="p">,</span> <span class="n">numeric</span>
+              <div class="highlight"><pre><span></span><code><span class="linenos" data-linenos="64 "></span><span class="k">def</span><span class="w"> </span><span class="nf">extract_state_from_response</span><span class="p">(</span><span class="n">response</span><span class="p">:</span> <span class="s2">&quot;Response&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="linenos" data-linenos="65 "></span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract the element and ionization state from the url of a response.</span>
+<span class="linenos" data-linenos="66 "></span>
+<span class="linenos" data-linenos="67 "></span><span class="sd">    Only supports queries for a single species, i.e. `&#39;H I&#39;` is valid, but `&#39;Ar I-III&#39;` is not (3 species).</span>
+<span class="linenos" data-linenos="68 "></span>
+<span class="linenos" data-linenos="69 "></span><span class="sd">    When querying only a single state, e.g. &#39;H I&#39;, this information will not be present as a column in data: the `element` and `sp_num` columns will not be included.</span>
+<span class="linenos" data-linenos="70 "></span>
+<span class="linenos" data-linenos="71 "></span><span class="sd">    This information is parsed from the query url instead, so it can be added.</span>
+<span class="linenos" data-linenos="72 "></span>
+<span class="linenos" data-linenos="73 "></span><span class="sd">    Since the `sp_num` column is of an integer type, the roman numerals in the url are converted to integers.</span>
+<span class="linenos" data-linenos="74 "></span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos" data-linenos="75 "></span>    <span class="n">species</span> <span class="o">=</span> <span class="n">extract_species</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>  <span class="c1"># ty:ignore[invalid-argument-type]</span>
+<span class="linenos" data-linenos="76 "></span>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">species</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+<span class="linenos" data-linenos="77 "></span>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Must use a single-species query, but got </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">species</span><span class="p">)</span>
+<span class="linenos" data-linenos="78 "></span>    <span class="n">element</span><span class="p">,</span> <span class="n">numeral</span> <span class="o">=</span> <span class="n">species</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="linenos" data-linenos="79 "></span>    <span class="n">numeric</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">roman_to_int</span><span class="p">(</span><span class="n">numeral</span><span class="p">)</span> <span class="k">if</span> <span class="n">numeral</span> <span class="k">else</span> <span class="mi">1</span>
+<span class="linenos" data-linenos="80 "></span>    <span class="k">return</span> <span class="n">element</span><span class="p">,</span> <span class="n">numeric</span>
 </code></pre></div>
             </details>
     </div>
