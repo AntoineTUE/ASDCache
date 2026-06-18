@@ -22,7 +22,6 @@ from requests_cache import CachedResponse, CachedSession, OriginalResponse
 
 if importlib.util.find_spec("polars"):
     POLARS_AVAILABLE = True
-    """Check if `polars` is installed and available in the active environments"""
     import polars as pl
 else:
     POLARS_AVAILABLE = False
@@ -32,7 +31,7 @@ from .utils import extract_species, extract_state_from_response, wavenumber_to_r
 
 logger = logging.getLogger("ASDCache")
 
-ASDSchema = {
+ASDSchema: dict[str, type] = {
     "element": str,
     "sp_num": int,
     "obs_wl_vac(nm)": float,
@@ -62,6 +61,26 @@ ASDSchema = {
     "tp_ref": str,
     "line_ref": str,
 }
+"""Schema enforced by [SpectraCache][..]."""
+
+ASDLevelSchema: dict[str, type] = {
+    "element": str,
+    "sp_num": int,
+    "Configuration": str,
+    "Term": str,
+    "J": float,
+    "g": float,
+    "Level (cm-1)": float,
+    "Uncertainty (cm-1)": float,
+    "Splitting": float,
+    "Lande": float,
+    "L": float,
+    "Level comment": str,
+    "Ionization limit": bool,
+    "Reference": str,
+    "Leading percentages": str,
+}
+"""Schema enforced by [LevelCacheAccessor][..]."""
 
 SCI_EXPR = r"([+-]?\d*\.?\d+(?:[eE][+-]?\d+)?)"
 """Regex pattern for processing scientific notation"""
@@ -125,36 +144,33 @@ class SpectraCache:
     """Request parameters used by the NIST ASD form."""
 
     def __init__(
-        self,
-        use_polars_backend=False,
-        cache_expiry=timedelta(weeks=2),
-        strict_matching=True,
-        cache_path: Optional[Path] = None,
+        self, use_polars_backend=False, cache_expiry=timedelta(weeks=2), cache_path: Optional[Path] = None, **kwargs
     ):
         """Initialize an instance that handles cached data lookup of the NIST ASD.
 
         Args:
             use_polars_backend (bool): Flag to use polars as DataFrame backend, if available
-            cache_expiry (timedelta): Span of time beyond which an entry will be considered expired, and a refresh attempted
-            strict_matching (bool): If true, use all request parameters to hash urls for cache matching (recommended).
+            cache_expiry (timedelta): Span of time beyond which an entry will be considered expired, and a refresh attempted. Use `-1` to disable expiry.
             cache_path (Path, Optional): Path to a location to store the cache in
         """
-        self.strict_matching = strict_matching
+        if "strict_matching" in kwargs:
+            print("The `strict_matching` kwargs has been deprecated")
+        # `filter_fn` keeps responses with errors out of the cache, error must still be raised
         self.session = CachedSession(
             "NIST_ASD_cache" if cache_path is None else cache_path,
             use_cache_dir=True,
             expire_after=cache_expiry,
             stale_if_error=True,
             filter_fn=self._check_response_success,
-            ignored_parameters=list(self.query_params.keys()) if self.strict_matching is False else [],
         )
-        if (use_polars_backend) & (not POLARS_AVAILABLE):
+        self.session.stream = True
+        if (use_polars_backend) and (not POLARS_AVAILABLE):
             warnings.warn("Cannot find `polars` as a backend, falling back to `pandas`", stacklevel=2)
             self.use_polars = False
         else:
             self.use_polars = use_polars_backend
-
-        self.known_species = self.list_cached_species()
+        self.levels = LevelCacheAccessor(self)
+        """Accessor for ASD Energy Level database queries."""
 
     @property
     def cache_expiry(self) -> timedelta:
@@ -192,7 +208,20 @@ class SpectraCache:
         """
         return not (not response.ok or response.content.startswith(b"<!DOCTYPE"))
 
-    def _get_data(self, species: str, wl_range: tuple[float, float] = (170, 1000), **kwargs) -> Response:
+    @staticmethod
+    def _parse_nist_error_message(response):
+        body = BeautifulSoup(response.text, features="html.parser").text
+        reason = body.strip().replace("\n", "") if body else ""
+        return reason
+
+    def _build_query(self, standard_query: dict[str, str], **kwargs):
+        query_params = standard_query.copy()
+        query_params.update(**kwargs)
+        return query_params
+
+    def _get_data(
+        self, species: str, wl_range: tuple[float, float] = (170, 1000), throw_on_error=True, **kwargs
+    ) -> Response:
         """Retrieve raw, ASCII-formatted data from the NIST ASD with a GET request.
 
         To retrieve data and parse it into a DataFrame, use [fetch][..] instead.
@@ -203,20 +232,14 @@ class SpectraCache:
 
         It is possible to override any standard query parameter (see [query_params][..]]) by passing them as kwargs.
         """
-        query_params = {
-            "spectra": species,
-            "output_type": 0,
-            "low_w": min(wl_range),
-            "upp_w": max(wl_range),
-            **{k: v for k, v in self.query_params.items() if k not in kwargs},
-            **{k: v for k, v in kwargs.items() if k in self.query_params},
-        }
+        query_params = self._build_query(
+            self.query_params, spectra=species, low_w=min(wl_range), upp_w=max(wl_range), **kwargs
+        )
         response: Response = self.session.get(self.nist_url, params=query_params)
         response.raise_for_status()
         # Check if response is not a HTML document instead of ASCII formatted data, indicating query error.
-        if response.content.startswith(b"<!DOCTYPE"):
-            body = BeautifulSoup(response.text, features="html.parser").body
-            reason = body.text.strip().replace("\n", " ") if body else ""
+        if not self._check_response_success(response) and throw_on_error:
+            reason = self._parse_nist_error_message(response)
             logger.error(
                 "NIST ASD responded with %s instead of ASCII-data for species=%s, wl_range=%s\nQuery: %s",
                 reason,
@@ -238,7 +261,8 @@ class SpectraCache:
         """List all species in the cache, based on the string of the original query URL."""
         species = []
         for u in self.session.cache.urls():
-            species.extend(extract_species(u))
+            if self.nist_url in u:
+                species.extend(extract_species(u))
         return species
 
     def fetch(self, species, wl_range=(170, 1000)) -> "pd.DataFrame|pl.DataFrame":
@@ -403,7 +427,7 @@ class SpectraCache:
             for c in ["unc_obs_wl", "unc_ritz_wl"]
         ]
         df = df.with_columns(exprs)
-        return df.select(*ASDSchema)
+        return df.match_to_schema(ASDSchema)  # force exception if not schema-compliant
 
     def get_all_cached(self) -> "pd.DataFrame|pl.DataFrame":
         """Retrieve all cached data into a single dataframe."""
@@ -563,3 +587,193 @@ class BibCache:
             "url": url,
         }
         return bib_data
+
+
+class LevelCacheAccessor:
+    """Accessor for the Energy Level data from the ASD, sharing cache with its parent [SpectraCache][..].
+
+    This accessor is not meant for stand-alone use, but to extend a `parent` [SpectraCache][(m).] instance.
+
+    The [SpectraCache.levels][..] attribute can be used to access all these level-related queries and helper methods.
+
+    Example:
+        ```python
+        from ASDCache import SpectraCache
+        cache = SpectraCache()
+        df_levels_hydrogen = cache.levels.fetch("H I")
+        ```
+    """
+
+    nist_url = "https://physics.nist.gov/cgi-bin/ASD/energy1.pl"
+    query_params = {
+        "de": "0",
+        "submit": "Retrieve Data",
+        "units": "0",
+        "format": "3",
+        "output": "0",
+        "multiplet_ordered": "0",
+        "conf_out": "on",
+        "term_out": "on",
+        "level_out": "on",
+        "unc_out": "1",
+        "j_out": "on",
+        "g_out": "on",
+        "lande_out": "on",
+        "perc_out": "on",
+        "splitting": "1",
+        "biblio": "on",
+    }  # Request parameters used by the NIST ASD Levels form.
+
+    expr_L = re.compile(r"([spdfghij])[0-9A-Z()/]*$")  # Regex for extracting L from the Term of a state.
+    map_L = {c: i for i, c in enumerate("spdfghij")}  # Mapping of Term-labels for L to integers.
+
+    def __init__(self, parent: SpectraCache):
+        """Initialize a LevelCacheAccessor that shares the same cache session as the provided SpectraCache."""
+        self.parent = parent
+
+    @property
+    def use_polars(self) -> bool:
+        """Flag if `polars` is to be used, if present in the environment."""
+        return self.parent.use_polars
+
+    @property
+    def session(self) -> CachedSession:
+        """Reference to the cache session."""
+        return self.parent.session
+
+    def _get_data(self, species, throw_on_error=True, **kwargs):
+        """Retreive raw, ASCII-formatted data from the NIST ASD with a GET request.
+
+        To retrieve data and process it into a DataFrame, use [fetch][..] instead.
+
+        Returns the raw response, which will be cached, if it is valid, see [SpectraCache._check_response_success][(m).]
+
+        If the response does not contain ASCII-data, but HTML intstead, an [ASDQueryError][(m).] will be raised.
+        """
+        query = self.parent._build_query(self.query_params, spectrum=species)
+        response: Response = self.session.get(self.nist_url, params=query)
+        response.raise_for_status()
+        if not self.parent._check_response_success(response) and throw_on_error:
+            reason = self.parent._parse_nist_error_message(response)
+            logger.error(
+                "NIST ASD responded with %s instead of ASCII-data for species=%s\nQuery: %s",
+                reason,
+                species,
+                response.url,
+            )
+            raise ASDQueryError(
+                f"Query for {species=} did nor receive ASCII data.{reason=} This means the ASD could not interpret your query. Check if your query is malformed."
+            )
+        return response
+
+    @property
+    def cached_species(self) -> list[str]:
+        """A list of all cached species for which energy levels have been cached."""
+        return self.list_cached_species()
+
+    def list_cached_species(self) -> list[str]:
+        """List all species in the cache, for which energy level information is stored.
+
+        This is determined based on the string of the original query URL.
+        """
+        species = []
+        for u in self.session.cache.urls():
+            if self.nist_url in u:
+                species.extend(extract_species(u))
+        return species
+
+    def _from_pandas(self, response) -> pd.DataFrame:
+        """Process a response into a DataFrame using pandas.
+
+        Will produce a DataFrame that adheres to [ASDLevelSchema][(m).].
+        """
+        schema = {"J": str}  # Force J as string initially
+        element, sp_num = extract_state_from_response(response)
+        df = pd.read_csv(StringIO(response.text), sep="\t", dtype=schema)
+        df["element"] = element
+        df["sp_num"] = sp_num
+        df["Level comment"] = pd.Categorical(df.Prefix, categories=["(", "["]).rename_categories(
+            {"(": "Theoretical", "[": "Derived"}
+        )
+        df["Ionization limit"] = pd.Categorical(df.Term.str.contains("Limit"))
+        # Extract and compute fractions
+        fracs = df["J"].str.replace("---", "nan").str.split("/", expand=True).astype(float)
+
+        # Below does not handle when J is either uncertain (content like: `J1 or J2 or J3`), or when J is unresolved (content like: `J1,J2`)
+        df["J"] = fracs.loc[:, 0] / (fracs.loc[:, 1].fillna(1)) if fracs.shape[1] > 1 else fracs
+        df["L"] = df.Configuration.str.extract(self.expr_L, expand=False).map(self.map_L).astype(float)
+        df = df.drop(["Prefix", "Suffix"], axis=1)
+        # TODO:
+        #   Lande: trailing `:` denotes significantly less accurate value; trailing `?` denotes tentative
+        #   Further handling of other edge cases in columns
+
+        return df.loc[:, [c for c in ASDLevelSchema if c in df.columns]]
+
+    def _from_polars(self, response) -> "pl.DataFrame":
+        """Process a response into a DataFrame using polars.
+
+        Will produce a DataFrame that adheres to [ASDLevelSchema][(m).].
+        """
+        parse_schema = {
+            "Configuration": pl.String(),
+            "Term": pl.String(),
+            "J": pl.String(),
+            "g": pl.Float64(),
+            "Prefix": pl.String(),
+            "Level (cm-1)": pl.Float64(),
+            "Suffix": pl.String(),
+            "Uncertainty (cm-1)": pl.Float64(),
+            "Splitting": pl.Float64(),
+            "Lande": pl.Float64(),
+            "Leading percentages": pl.String(),
+            "Reference": pl.String(),
+        }
+        element, sp_num = extract_state_from_response(response)
+
+        df = pl.read_csv(response.raw, separator="\t", schema_overrides=parse_schema)
+        df = df.with_columns(
+            pl.lit(element).alias("element"),
+            pl.lit(sp_num).alias("sp_num").cast(pl.Int64()),
+            pl.col("Prefix")
+            .str.replace(r"\(", "Theoretical")
+            .str.replace(r"\[", "Derived")
+            # .cast(pl.Categorical)
+            .alias("Level comment"),
+            pl.col("Term").str.contains("Limit").alias("Ionization limit"),
+            pl.col("Configuration").str.extract(self.expr_L.pattern).replace(self.map_L).cast(pl.Float64).alias("L"),
+        ).drop(["Prefix", "Suffix"])
+        # Extract and compute fractions
+        fracs = df.select(pl.col("J").replace("---", "").replace("", "nan")).select(
+            pl.col("J").str.split_exact("/", 1).struct.unnest().cast(pl.Float64)
+        )
+        df = df.with_columns(
+            fracs.with_columns(pl.col("field_1").fill_null(1)).select(
+                (pl.col("field_0") / pl.col("field_1")).alias("J")
+            )
+        )
+        df = df.with_columns([pl.lit(None).cast(t).alias(c) for c, t in ASDLevelSchema.items() if c not in df.columns])
+        return df.match_to_schema(ASDLevelSchema)
+
+    def create_dataframe(self, response: Response) -> "pd.DataFrame|pl.DataFrame":
+        """Create a dataframe from the (cached) NIST ASD response.
+
+        Will only successfully process queries to the ASD Energy Level Database url, else raises a ValueError.
+
+        Will decide on the backend to use based on [use_polars][..].
+        """
+        if not response.url.startswith(self.nist_url):
+            raise ValueError("Invalid response, only the %s endpoint is supported, got %s", self.nist_url, response.url)
+        if self.use_polars:
+            self._from_polars(response)
+        return self._from_pandas(response)
+
+    def fetch(self, species: str) -> "pd.DataFrame|pl.DataFrame":
+        """Fetch the energy levels of a species from the NIST ASD Energy Levels Database, first checking the cache.
+
+        Only a single species can be queried per call, due to the inner workings of the ASD (unlike [SpectraCache.fetch][(m).]).
+
+        Args:
+            species (str): A single species query string, e.g. `'H I'` or `'198Hg II'`.
+        """
+        response = self._get_data(species)
+        return self.create_dataframe(response)
