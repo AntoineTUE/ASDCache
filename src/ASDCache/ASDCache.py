@@ -169,6 +169,7 @@ class SpectraCache:
             filter_fn=self._check_response_success,
         )
         self.session.stream = True
+        self.session.headers.update({"User-Agent": f"ASDCache/{version}"})
         if (use_polars_backend) and (not POLARS_AVAILABLE):
             warnings.warn("Cannot find `polars` as a backend, falling back to `pandas`", stacklevel=2)
             self.use_polars = False
@@ -478,6 +479,7 @@ class BibCache:
             filter_fn=self._check_response_success,
             ignored_parameters=["element", "spectr_charge", "type", "ref"],
         )
+        self.session.headers.update({"User-Agent": f"ASDCache/{version}"})
 
     @property
     def cache_expiry(self) -> timedelta:
