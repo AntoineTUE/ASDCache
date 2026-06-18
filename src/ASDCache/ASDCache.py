@@ -93,7 +93,7 @@ class ASDQueryError(Exception):
 class SpectraCache:
     """A class acting as the entrypoint to retrieve data from the NIST Atomic Spectra Database that uses caching.
 
-    The `ASDCache` instance acts as an access point to the cache, which stores responses on the local system in a SQLite database.
+    The `SpectraCache` instance acts as an access point to the cache, which stores responses on the local system in a SQLite database.
 
     Data retrieval from cache is much faster (order milliseconds) than fetching from the internet (order of seconds to minutes), and avoids wastefull requests to the server.
 
@@ -102,30 +102,34 @@ class SpectraCache:
     Since the NIST ASD is usually updated less frequently than that, this is a compromise between having the latest data, and overall fast performance.
 
     Note that the same cache is shared across different class-instances, thread-safety is not guaranteed.
+
+    Example:
+        ```python
+        from ASDCache import SpectraCache
+        asd = SpectraCache()
+        df_lines_oxygen = asd.fetch("O I-III")
+        ```
     """
 
     nist_url = "https://physics.nist.gov/cgi-bin/ASD/lines1.pl"
     query_params = {
         "submit": "Retrieve Data",
-        "unit": 1,
-        "de": 0,
-        # "plot_out": 0,
-        "I_scale_type": 1,
-        "format": 3,
-        "line_out": 0,
-        # "remove_js": "on",
-        # "no_spaces": "on",
-        "en_unit": 0,
-        "output": 0,
-        "bibrefs": 1,
-        "show_obs_wl": 1,
-        "show_calc_wl": 1,
-        "show_wn": 1,
-        "unc_out": 1,
-        "order_out": 0,
-        "show_av": 3,  # 3: wavelength in vac, 2: wavelength in air
-        "tsb_value": 0,
-        "A_out": 0,
+        "unit": "1",
+        "de": "0",
+        "I_scale_type": "1",
+        "format": "3",
+        "line_out": "0",
+        "en_unit": "0",
+        "output": "0",
+        "bibrefs": "1",
+        "show_obs_wl": "1",
+        "show_calc_wl": "1",
+        "show_wn": "1",
+        "unc_out": "1",
+        "order_out": "0",
+        "show_av": "3",  # 3: wavelength in vac, 2: wavelength in air
+        "tsb_value": "0",
+        "A_out": "0",
         "S_out": "on",
         "f_out": "on",
         "loggf_out": "on",
@@ -136,12 +140,13 @@ class SpectraCache:
         "J_out": "on",
         "g_out": "on",
         # "diag_out": "on",  # avoid diagnostic data, it leads to multi-species queries failing; which can appear as if keys below are needed. See issue #1
-        "allowed_out": 1,
-        "forbid_out": 1,
+        "allowed_out": "1",
+        "forbid_out": "1",
+        "output_type": "0",
         # "show_diff_obs_calc": 1, # Does not appear mandatory in retrospect,  see issue #1
         # "include_Ritz_E1": 1, # Does not appear mandatory in retrospect,  see issue #1
     }
-    """Request parameters used by the NIST ASD form."""
+    """Request parameters used by the NIST ASD Lines form."""
 
     def __init__(
         self, use_polars_backend=False, cache_expiry=timedelta(weeks=2), cache_path: Optional[Path] = None, **kwargs
@@ -204,7 +209,7 @@ class SpectraCache:
 
         We can thus check for the start of a HTML document.
 
-        Note that this only works for data queries, not for bibliographic metadata by `BibCache`.
+        Note that this only works for data queries, not for bibliographic metadata by [BibCache][(m).].
         """
         return not (not response.ok or response.content.startswith(b"<!DOCTYPE"))
 
@@ -266,7 +271,7 @@ class SpectraCache:
         return species
 
     def fetch(self, species, wl_range=(170, 1000)) -> "pd.DataFrame|pl.DataFrame":
-        """Fetch information on a species from the ASD, first checking the cache.
+        """Fetch information on a species from the ASD and return it as a DataFrame, first checking the cache.
 
         This supports loading multiple species in one go by using the same notation as the NIST ASD form.
 
@@ -277,6 +282,8 @@ class SpectraCache:
         In other words: the cache cannot deduplicate queries such as `ASD.fetch('H', (200,1000))` followed by `ASD.fetch('H I', (650,660))` (or vice versa).
 
         Both these operations will fetch data online and be stored as separate cache entries.
+
+        Likewise, when you first query "All spectra", and later "Ar I-II", the latter will not use the previously cached data.
         """
         # TODO: add kwargs for read-only/offline access etc.
         response = self._get_data(species, wl_range)
@@ -367,6 +374,7 @@ class SpectraCache:
 
         For lines outside of this range, it uses NaN values.
         """
+        # initial schema when parsing from text
         schema = {
             "obs_wl_vac(nm)": pl.String,
             "ritz_wl_vac(nm)": pl.String,
@@ -450,8 +458,9 @@ class BibCache:
 
     Supports both bibliographic reference databases curated by NIST:
 
-        * Atomic Transition Probability Bibliographic Database: [10.18434/T46C7N](https://doi.org/10.18434/T46C7N)
-        * Atomic Energy Levels and Spectral Bibliographic Database: [10.18434/T40K53](https://doi.org/10.18434/T40K53)
+    * Atomic Transition Probability Bibliographic Database: [10.18434/T46C7N](https://doi.org/10.18434/T46C7N)
+
+    * Atomic Energy Levels and Spectral Bibliographic Database: [10.18434/T40K53](https://doi.org/10.18434/T40K53)
 
     References to these databases in the NIST ASD data can be looked up and will be cached.
     """

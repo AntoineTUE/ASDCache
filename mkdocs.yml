@@ -101,7 +101,7 @@ plugins:
           show_root_full_path: true
           show_root_members_full_path: false
           # Docstrings
-          show_if_no_docstring: true
+          show_if_no_docstring: false
           show_docstring_attributes: false
           show_docstring_functions: true
           # Signatures/annotations
