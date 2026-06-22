@@ -12,6 +12,16 @@ from requests_cache import CachedResponse, CachedSession
 from ASDCache import SpectraCache
 
 
+def pytest_sessionstart(session):
+    import numpy as np
+    import pandas as pd
+    import polars as pl
+
+    print(f"numpy: {np.__version__}")
+    print(f"pandas: {pd.__version__}")
+    print(f"polars: {pl.__version__}")
+
+
 @pytest.fixture
 def mock_response_status_not_OK(mocker):
     # IMPORTANT: make sure that you set the attribute `content` not `contents`! (note the lack of 's')

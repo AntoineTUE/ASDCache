@@ -16,7 +16,7 @@ def test_accessor_linked_to_parent(cache_location):
     assert cache.use_polars
     assert cache.use_polars == cache.levels.use_polars
 
-    with pytest.raises(AttributeError, match=r".*use_polars.*has no setter.*"):
+    with pytest.raises(AttributeError):  # Avoid matching regex, as it is different between python versions.
         cache.levels.use_polars = False
 
     assert cache.session == cache.levels.session
