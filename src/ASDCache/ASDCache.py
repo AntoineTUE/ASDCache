@@ -271,6 +271,22 @@ class SpectraCache:
                 species.extend(extract_species(u))
         return species
 
+    @property
+    def responses(self):
+        """Generator yielding responses from the cache that contain line data.
+
+        Usefull to loop over all responses, while avoiding to load them all in memory.
+
+        Example
+            ```python
+            cache = SpectraCache()
+            for response in cache:
+                df = cache.create_dataframe(response)
+                ...
+            ```
+        """
+        yield from (r for r in self.session.cache.filter() if self.nist_url in r.url)
+
     def fetch(self, species, wl_range=(170, 1000)) -> "pd.DataFrame|pl.DataFrame":
         """Fetch information on a species from the ASD and return it as a DataFrame, first checking the cache.
 
@@ -440,7 +456,7 @@ class SpectraCache:
 
     def get_all_cached(self) -> "pd.DataFrame|pl.DataFrame":
         """Retrieve all cached data into a single dataframe."""
-        cached_frames = [self.create_dataframe(cached) for cached in self.session.cache.filter()]
+        cached_frames = [self.create_dataframe(cached) for cached in self.responses]
         if self.use_polars:
             return (
                 pl.concat(cached_frames).unique()
@@ -693,34 +709,55 @@ class LevelCacheAccessor:
                 species.extend(extract_species(u))
         return species
 
-    def _from_pandas(self, response) -> pd.DataFrame:
+    @classmethod
+    def _from_pandas(cls, response) -> pd.DataFrame:
         """Process a response into a DataFrame using pandas.
 
         Will produce a DataFrame that adheres to [ASDLevelSchema][(m).].
         """
-        schema = {"J": str}  # Force J as string initially
+        parse_schema = {
+            "Configuration": str,
+            "Term": str,
+            "J": str,
+            "g": float,
+            "Prefix": str,
+            "Level (cm-1)": float,
+            "Suffix": str,
+            "Uncertainty (cm-1)": float,
+            "Splitting": float,
+            "Lande": str,
+            "Leading percentages": str,
+            "Reference": str,
+        }  # Force initial schema when parsing for reliable data handling; coerce J as str initially etc.
         element, sp_num = extract_state_from_response(response)
-        df = pd.read_csv(StringIO(response.text), sep="\t", dtype=schema)
+        df = pd.read_csv(
+            StringIO(response.text),
+            sep="\t",
+            dtype=parse_schema,
+        )
         df["element"] = element
         df["sp_num"] = sp_num
-        df["Level comment"] = pd.Categorical(df.Prefix, categories=["(", "["]).rename_categories(
-            {"(": "Theoretical", "[": "Derived"}
-        )
-        df["Ionization limit"] = pd.Categorical(df.Term.str.contains("Limit"))
+        df["Level comment"] = df.Prefix.str.replace({"(": "Theoretical", "[": "Derived"}).fillna("")
+        df["Ionization limit"] = df.Term.str.contains("Limit")
         # Extract and compute fractions
         fracs = df["J"].str.replace("---", "nan").str.split("/", expand=True).astype(float)
 
         # Below does not handle when J is either uncertain (content like: `J1 or J2 or J3`), or when J is unresolved (content like: `J1,J2`)
         df["J"] = fracs.loc[:, 0] / (fracs.loc[:, 1].fillna(1)) if fracs.shape[1] > 1 else fracs
-        df["L"] = df.Configuration.str.extract(self.expr_L, expand=False).map(self.map_L).astype(float)
+        df["L"] = df.Configuration.str.extract(cls.expr_L, expand=False).map(cls.map_L).astype(float)
         df = df.drop(["Prefix", "Suffix"], axis=1)
-        # TODO:
-        #   Lande: trailing `:` denotes significantly less accurate value; trailing `?` denotes tentative
-        #   Further handling of other edge cases in columns
 
+        if "Lande" in df.columns:
+            # TODO: Lande: trailing `:` denotes significantly less accurate value; trailing `?` denotes tentative
+            # Not documented about Lande column: a final digit between () for significance, e.g. encoutered for Sn II.
+            df["Lande"] = df.loc[:, "Lande"].str.extract(SCI_EXPR).astype(float)
+        # Insert missing columns as NaN for now
+        for c in set(ASDLevelSchema) - set(df.columns):
+            df[c] = np.nan
         return df.loc[:, [c for c in ASDLevelSchema if c in df.columns]]
 
-    def _from_polars(self, response) -> "pl.DataFrame":
+    @classmethod
+    def _from_polars(cls, response) -> "pl.DataFrame":
         """Process a response into a DataFrame using polars.
 
         Will produce a DataFrame that adheres to [ASDLevelSchema][(m).].
@@ -735,23 +772,23 @@ class LevelCacheAccessor:
             "Suffix": pl.String(),
             "Uncertainty (cm-1)": pl.Float64(),
             "Splitting": pl.Float64(),
-            "Lande": pl.Float64(),
+            "Lande": pl.String(),
             "Leading percentages": pl.String(),
             "Reference": pl.String(),
         }
         element, sp_num = extract_state_from_response(response)
 
-        df = pl.read_csv(response.raw, separator="\t", schema_overrides=parse_schema)
+        df = pl.read_csv(
+            StringIO(response.text),
+            separator="\t",
+            schema_overrides=parse_schema,
+        )
         df = df.with_columns(
             pl.lit(element).alias("element"),
             pl.lit(sp_num).alias("sp_num").cast(pl.Int64()),
-            pl.col("Prefix")
-            .str.replace(r"\(", "Theoretical")
-            .str.replace(r"\[", "Derived")
-            # .cast(pl.Categorical)
-            .alias("Level comment"),
+            pl.col("Prefix").str.replace(r"\(", "Theoretical").str.replace(r"\[", "Derived").alias("Level comment"),
             pl.col("Term").str.contains("Limit").alias("Ionization limit"),
-            pl.col("Configuration").str.extract(self.expr_L.pattern).replace(self.map_L).cast(pl.Float64).alias("L"),
+            pl.col("Configuration").str.extract(cls.expr_L.pattern).replace(cls.map_L).cast(pl.Float64).alias("L"),
         ).drop(["Prefix", "Suffix"])
         # Extract and compute fractions
         fracs = df.select(pl.col("J").replace("---", "").replace("", "nan")).select(
@@ -762,7 +799,20 @@ class LevelCacheAccessor:
                 (pl.col("field_0") / pl.col("field_1")).alias("J")
             )
         )
+        if "Lande" in df.columns:
+            # TODO: Lande: trailing `:` denotes significantly less accurate value; trailing `?` denotes tentative
+            # Not documented about Lande column: a final digit between () for significance, e.g. encoutered for Sn II.
+            # For now: simply parse SCI_EXPR
+            df = df.with_columns(pl.col("Lande").str.extract(SCI_EXPR).replace("", None).cast(pl.Float64))
+
+        # Force empty strings as null for compatibility with pandas; implies values are missing
+        str_as_null = ["Configuration", "Term", "Reference"]
+        expr_as_null = [pl.when(pl.col(c) == "").then(pl.lit(None)).otherwise(pl.col(c)).alias(c) for c in str_as_null]
+        df = df.with_columns(*expr_as_null)
+
+        # Handle missing columns; ASD omits columns if no data available, such as Lande factors
         df = df.with_columns([pl.lit(None).cast(t).alias(c) for c, t in ASDLevelSchema.items() if c not in df.columns])
+
         return df.match_to_schema(ASDLevelSchema)
 
     def create_dataframe(self, response: Response) -> "pd.DataFrame|pl.DataFrame":
@@ -775,7 +825,7 @@ class LevelCacheAccessor:
         if not response.url.startswith(self.nist_url):
             raise ValueError("Invalid response, only the %s endpoint is supported, got %s", self.nist_url, response.url)
         if self.use_polars:
-            self._from_polars(response)
+            return self._from_polars(response)
         return self._from_pandas(response)
 
     def fetch(self, species: str) -> "pd.DataFrame|pl.DataFrame":

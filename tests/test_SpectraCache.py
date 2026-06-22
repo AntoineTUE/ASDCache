@@ -56,13 +56,20 @@ def test_create_dataframe(example_response):
 
 
 def test_cache_setup(cache_location):
-    """Trivial test to check if the test cache is set up"""
+    """Trivial test to check if the test cache is set up.
+
+    This checks if the expected species in the expected intervals are present.
+
+    If this test fails, either the contents of the `test_cache` file has been altered, or the test configuration is changed.
+
+    In either case, this warrants checking.
+    """
     assert cache_location == Path(__file__).parent.joinpath("test_cache.sqlite").resolve()
     nist_pandas = SpectraCache(cache_path=cache_location, cache_expiry=-1)
     assert len(nist_pandas.cached_species) == 4
     queries = {
         v["spectra"][0]: (v["low_w"][0], v["upp_w"][0])
-        for v in [parse.parse_qs(u.split("?")[1]) for u in nist_pandas.session.cache.urls()]
+        for v in [parse.parse_qs(u.url.split("?")[1]) for u in nist_pandas.responses]
     }
     assert queries["All spectra"] == ("550", "580")
     assert queries["Kr I"] == ("170", "1000")

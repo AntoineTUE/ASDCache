@@ -45,5 +45,5 @@ def cache_location():
 @pytest.fixture
 def example_response(cache_location):
     ses = CachedSession(cache_location)
-    key = list(ses.cache.responses)[0]
-    yield ses.cache.get_response(key)
+    responses = [r for r in ses.cache.filter() if "https://physics.nist.gov/cgi-bin/ASD/lines1.pl" in r.url]
+    yield responses[0]
