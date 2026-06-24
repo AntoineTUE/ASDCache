@@ -193,7 +193,7 @@ fix = [
 [tool.hatch.envs.hatch-test.overrides]
 matrix.pandas.dependencies = [
     { value = "pandas~=2.0", if = ["pandas-2.x"] },
-    { value = "pandas>=3.0", if = ["pandas-3.x"] },
+    { value = "pandas~=3.0", if = ["pandas-3.x"] },
 ]
 matrix.numpy.dependencies = [
     { value = "numpy~=2.0", if = ["numpy-2.x"] },

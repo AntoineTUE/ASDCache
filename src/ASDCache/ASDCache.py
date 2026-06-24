@@ -737,7 +737,8 @@ class LevelCacheAccessor:
         )
         df["element"] = element
         df["sp_num"] = sp_num
-        df["Level comment"] = df.Prefix.str.replace({"(": "Theoretical", "[": "Derived"}).fillna("")
+        # Chained replacement needed; replacing using a dict mapping only supported on pandas 3.0 it seems
+        df["Level comment"] = df.Prefix.str.replace("(", "Theoretical").str.replace("[", "Derived").fillna("")
         df["Ionization limit"] = df.Term.str.contains("Limit")
         # Extract and compute fractions
         fracs = df["J"].str.replace("---", "nan").str.split("/", expand=True).astype(float)
@@ -823,7 +824,8 @@ class LevelCacheAccessor:
         Will decide on the backend to use based on [use_polars][..].
         """
         if not response.url.startswith(self.nist_url):
-            raise ValueError("Invalid response, only the %s endpoint is supported, got %s", self.nist_url, response.url)
+            msg = f"Invalid response, only the {self.nist_url} endpoint is supported, got {response.url}"
+            raise ValueError(msg)
         if self.use_polars:
             return self._from_polars(response)
         return self._from_pandas(response)
