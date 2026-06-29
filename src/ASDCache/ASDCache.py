@@ -16,6 +16,8 @@ from urllib import parse
 
 import numpy as np
 import pandas as pd
+import pyarrow as pa
+import pyarrow.compute as pc
 from bs4 import BeautifulSoup
 from requests import Response
 from requests_cache import CachedResponse, CachedSession, OriginalResponse
@@ -26,6 +28,7 @@ if importlib.util.find_spec("polars"):
 else:
     POLARS_AVAILABLE = False
 
+from . import Schemas, arrow
 from ._version import version
 from .utils import extract_species, extract_state_from_response, wavenumber_to_refractive_index
 
@@ -82,8 +85,9 @@ ASDLevelSchema: dict[str, type] = {
 }
 """Schema enforced by [LevelCacheAccessor][..]."""
 
-SCI_EXPR = r"([+-]?\d*\.?\d+(?:[eE][+-]?\d+)?)"
+SCI_EXPR = r"(?P<num>[+-]?\d*\.?\d+(?:[eE][+-]?\d+)?)"
 """Regex pattern for processing scientific notation"""
+L_EXPR = r"(?P<L>[spdfghij])[0-9A-Z()/]*$"
 
 
 class ASDQueryError(Exception):
@@ -668,6 +672,22 @@ class LevelCacheAccessor:
         """Reference to the cache session."""
         return self.parent.session
 
+    @property
+    def responses(self):
+        """Generator yielding responses from the cache that contain line data.
+
+        Usefull to loop over all responses, while avoiding to load them all in memory.
+
+        Example
+            ```python
+            cache = SpectraCache()
+            for response in cache.levels:
+                df = cache.levels.create_dataframe(response)
+                ...
+            ```
+        """
+        yield from (r for r in self.session.cache.filter() if self.nist_url in r.url)
+
     def _get_data(self, species, throw_on_error=True, **kwargs):
         """Retreive raw, ASCII-formatted data from the NIST ASD with a GET request.
 
@@ -693,6 +713,40 @@ class LevelCacheAccessor:
             )
         return response
 
+    @staticmethod
+    def _parse_response(response: Response) -> pa.Table:
+        """Parse a response using Apache Arrow into an [pyarrow.Table][pyarrow.Table].
+
+        This is a low-level API to parse data in a consistent schema, before converting it to a dataframe using the desired backend.
+
+        Using pyarrow means the majority of the parsing logic is similar, before converting to either pandas or polars (or any other dataframe library with pyarrow support).
+
+        Args:
+            response (Response): A (cached) response from the ASD Energy Level database.
+
+        Returns:
+            data (pa.Table): A Table with energy level data from the ASD.
+        """
+        data = arrow.read_response(response, schema=Schemas.level_parsing_schema)
+        data = arrow.set_column(
+            data, "J", arrow.parse_fraction_from_strings(pc.replace_substring(data["J"], "---", "nan"))
+        )
+        data = data.append_column("Ionization limit", pc.match_substring(data["Term"], "Limit"))
+
+        L_mapping = {c: i for i, c in enumerate("spdfghi")}
+        ls = pc.struct_field(pc.extract_regex(data["Configuration"], L_EXPR), "L")
+        l_mapped = pa.array([L_mapping.get(x.as_py()) for x in ls], type=pa.int8())
+        # data = data.append_column("L", pa.DictionaryArray.from_arrays(l_mapped, pa.array(L_mapping)))
+        data = data.append_column("L", l_mapped)
+        comment_mapping = {"]": "Derived", ")": "Theoretical", "?": "Perhaps not real", "†": "Questionable"}
+        comment_mapped = pa.array([comment_mapping.get(x.as_py()) for x in data["Suffix"]], type=pa.string())
+        data = data.append_column("Level comment", comment_mapped)
+        # TODO: use ASDCache.arrow.parse_sci_expr for the line below; update/refactor where SCI_EXP is defined, potentially separate module?
+        data = arrow.set_column(
+            data, "Lande", pc.struct_field(pc.extract_regex(data["Lande"], SCI_EXPR), "num").cast(pa.float64())
+        ).drop_columns(["Prefix", "Suffix"])
+        return data
+
     @property
     def cached_species(self) -> list[str]:
         """A list of all cached species for which energy levels have been cached."""
@@ -711,51 +765,11 @@ class LevelCacheAccessor:
 
     @classmethod
     def _from_pandas(cls, response) -> pd.DataFrame:
-        """Process a response into a DataFrame using pandas.
+        """Process a response into a DataFrame using pandas, with datatypes backed by pyarrow.
 
         Will produce a DataFrame that adheres to [ASDLevelSchema][(m).].
         """
-        parse_schema = {
-            "Configuration": str,
-            "Term": str,
-            "J": str,
-            "g": float,
-            "Prefix": str,
-            "Level (cm-1)": float,
-            "Suffix": str,
-            "Uncertainty (cm-1)": float,
-            "Splitting": float,
-            "Lande": str,
-            "Leading percentages": str,
-            "Reference": str,
-        }  # Force initial schema when parsing for reliable data handling; coerce J as str initially etc.
-        element, sp_num = extract_state_from_response(response)
-        df = pd.read_csv(
-            StringIO(response.text),
-            sep="\t",
-            dtype=parse_schema,
-        )
-        df["element"] = element
-        df["sp_num"] = sp_num
-        # Chained replacement needed; replacing using a dict mapping only supported on pandas 3.0 it seems
-        df["Level comment"] = df.Prefix.str.replace("(", "Theoretical").str.replace("[", "Derived").fillna("")
-        df["Ionization limit"] = df.Term.str.contains("Limit")
-        # Extract and compute fractions
-        fracs = df["J"].str.replace("---", "nan").str.split("/", expand=True).astype(float)
-
-        # Below does not handle when J is either uncertain (content like: `J1 or J2 or J3`), or when J is unresolved (content like: `J1,J2`)
-        df["J"] = fracs.loc[:, 0] / (fracs.loc[:, 1].fillna(1)) if fracs.shape[1] > 1 else fracs
-        df["L"] = df.Configuration.str.extract(cls.expr_L, expand=False).map(cls.map_L).astype(float)
-        df = df.drop(["Prefix", "Suffix"], axis=1)
-
-        if "Lande" in df.columns:
-            # TODO: Lande: trailing `:` denotes significantly less accurate value; trailing `?` denotes tentative
-            # Not documented about Lande column: a final digit between () for significance, e.g. encoutered for Sn II.
-            df["Lande"] = df.loc[:, "Lande"].str.extract(SCI_EXPR).astype(float)
-        # Insert missing columns as NaN for now
-        for c in set(ASDLevelSchema) - set(df.columns):
-            df[c] = np.nan
-        return df.loc[:, [c for c in ASDLevelSchema if c in df.columns]]
+        return cls._parse_response(response).to_pandas(types_mapper=pd.ArrowDtype)
 
     @classmethod
     def _from_polars(cls, response) -> "pl.DataFrame":
@@ -763,58 +777,7 @@ class LevelCacheAccessor:
 
         Will produce a DataFrame that adheres to [ASDLevelSchema][(m).].
         """
-        parse_schema = {
-            "Configuration": pl.String(),
-            "Term": pl.String(),
-            "J": pl.String(),
-            "g": pl.Float64(),
-            "Prefix": pl.String(),
-            "Level (cm-1)": pl.Float64(),
-            "Suffix": pl.String(),
-            "Uncertainty (cm-1)": pl.Float64(),
-            "Splitting": pl.Float64(),
-            "Lande": pl.String(),
-            "Leading percentages": pl.String(),
-            "Reference": pl.String(),
-        }
-        element, sp_num = extract_state_from_response(response)
-
-        df = pl.read_csv(
-            StringIO(response.text),
-            separator="\t",
-            schema_overrides=parse_schema,
-        )
-        df = df.with_columns(
-            pl.lit(element).alias("element"),
-            pl.lit(sp_num).alias("sp_num").cast(pl.Int64()),
-            pl.col("Prefix").str.replace(r"\(", "Theoretical").str.replace(r"\[", "Derived").alias("Level comment"),
-            pl.col("Term").str.contains("Limit").alias("Ionization limit"),
-            pl.col("Configuration").str.extract(cls.expr_L.pattern).replace(cls.map_L).cast(pl.Float64).alias("L"),
-        ).drop(["Prefix", "Suffix"])
-        # Extract and compute fractions
-        fracs = df.select(pl.col("J").replace("---", "").replace("", "nan")).select(
-            pl.col("J").str.split_exact("/", 1).struct.unnest().cast(pl.Float64)
-        )
-        df = df.with_columns(
-            fracs.with_columns(pl.col("field_1").fill_null(1)).select(
-                (pl.col("field_0") / pl.col("field_1")).alias("J")
-            )
-        )
-        if "Lande" in df.columns:
-            # TODO: Lande: trailing `:` denotes significantly less accurate value; trailing `?` denotes tentative
-            # Not documented about Lande column: a final digit between () for significance, e.g. encoutered for Sn II.
-            # For now: simply parse SCI_EXPR
-            df = df.with_columns(pl.col("Lande").str.extract(SCI_EXPR).replace("", None).cast(pl.Float64))
-
-        # Force empty strings as null for compatibility with pandas; implies values are missing
-        str_as_null = ["Configuration", "Term", "Reference"]
-        expr_as_null = [pl.when(pl.col(c) == "").then(pl.lit(None)).otherwise(pl.col(c)).alias(c) for c in str_as_null]
-        df = df.with_columns(*expr_as_null)
-
-        # Handle missing columns; ASD omits columns if no data available, such as Lande factors
-        df = df.with_columns([pl.lit(None).cast(t).alias(c) for c, t in ASDLevelSchema.items() if c not in df.columns])
-
-        return df.match_to_schema(ASDLevelSchema)
+        return pl.from_arrow(cls._parse_response(response))
 
     def create_dataframe(self, response: Response) -> "pd.DataFrame|pl.DataFrame":
         """Create a dataframe from the (cached) NIST ASD response.

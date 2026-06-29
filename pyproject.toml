@@ -26,7 +26,13 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
 ]
-dependencies = ["requests_cache>=1.2.0", "pandas>=2.0","numpy>=1.20.3", "beautifulsoup4>=4.12"]
+dependencies = [
+    "requests_cache>=1.2.0", 
+    "pandas>=2.0",
+    "numpy>=1.20.3", 
+    "beautifulsoup4>=4.12",
+    "pyarrow"
+]
 dynamic = ["version"]
 
 [project.optional-dependencies]

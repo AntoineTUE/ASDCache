@@ -2,10 +2,11 @@
 
 import polars as pl
 import pytest
-from pandas.testing import assert_frame_equal as pandas_assert_frame_equal
-from polars.testing import assert_frame_equal as polars_assert_frame_equal
+from pandas.testing import assert_frame_equal as pandas_equal
+from polars.testing import assert_frame_equal as polars_equal
 
 from ASDCache import SpectraCache
+from ASDCache.arrow import map_arrow_to_pandas_types
 
 
 def test_accessor_linked_to_parent(cache_location):
@@ -29,15 +30,36 @@ def test_list_cached_species(cache_location):
 
 
 @pytest.mark.parametrize("species", [("H I"), ("Sn II"), ("Ti I")])
-def test_equivalent_results_for_backends(cache_location, species):
-    cache_pandas = SpectraCache(cache_path=cache_location, cache_expiry=-1)
-    cache_polars = SpectraCache(use_polars_backend=True, cache_path=cache_location, cache_expiry=-1)
-    df_pandas = cache_pandas.levels.fetch(species)
-    df_polars = cache_polars.levels.fetch(species)
-    polars_as_pandas = df_polars.to_pandas()
-    pandas_as_polars = pl.from_pandas(df_pandas)
+def test_equivalent_results_for_backends_with_pandas(cache_location, species):
+    """Test if several different real examples can be parsed reliably and consistently between pandas and polars.
+
+    Here we test if conversion to a pandas dataframe yields the same dataframe as pandas itself.
+
+    Note: The pandas dataframes use pyarrow-backed types, providing consisten nan/null handling.
+    """
+    cache = SpectraCache(cache_path=cache_location, cache_expiry=-1)
+    response = cache.levels._get_data(species)
+    df_pandas = cache.levels._from_pandas(response)
+    df_polars = cache.levels._from_polars(response)
+    polars_as_pandas = df_polars.to_pandas(types_mapper=map_arrow_to_pandas_types)
 
     assert df_pandas.shape == df_polars.shape
-    pandas_assert_frame_equal(polars_as_pandas, df_pandas)
-    # Treatment of nan/null differs between polars and pandas; replace all NaN for Null for this check.
-    polars_assert_frame_equal(pandas_as_polars, df_polars.fill_nan(None))
+    pandas_equal(polars_as_pandas, df_pandas)
+
+
+@pytest.mark.parametrize("species", [("H I"), ("Sn II"), ("Ti I")])
+def test_equivalent_results_for_backends_with_polars(cache_location, species):
+    """Test if several different real examples can be parsed reliably and consistently between pandas and polars.
+
+    Here we test if conversion to a polars dataframe yields the same dataframe as polars itself.
+
+    Note: The pandas dataframes use pyarrow-backed types, providing consisten nan/null handling.
+    """
+    cache = SpectraCache(use_polars_backend=True, cache_path=cache_location, cache_expiry=-1)
+    response = cache.levels._get_data(species)
+    df_pandas = cache.levels._from_pandas(response)
+    df_polars = cache.levels._from_polars(response)
+    pandas_as_polars = pl.DataFrame(df_pandas)
+
+    assert df_pandas.shape == df_polars.shape
+    polars_equal(pandas_as_polars, df_polars)
