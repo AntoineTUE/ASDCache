@@ -757,6 +757,7 @@ class LevelCacheAccessor:
         data = arrow.set_column(
             data, "Lande", pc.struct_field(pc.extract_regex(data["Lande"], SCI_EXPR), "num").cast(pa.float64())
         ).drop_columns(["Prefix", "Suffix"])
+        data = data.select(Schemas.ASDLevelOutputSchema.names)  # reorder according to schema
         return data
 
     @property

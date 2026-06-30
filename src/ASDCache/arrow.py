@@ -33,9 +33,9 @@ def map_arrow_to_pandas_types(dtype) -> pa.DataType:
 
     For other types it falls back to the default behaviour defined by [pandas.ArrowDtype][pandas.ArrowDtype].
 
-    The main use if this function is to ensure consistency between dataframes created by polars and pandas.
+    The main use if this function is to ensure consistency between dataframes created by polars and pandas (which is only relevant for testing in practise).
 
-    When converting using [polars.DataFrame.to_pandas][polars.DataFrame.to_pandas] the conversion happens through a [arrow.Table][pyarrow.Table].
+    When converting using [polars.DataFrame.to_pandas][polars.DataFrame.to_pandas] the conversion happens through an [arrow.Table][pyarrow.Table].
 
     By design polars enforces [pyarrow.large_string][pyarrow.large_string] for strings when converting to arrow, to handle larger than 2 GB columns.
 
@@ -65,6 +65,8 @@ def map_arrow_to_pandas_types(dtype) -> pa.DataType:
     """
     if dtype == pa.large_string():
         dtype = pa.string()
+    elif dtype == pa.dictionary(pa.int64(), pa.large_string()):
+        dtype = pa.dictionary(pa.int32(), pa.string())
     return pd.ArrowDtype(dtype)
 
 
@@ -92,13 +94,13 @@ def set_column(table: pa.Table, colname: str, values: pa.Array) -> pa.Table:
 def read_response(r: Response, schema: pa.Schema) -> pa.Table:
     """Read a Response that contains ASD ASCII data, adhering to the provided `schema`.
 
-    The schema must be a `pyarrow.Schema` that specifies the column names and types (in pyarrow-native types).
+    The schema must be a [pyarrow.Schema][pyarrow.Schema] that specifies the column names and types (in pyarrow-native types).
 
-    Any column that is specified in the schema, but missing in the content of the response, will be added filled with `null`.
+    Any column that is specified in the schema, but missing in the content of the response, will be added filled with `null` values.
 
     If the columns `element` or `sp_num` are part of the schema but contain null values, they will be added/filled based on information extracted from the response url.
 
-    This should only be the case when querying a single combination of both, e.g. 'H I' or `O III` (and not for 'Ar I-II').
+    This should only be the case when querying a single combination of both, e.g. 'H I' or `O III` (and not for 'Ar I-II' for instance).
     """
     data = csv.read_csv(
         BytesIO(r.content),

@@ -9,8 +9,8 @@ import pandas as pd
 import polars as pl
 import pytest
 from numpy.testing import assert_almost_equal
-from pandas.testing import assert_frame_equal as pandas_assert_frame_equal
-from polars.testing import assert_frame_equal as polars_assert_frame_equal
+from pandas.testing import assert_frame_equal as pandas_equal
+from polars.testing import assert_frame_equal as polars_equal
 
 from ASDCache import SpectraCache
 from ASDCache.ASDCache import ASDSchema
@@ -78,31 +78,48 @@ def test_cache_setup(cache_location):
 
 
 @pytest.mark.parametrize("species", [("All spectra", (550, 580)), ("Kr I",), ("H I",), ("Ar I-II",)])
-def test_equivalent_result_for_backends(cache_location, species):
-    nist_pandas = SpectraCache(cache_path=cache_location, cache_expiry=-1)
-    nist_polars = SpectraCache(use_polars_backend=True, cache_path=cache_location, cache_expiry=-1)
-    df_all = nist_pandas.fetch(*species)
-    pdf_all = nist_polars.fetch(*species)
-    polars_as_pandas = pdf_all.to_pandas()
-    pandas_as_polars = pl.from_pandas(df_all)
-    assert df_all.shape == pdf_all.shape
-    pandas_assert_frame_equal(polars_as_pandas, df_all)
+def test_equivalent_result_for_backends_with_pandas(cache_location, species):
+    cache = SpectraCache(cache_path=cache_location, cache_expiry=-1)
+    response = cache._get_data(*species)
+    df_pandas = cache._from_pandas(response)
+    df_polars = cache._from_polars(response)
+    polars_as_pandas = df_polars.to_pandas()
+    assert df_pandas.shape == df_polars.shape
+    pandas_equal(polars_as_pandas, df_pandas)
+
+
+@pytest.mark.parametrize("species", [("All spectra", (550, 580)), ("Kr I",), ("H I",), ("Ar I-II",)])
+def test_equivalent_result_for_backends_with_polars(cache_location, species):
+    cache = SpectraCache(use_polars_backend=True, cache_path=cache_location, cache_expiry=-1)
+    response = cache._get_data(*species)
+    df_pandas = cache.levels._from_pandas(response)
+    df_polars = cache.levels._from_polars(response)
+    pandas_as_polars = pl.from_pandas(df_pandas)
+    assert df_pandas.shape == df_polars.shape
     # assert_schema_equal(pandas_as_polars.schema, pdf_all.schema)  # experimental and not supported on python 3.9
-    # Treatment of nan/null differs between polars and pandas; replace all NaN for Null for this check.
-    # Else the column 'obs_wl_air(nm)' seems to give issues, despite having equivalent content with np.testing.assert_equal
-    polars_assert_frame_equal(pandas_as_polars, pdf_all.fill_nan(None))
+    polars_equal(pandas_as_polars, df_polars)
 
 
 def test_list_cached_species(cache_location):
-    nist_pandas = SpectraCache(cache_path=cache_location, cache_expiry=-1)
-    nist_polars = SpectraCache(use_polars_backend=True, cache_path=cache_location, cache_expiry=-1)
-    cached_species_pandas = nist_pandas.list_cached_species()
-    cached_species_polars = nist_polars.list_cached_species()
-    assert cached_species_pandas == cached_species_polars
-    for cached in [cached_species_pandas, cached_species_polars]:
-        assert len(cached) > 0
-        for species in ["Kr I", "Ar I-II", "H I", "All spectra"]:
-            assert species in cached
+    nist = SpectraCache(cache_path=cache_location, cache_expiry=-1)
+    cached = nist.list_cached_species()
+    assert len(cached) == 4
+    for species in ["Kr I", "Ar I-II", "H I", "All spectra"]:
+        assert species in cached
+
+
+def test_cached_spectra(cache_location):
+    """Test if the set of cached species matches what we expect in the test cache file."""
+    nist = SpectraCache(cache_path=cache_location, cache_expiry=-1)
+    cached = nist.cached_spectra
+    assert len(cached) == 4
+    for spectrum in [
+        ("Kr I", (170.0, 1000.0)),
+        ("H I", (170.0, 1000.0)),
+        ("Ar I-II", (170.0, 1000.0)),
+        ("All spectra", (550.0, 580.0)),
+    ]:
+        assert spectrum in cached
 
 
 @pytest.mark.filterwarnings("ignore::pandas.errors.DtypeWarning")
