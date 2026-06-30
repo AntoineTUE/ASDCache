@@ -45,7 +45,37 @@ def wavenumber_to_refractive_index(wavenumbers: float) -> float:
     return 1 + 1e-8 * (8060.51 + 2480990 / (132.274 - sigma**2) + 17455.7 / (39.32957 - sigma**2))
 
 
-def extract_species(url: str) -> list[str]:
+def extract_query_parameters(url_or_response: "str | Response") -> dict[str, str]:
+    """Extract the query parameters from a url.
+
+    Args:
+        url_or_response (str,Response): Either a url string or Response-object
+
+    Returns:
+        params (dict[str,str]): a dictionary containing all query key-value pairs as strings.
+    """
+    query = parse.urlsplit(url_or_response if isinstance(url_or_response, str) else url_or_response.url).query
+    params = dict(parse.parse_qsl(query))
+    return params
+
+
+def extract_spectra(url_or_response: "str | Response") -> list[tuple[str, tuple[float, ...]]]:
+    """Extract a list of `(element,wavelength_range)` tuples from a url-string, or a Response.
+
+    Each tuple contains an element string (e.g. `'H'`) and a tuple of `(minimum_wavelength, maximum_wavelength)`.
+
+    The wavelength range limits are floats.
+
+    Args:
+        url_or_response (str,Response): Either a url string or Response-object
+
+    """
+    params = extract_query_parameters(url_or_response)
+    wls = tuple(map(float, [params["low_w"], params["upp_w"]]))
+    return [(name, wls) for name in params["spectra"].split(";")]
+
+
+def extract_species(url_or_response: "str | Response") -> list[str]:
     """Extract the queried species (or in NIST terminology 'spectra') from a URL request for the NIST ASD.
 
     This will be a list of strings, looking like: `['H I','O I-III','All spectra','198Hg I']`
@@ -54,14 +84,14 @@ def extract_species(url: str) -> list[str]:
 
     For the NIST ASD Levels database, this corresponds to the `spectrum` parameter, as it only supports single spectrum lookup.
     """
-    params = dict(parse.parse_qsl(parse.urlsplit(url).query))
+    params = extract_query_parameters(url_or_response)
     if "spectra" in params:
         return params["spectra"].split(";")
     # NIST Levels database only supports single spectrum
     return [params["spectrum"]]
 
 
-def extract_state_from_response(response: "Response") -> tuple[str, int]:
+def extract_state_from_response(url_or_response: "Response") -> tuple[str, int]:
     """Extract the element and ionization state from the url of a response.
 
     Only supports queries for a single species, i.e. `'H I'` is valid, but `'Ar I-III'` is not (3 species).
@@ -72,7 +102,7 @@ def extract_state_from_response(response: "Response") -> tuple[str, int]:
 
     Since the `sp_num` column is of an integer type, the roman numerals in the url are converted to integers.
     """
-    species = extract_species(response.url)  # ty:ignore[invalid-argument-type]
+    species = extract_species(url_or_response)
     if len(species) > 1:
         raise ValueError("Must use a single-species query, but got %s", species)
     element, numeral = species[0].rsplit(" ", 1)

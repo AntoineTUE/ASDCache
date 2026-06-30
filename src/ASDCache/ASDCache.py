@@ -30,7 +30,7 @@ else:
 
 from . import Schemas, arrow
 from ._version import version
-from .utils import extract_species, extract_state_from_response, wavenumber_to_refractive_index
+from .utils import extract_species, extract_spectra, extract_state_from_response, wavenumber_to_refractive_index
 
 logger = logging.getLogger("ASDCache")
 
@@ -274,6 +274,18 @@ class SpectraCache:
             if self.nist_url in u:
                 species.extend(extract_species(u))
         return species
+
+    @property
+    def cached_spectra(self) -> set[tuple[str, tuple[float, float]]]:
+        """A set containing all unique pairs of (element,wavelength_interval) combinations.
+
+        This set is computed from all cached responses; it does not correspond to individual queries/responses.
+        """
+        spectra = set()
+        for r in self.responses:
+            for spectrum in extract_spectra(r):
+                spectra.add(spectrum)
+        return spectra
 
     @property
     def responses(self):
