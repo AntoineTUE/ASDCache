@@ -34,56 +34,6 @@ from .utils import extract_species, extract_spectra, extract_state_from_response
 
 logger = logging.getLogger("ASDCache")
 
-ASDSchema: dict[str, type] = {
-    "element": str,
-    "sp_num": int,
-    "obs_wl_vac(nm)": float,
-    "unc_obs_wl": float,
-    "obs_wl_air(nm)": float,
-    "ritz_wl_vac(nm)": float,
-    "unc_ritz_wl": float,
-    "ritz_wl_air(nm)": float,
-    "wn(cm-1)": float,
-    "intens": float,
-    "Aki(s^-1)": float,
-    "fik": float,
-    "S(a.u.)": float,
-    "log_gf": float,
-    "Acc": str,
-    "Ei(cm-1)": float,
-    "Ek(cm-1)": float,
-    "conf_i": str,
-    "term_i": str,
-    "J_i": str,
-    "conf_k": str,
-    "term_k": str,
-    "J_k": str,
-    "g_i": float,
-    "g_k": float,
-    "Type": str,
-    "tp_ref": str,
-    "line_ref": str,
-}
-"""Schema enforced by [SpectraCache][..]."""
-
-ASDLevelSchema: dict[str, type] = {
-    "element": str,
-    "sp_num": int,
-    "Configuration": str,
-    "Term": str,
-    "J": float,
-    "g": float,
-    "Level (cm-1)": float,
-    "Uncertainty (cm-1)": float,
-    "Splitting": float,
-    "Lande": float,
-    "L": float,
-    "Level comment": str,
-    "Ionization limit": bool,
-    "Reference": str,
-    "Leading percentages": str,
-}
-"""Schema enforced by [LevelCacheAccessor][..]."""
 
 SCI_EXPR = r"(?P<num>[+-]?\d*\.?\d+(?:[eE][+-]?\d+)?)"
 """Regex pattern for processing scientific notation"""
@@ -392,12 +342,12 @@ class SpectraCache:
             return (
                 pl.concat(cached_frames).unique()
                 if len(cached_frames) > 0
-                else pl.DataFrame({k: [] for k in ASDSchema}, schema=ASDSchema)
+                else pl.DataFrame(Schemas.ASDLineOutputSchema.empty_table())
             )
         return (
             pd.concat(cached_frames).drop_duplicates().reset_index(drop=True)
             if len(cached_frames) > 0
-            else pd.DataFrame({k: pd.Series(dtype=v) for k, v in ASDSchema.items()})
+            else Schemas.ASDLineOutputSchema.empty_table().to_pandas()
         )
 
 
