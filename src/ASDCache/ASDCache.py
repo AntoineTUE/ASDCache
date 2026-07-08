@@ -262,6 +262,39 @@ class SpectraCache:
             )
         return response
 
+    @staticmethod
+    def _parse_response(response: Response) -> pa.Table:
+        """Parse a response from the ASD Lines database using Apache Arrow into a [pyarrow.Table][pyarrow.Table].
+
+        This is a low-level API to parse data in a consistent schema before converting into a dataframe using the desired backend.
+
+        Using pyarrow means the majority of the parsing logic is similar, before converting to either pandas or polars (or any other dataframe library with pyarrow support).
+
+        Args:
+            response (Response): A (cached) response from the ASD Lines database.
+
+        Returns:
+            data (pa.Table): A Table with atomic spectra data from the ASD.
+        """
+        data = arrow.read_response(response, schema=Schemas.line_parsing_schema)
+        for col in ["obs_wl_vac(nm)", "Ei(cm-1)", "Ek(cm-1)", "intens", "ritz_wl_vac(nm)"]:
+            data = arrow.set_column(data, col, arrow.parse_sci_expr(data[col]))
+        data = arrow.set_column(data, "Type", pc.fill_null(data["Type"], "E1"))
+
+        # vac-to-air conversion using vectorized pyarrow compute functions
+        mask = pc.and_(
+            pc.greater_equal(data["wn(cm-1)"], pa.scalar(5000, pa.float64())),
+            pc.less_equal(data["wn(cm-1)"], pa.scalar(50000, pa.float64())),
+        )
+        n_refractive = arrow.wn_to_n(data["wn(cm-1)"])
+        for src_col, dest_col in zip(["obs_wl_vac(nm)", "ritz_wl_vac(nm)"], ["obs_wl_air(nm)", "ritz_wl_air(nm)"]):
+            air_equiv = pc.if_else(mask, pc.divide(data[src_col], n_refractive), pa.scalar(np.nan, pa.float64()))
+            data = arrow.set_column(data, dest_col, air_equiv)
+        data = data.select(Schemas.ASDLineOutputSchema.names)
+        if not pc.all(pc.true_unless_null(data["Type"])):
+            raise ValueError("Validation failed: 'Type' column contains `null` values.")
+        return data
+
     @property
     def cached_species(self) -> list[str]:
         """A list of all cached species."""
@@ -338,64 +371,7 @@ class SpectraCache:
 
         For lines outside of this range, it uses NaN values.
         """
-        schema = {
-            "obs_wl_vac(nm)": str,
-            "ritz_wl_vac(nm)": str,
-            "wn(cm-1)": float,
-            "intens": str,
-            "Aki(s^-1)": float,
-            "fik": float,
-            "S(a.u.)": float,
-            "log_gf": float,
-            "Acc": str,
-            "Ei(cm-1)": str,
-            "Ek(cm-1)": str,
-            "conf_i": str,
-            "conf_k": str,
-            "term_i": str,
-            "term_k": str,
-            "g_i": float,
-            "g_k": float,
-            "J_i": str,
-            "J_k": str,
-            "Type": str,
-            "tp_ref": str,
-            "line_ref": str,
-            "": str,
-        }
-        df = pd.read_csv(StringIO(response.text), sep="\t", dtype=schema)
-        # Detect if pandas uses new `StringDtype`, or legacy `object` dtype for strings.
-        # This affects NaN handling for strings.
-        # Pandas 3.0 and up use the StringDtype, while pandas 2 can opt-in to this
-        # The 'Type' column should exist, 'element' may not.
-        uses_new_string_dtype = pd.api.types.is_string_dtype(df["Type"])
-        for col in ["obs_wl_vac(nm)", "ritz_wl_vac(nm)", "intens", "Ei(cm-1)", "Ek(cm-1)"]:
-            df[col] = df.loc[:, col].str.extract(SCI_EXPR).astype(float)
-        # Any missing value implies line is an E1 (electric dipole) transition
-        if uses_new_string_dtype:
-            df["Type"] = df.loc[:, "Type"].fillna("E1")
-        else:
-            df["Type"] = df.loc[:, "Type"].astype(str).replace("nan", "E1")
-        df["tp_ref"] = df.loc[:, "tp_ref"].fillna("")
-        df["obs_wl_air(nm)"] = np.nan
-        air_equiv_range = df["wn(cm-1)"].between(5000, 50000)  # range where air wavelength is computed.
-        df["obs_wl_air(nm)"] = df.loc[air_equiv_range, "obs_wl_vac(nm)"] / wavenumber_to_refractive_index(
-            df.loc[air_equiv_range, "wn(cm-1)"]
-        )
-        df["ritz_wl_air(nm)"] = np.nan
-        df["ritz_wl_air(nm)"] = df.loc[air_equiv_range, "ritz_wl_vac(nm)"] / wavenumber_to_refractive_index(
-            df.loc[air_equiv_range, "wn(cm-1)"]
-        )
-        df = df.drop([c for c in df.columns if "Unnamed" in c], axis=1).reset_index(drop=True)
-        if "element" not in df.columns:
-            # cast roman numerals to int for consistency with queries with multiple ionization states, e.g. Ar I vs Ar I-II
-            # As 'element' and 'sp_num' columns are only missing for single-species queries, assign as constants, not vectors.
-            element, numeric = extract_state_from_response(response)
-            df["element"] = element
-            df["sp_num"] = numeric
-        df["unc_obs_wl"] = pd.to_numeric(df["unc_obs_wl"]) if "unc_obs_wl" in df.columns else np.nan
-        df["unc_ritz_wl"] = pd.to_numeric(df["unc_ritz_wl"]) if "unc_ritz_wl" in df.columns else np.nan
-        return df.loc[:, list(ASDSchema)]
+        return cls._parse_response(response).to_pandas()
 
     @classmethod
     def _from_polars(cls, response: Response) -> "pl.DataFrame":
@@ -407,68 +383,7 @@ class SpectraCache:
 
         For lines outside of this range, it uses NaN values.
         """
-        # initial schema when parsing from text
-        schema = {
-            "obs_wl_vac(nm)": pl.String,
-            "ritz_wl_vac(nm)": pl.String,
-            "wn(cm-1)": pl.Float64,
-            "intens": pl.String,
-            "Aki(s^-1)": pl.Float64,
-            "fik": pl.Float64,
-            "S(a.u.)": pl.Float64,
-            "log_gf": pl.Float64,
-            "Acc": pl.String,
-            "Ei(cm-1)": pl.String,
-            "Ek(cm-1)": pl.String,
-            "conf_i": pl.String,
-            "conf_k": pl.String,
-            "term_i": pl.String,
-            "term_k": pl.String,
-            "g_i": pl.Float64,
-            "g_k": pl.Float64,
-            "J_i": pl.String,
-            "J_k": pl.String,
-            "": pl.String,
-        }
-
-        df = pl.read_csv(
-            StringIO(response.text),
-            separator="\t",
-            schema_overrides=schema,
-            null_values="",
-        )
-        sci_cols = ["obs_wl_vac(nm)", "Ei(cm-1)", "Ek(cm-1)", "intens", "ritz_wl_vac(nm)"]
-        cast_to_scientific_notation = [
-            pl.col(c).str.extract(SCI_EXPR).replace("", None).cast(pl.Float64).alias(c) for c in sci_cols
-        ]
-        df = df.with_columns(
-            *cast_to_scientific_notation,
-            pl.col("S(a.u.)").cast(pl.Float64),
-            pl.col("Type").replace(None, "E1"),
-            pl.col("tp_ref").replace(None, ""),
-        ).drop([""])
-        # compute air wavelengths between 5000 cm-1 and 50000 cm-1
-        air_equiv_range = pl.col("wn(cm-1)").is_between(5000, 50000)
-        df = df.with_columns(
-            pl.when(air_equiv_range)
-            .then(pl.col("obs_wl_vac(nm)") / wavenumber_to_refractive_index(pl.col("wn(cm-1)")))
-            .otherwise(np.nan)
-            .alias("obs_wl_air(nm)"),
-            pl.when(air_equiv_range)
-            .then(pl.col("ritz_wl_vac(nm)") / wavenumber_to_refractive_index(pl.col("wn(cm-1)")))
-            .otherwise(np.nan)
-            .alias("ritz_wl_air(nm)"),
-        )
-        if "element" not in df.columns:
-            element, numeric = extract_state_from_response(response)
-            df = df.with_columns(pl.lit(element).alias("element"), pl.lit(numeric, dtype=pl.Int64).alias("sp_num"))
-        # Cast to float, or create column filled with `null` if missing.
-        exprs = [
-            (pl.col(c) if c in df.columns else pl.lit(None).alias(c)).cast(pl.Float64)
-            for c in ["unc_obs_wl", "unc_ritz_wl"]
-        ]
-        df = df.with_columns(exprs)
-        return df.match_to_schema(ASDSchema)  # force exception if not schema-compliant
+        return pl.from_arrow(cls._parse_response(response))
 
     def get_all_cached(self) -> "pd.DataFrame|pl.DataFrame":
         """Retrieve all cached data into a single dataframe."""
@@ -778,18 +693,12 @@ class LevelCacheAccessor:
 
     @classmethod
     def _from_pandas(cls, response) -> pd.DataFrame:
-        """Process a response into a DataFrame using pandas, with datatypes backed by pyarrow.
-
-        Will produce a DataFrame that adheres to [ASDLevelSchema][(m).].
-        """
+        """Process a response into a DataFrame using pandas, with datatypes backed by pyarrow."""
         return cls._parse_response(response).to_pandas(types_mapper=pd.ArrowDtype)
 
     @classmethod
     def _from_polars(cls, response) -> "pl.DataFrame":
-        """Process a response into a DataFrame using polars.
-
-        Will produce a DataFrame that adheres to [ASDLevelSchema][(m).].
-        """
+        """Process a response into a DataFrame using polars."""
         return pl.from_arrow(cls._parse_response(response))
 
     def create_dataframe(self, response: Response) -> "pd.DataFrame|pl.DataFrame":

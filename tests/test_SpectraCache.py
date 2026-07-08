@@ -60,7 +60,7 @@ def test_cache_setup(cache_location):
 
     This checks if the expected species in the expected intervals are present.
 
-    If this test fails, either the contents of the `test_cache` file has been altered, or the test configuration is changed.
+    If this test fails, either the contents of the `test_cache` file have been altered, or the test configuration is changed.
 
     In either case, this warrants checking.
     """

@@ -9,6 +9,14 @@ Other schemas are used to guarantee that after parsing, all data is of the expec
 
 import pyarrow as pa
 
+
+class ASDSchemaError(BaseException):
+    """Exception raised when a schema does not match the required or expected schema.
+
+    This indicates there were errors in parsing, or processing data.
+    """
+
+
 level_parsing_schema = pa.schema(
     [
         ("element", pa.string()),
@@ -27,6 +35,11 @@ level_parsing_schema = pa.schema(
         ("Reference", pa.string()),
     ]
 )
+"""The schema used to parse data from the ASD Energy Level database.
+
+Note:
+    This schema is used to parse the data, it does not correspond to the output schema.
+"""
 
 line_parsing_schema = pa.schema(
     [
@@ -60,6 +73,11 @@ line_parsing_schema = pa.schema(
         ("line_ref", pa.dictionary(pa.int32(), pa.string())),
     ]
 )
+"""The schema used to parse data from the ASD Lines database.
+
+Note:
+    This schema is used to parse the data, it does not correspond to the output schema.
+"""
 
 ASDLevelOutputSchema = pa.schema(
     [
@@ -79,3 +97,38 @@ ASDLevelOutputSchema = pa.schema(
         ("Reference", pa.string()),
     ]
 )
+"""Schema for data retrieved from the ASD Energy Level database."""
+
+ASDLineOutputSchema = pa.schema(
+    [
+        ("element", pa.string()),
+        ("sp_num", pa.int16()),
+        ("obs_wl_vac(nm)", pa.float64()),
+        ("unc_obs_wl", pa.float64()),
+        ("obs_wl_air(nm)", pa.float64()),
+        ("ritz_wl_vac(nm)", pa.float64()),
+        ("unc_ritz_wl", pa.float64()),
+        ("ritz_wl_air(nm)", pa.float64()),
+        ("wn(cm-1)", pa.float64()),
+        ("intens", pa.float64()),
+        ("Aki(s^-1)", pa.float64()),
+        ("fik", pa.float64()),
+        ("S(a.u.)", pa.float64()),
+        ("log_gf", pa.float64()),
+        ("Acc", pa.dictionary(pa.int32(), pa.string())),
+        ("Ei(cm-1)", pa.float64()),
+        ("Ek(cm-1)", pa.float64()),
+        ("conf_i", pa.string()),
+        ("term_i", pa.string()),
+        ("J_i", pa.string()),
+        ("conf_k", pa.string()),
+        ("term_k", pa.string()),
+        ("J_k", pa.string()),
+        ("g_i", pa.float64()),
+        ("g_k", pa.float64()),
+        ("Type", pa.dictionary(pa.int32(), pa.string())),
+        ("tp_ref", pa.dictionary(pa.int32(), pa.string())),
+        ("line_ref", pa.dictionary(pa.int32(), pa.string())),
+    ]
+)
+"""Schema for data retrieved from the ASD Lines database."""

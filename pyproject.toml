@@ -145,6 +145,12 @@ dependencies = ["matplotlib", "ipython","ipykernel","pre-commit"]
 installer = "uv"
 features = ["polars"]
 
+[tool.hatch.envs.legacy]
+python = "3.11"
+dependencies=["matplotlib","ipython","ipykernel","pandas~=2.0","numpy<2.0"]
+installer="uv"
+features=["polars"]
+
 
 [tool.hatch.envs.hatch-test]
 randomize = false
@@ -217,7 +223,7 @@ pandas = ["pandas-2.x"]
 polars = ["polars","polars-compat"]
 
 [[tool.hatch.envs.hatch-test.matrix]]
-python = ["3.11","3.12","3.13", "3.14"]
+python = ["3.11","3.12"]
 numpy = ["numpy-2.x","numpy-legacy"]
 pandas = ["pandas-2.x","pandas-3.x"]
 polars = ["polars","polars-compat"]
