@@ -192,10 +192,14 @@ class SpectraCache:
 
         It is possible to override any standard query parameter (see [query_params][..]]) by passing them as kwargs.
         """
+        force_refresh = kwargs.pop("force_refresh", False)
+        only_if_cached = kwargs.pop("only_if_cached", False)
         query_params = self._build_query(
             self.query_params, spectra=species, low_w=min(wl_range), upp_w=max(wl_range), **kwargs
         )
-        response: Response = self.session.get(self.nist_url, params=query_params)
+        response: Response = self.session.get(
+            self.nist_url, params=query_params, force_refresh=force_refresh, only_if_cached=only_if_cached
+        )
         response.raise_for_status()
         # Check if response is not a HTML document instead of ASCII formatted data, indicating query error.
         if not self._check_response_success(response) and throw_on_error:
@@ -286,7 +290,7 @@ class SpectraCache:
         """
         yield from (r for r in self.session.cache.filter() if self.nist_url in r.url)
 
-    def fetch(self, species, wl_range=(170, 1000)) -> "pd.DataFrame|pl.DataFrame":
+    def fetch(self, species, wl_range=(170, 1000), **kwargs) -> "pd.DataFrame|pl.DataFrame":
         """Fetch information on a species from the ASD and return it as a DataFrame, first checking the cache.
 
         This supports loading multiple species in one go by using the same notation as the NIST ASD form.
@@ -300,12 +304,20 @@ class SpectraCache:
         Both these operations will fetch data online and be stored as separate cache entries.
 
         Likewise, when you first query "All spectra", and later "Ar I-II", the latter will not use the previously cached data.
+
+        Args:
+            species (str): A species query string, e.g. `'H I'`, `'198Hg I-III'` or `'All spectra'`.
+            wl_range (tuple[float,float]): A tuple specifying the wavelength range, e.g. `(170, 1000)`.
+
+        Keyword Args:
+            force_refresh (bool): If True, force a refresh of the cached response.
+            only_if_cached (bool): If True, only use the cached response and do not make a network request.
         """
         # TODO: add kwargs for read-only/offline access etc.
-        response = self._get_data(species, wl_range)
+        response = self._get_data(species, wl_range, **kwargs)
         return self.create_dataframe(response)
 
-    def create_dataframe(self, response) -> "pd.DataFrame|pl.DataFrame":
+    def create_dataframe(self, response: Response) -> "pd.DataFrame|pl.DataFrame":
         """Create a dataframe from the (cached) NIST ASD response, using the chosen backend at class instantiation."""
         if self.use_polars:
             return self._from_polars(response)
@@ -573,9 +585,21 @@ class LevelCacheAccessor:
         Returns the raw response, which will be cached, if it is valid, see [SpectraCache._check_response_success][(m).]
 
         If the response does not contain ASCII-data, but HTML intstead, an [ASDQueryError][(m).] will be raised.
+
+        Args:
+            species (str):  The species to query, e.g. `H I`, `O II`, `Fe III`, etc.
+            throw_on_error (bool):   If True, raise an [ASDQueryError][(m).] if the response does not contain ASCII data.
+
+        Keyword Args:
+            force_refresh (bool): If True, force a refresh of the cached response.
+            only_if_cached (bool): If True, only use the cached response and do not make a network request.
         """
+        force_refresh = kwargs.pop("force_refresh", False)
+        only_if_cached = kwargs.pop("only_if_cached", False)
         query = self.parent._build_query(self.query_params, spectrum=species)
-        response: Response = self.session.get(self.nist_url, params=query)
+        response: Response = self.session.get(
+            self.nist_url, params=query, force_refresh=force_refresh, only_if_cached=only_if_cached
+        )
         response.raise_for_status()
         if not self.parent._check_response_success(response) and throw_on_error:
             reason = self.parent._parse_nist_error_message(response)
@@ -665,13 +689,17 @@ class LevelCacheAccessor:
             return self._from_polars(response)
         return self._from_pandas(response)
 
-    def fetch(self, species: str) -> "pd.DataFrame|pl.DataFrame":
+    def fetch(self, species: str, **kwargs) -> "pd.DataFrame|pl.DataFrame":
         """Fetch the energy levels of a species from the NIST ASD Energy Levels Database, first checking the cache.
 
         Only a single species can be queried per call, due to the inner workings of the ASD (unlike [SpectraCache.fetch][(m).]).
 
         Args:
             species (str): A single species query string, e.g. `'H I'` or `'198Hg II'`.
+
+        Keyword Args:
+            force_refresh (bool): If True, force a refresh of the cached response.
+            only_if_cached (bool): If True, only use the cached response and do not make a network request.
         """
-        response = self._get_data(species)
+        response = self._get_data(species, **kwargs)
         return self.create_dataframe(response)

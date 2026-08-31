@@ -13,7 +13,7 @@ from pandas.testing import assert_frame_equal as pandas_equal
 from polars.testing import assert_frame_equal as polars_equal
 
 from ASDCache import SpectraCache
-from ASDCache.ASDCache import ASDSchema
+from ASDCache.Schemas import ASDLineOutputSchema
 
 
 def test_check_response_success(example_response):
@@ -34,7 +34,7 @@ def test_from_pandas(example_response):
     result = SpectraCache._from_pandas(example_response)
     assert isinstance(result, pd.DataFrame)
     assert result.shape[0] > 0
-    assert list(result.columns) == list(ASDSchema)
+    assert list(result.columns) == list(ASDLineOutputSchema.names)
 
 
 def test_from_polars(example_response):
