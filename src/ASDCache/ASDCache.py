@@ -28,7 +28,7 @@ if importlib.util.find_spec("polars"):
 else:
     POLARS_AVAILABLE = False
 
-from . import Schemas, arrow
+from . import Schemas, arrow, mixins
 from ._version import version
 from .utils import extract_species, extract_spectra, extract_state_from_response, wavenumber_to_refractive_index
 
@@ -44,7 +44,7 @@ class ASDQueryError(Exception):
     """Exception raised when the NIST ASD has indicated an error with a query."""
 
 
-class SpectraCache:
+class SpectraCache(mixins.CacheSessionMixin, mixins.DataHandlerMixin):
     """A class acting as the entrypoint to retrieve data from the NIST Atomic Spectra Database that uses caching.
 
     The `SpectraCache` instance acts as an access point to the cache, which stores responses on the local system in a SQLite database.
@@ -105,7 +105,7 @@ class SpectraCache:
     def __init__(
         self, use_polars_backend=False, cache_expiry=timedelta(weeks=2), cache_path: Optional[Path] = None, **kwargs
     ):
-        """Initialize an instance that handles cached data lookup of the NIST ASD.
+        """Initialize an instance that handles cached data lookup of the NIST ASD Lines database.
 
         Args:
             use_polars_backend (bool): Flag to use polars as DataFrame backend, if available
@@ -114,41 +114,11 @@ class SpectraCache:
         """
         if "strict_matching" in kwargs:
             print("The `strict_matching` kwargs has been deprecated")
-        # `filter_fn` keeps responses with errors out of the cache, error must still be raised
-        self.session = CachedSession(
-            "NIST_ASD_cache" if cache_path is None else cache_path,
-            use_cache_dir=True,
-            expire_after=cache_expiry,
-            stale_if_error=True,
-            filter_fn=self._check_response_success,
+        super().__init__(
+            use_polars_backend=use_polars_backend, cache_expiry=cache_expiry, cache_path=cache_path, **kwargs
         )
-        self.session.stream = True
-        self.session.headers.update({"User-Agent": f"ASDCache/{version}"})
-        if (use_polars_backend) and (not POLARS_AVAILABLE):
-            warnings.warn("Cannot find `polars` as a backend, falling back to `pandas`", stacklevel=2)
-            self.use_polars = False
-        else:
-            self.use_polars = use_polars_backend
-        self.levels = LevelCacheAccessor(self)
+        self.levels: LevelCacheAccessor = LevelCacheAccessor(self)
         """Accessor for ASD Energy Level database queries."""
-
-    @property
-    def cache_expiry(self) -> timedelta:
-        """The cache expiry time.
-
-        Queries that are older than this time are considered stale and marked for updating, by quering the NIST ASD.
-        In case the query for new data fails, the stale, cached response will still be parsed.
-        """
-        return self.session.settings.expire_after
-
-    def set_cache_expiry(self, new: Optional[timedelta] = None, **kwargs):
-        """Set the cache expiry to a different interval (default: 1 week).
-
-        Can be done by either passing in a `timedelta` object, or valid keyword arguments for `timedelta` itself.
-        """
-        if new is None:
-            new = timedelta(**kwargs)
-        self.session.settings.expire_after = new
 
     @staticmethod
     def _check_response_success(response: Response) -> bool:
@@ -173,11 +143,6 @@ class SpectraCache:
         body = BeautifulSoup(response.text, features="html.parser").text
         reason = body.strip().replace("\n", "") if body else ""
         return reason
-
-    def _build_query(self, standard_query: dict[str, str], **kwargs):
-        query_params = standard_query.copy()
-        query_params.update(**kwargs)
-        return query_params
 
     def _get_data(
         self, species: str, wl_range: tuple[float, float] = (170, 1000), throw_on_error=True, **kwargs
@@ -250,19 +215,6 @@ class SpectraCache:
         return data
 
     @property
-    def cached_species(self) -> list[str]:
-        """A list of all cached species."""
-        return self.list_cached_species()
-
-    def list_cached_species(self) -> list[str]:
-        """List all species in the cache, based on the string of the original query URL."""
-        species = []
-        for u in self.session.cache.urls():
-            if self.nist_url in u:
-                species.extend(extract_species(u))
-        return species
-
-    @property
     def cached_spectra(self) -> set[tuple[str, tuple[float, float]]]:
         """A set containing all unique pairs of (element,wavelength_interval) combinations.
 
@@ -273,22 +225,6 @@ class SpectraCache:
             for spectrum in extract_spectra(r):
                 spectra.add(spectrum)
         return spectra
-
-    @property
-    def responses(self):
-        """Generator yielding responses from the cache that contain line data.
-
-        Usefull to loop over all responses, while avoiding to load them all in memory.
-
-        Example
-            ```python
-            cache = SpectraCache()
-            for response in cache:
-                df = cache.create_dataframe(response)
-                ...
-            ```
-        """
-        yield from (r for r in self.session.cache.filter() if self.nist_url in r.url)
 
     def fetch(self, species, wl_range=(170, 1000), **kwargs) -> "pd.DataFrame|pl.DataFrame":
         """Fetch information on a species from the ASD and return it as a DataFrame, first checking the cache.
@@ -317,36 +253,6 @@ class SpectraCache:
         response = self._get_data(species, wl_range, **kwargs)
         return self.create_dataframe(response)
 
-    def create_dataframe(self, response: Response) -> "pd.DataFrame|pl.DataFrame":
-        """Create a dataframe from the (cached) NIST ASD response, using the chosen backend at class instantiation."""
-        if self.use_polars:
-            return self._from_polars(response)
-        return self._from_pandas(response)
-
-    @classmethod
-    def _from_pandas(cls, response: Response) -> "pd.DataFrame":
-        r"""Transform a (cached) NIST ASD response into a pandas DataFrame.
-
-        Calculates the air equivalent wavelength from the vacuum wavelength using the same Sellmeier equation as the NIST ASD.
-
-        Note that this conversion is only performed for lines with $200\ nm < \lambda < 2000\ nm$, like the ASD.
-
-        For lines outside of this range, it uses NaN values.
-        """
-        return cls._parse_response(response).to_pandas()
-
-    @classmethod
-    def _from_polars(cls, response: Response) -> "pl.DataFrame":
-        r"""Transform a (cached) NIST ASD response into a polars DataFrame.
-
-        Calculates the air equivalent wavelength from the vacuum wavelength using the same Sellmeier equation as the NIST ASD.
-
-        Note that this conversion is only performed for lines with $200\ nm < \lambda < 2000\ nm$, like the ASD.
-
-        For lines outside of this range, it uses NaN values.
-        """
-        return pl.from_arrow(cls._parse_response(response))
-
     def get_all_cached(self) -> "pd.DataFrame|pl.DataFrame":
         """Retrieve all cached data into a single dataframe."""
         cached_frames = [self.create_dataframe(cached) for cached in self.responses]
@@ -363,7 +269,7 @@ class SpectraCache:
         )
 
 
-class BibCache:
+class BibCache(mixins.CacheSessionMixin):
     r"""A class for handling lookups of bibliographic metadata from the NIST ASD.
 
     Supports both bibliographic reference databases curated by NIST:
@@ -378,35 +284,9 @@ class BibCache:
     nist_url = "https://physics.nist.gov/cgi-bin/ASBib1/get_ASBib_ref.cgi"
     reference_expr = re.compile(r"([A-Z])?([\d]+)?([a-z]+[\d]*)?")
 
-    def __init__(self, cache_expiry=timedelta(weeks=1)):
+    def __init__(self, cache_expiry=timedelta(weeks=2), cache_path: Optional[Path] = None):
         """Initialize an instance that handles cached retrieval of ASD bibliographic references."""
-        self.session = CachedSession(
-            "NIST_ASD_Bibliography_cache",
-            use_cache_dir=True,
-            expire_after=cache_expiry,
-            stale_if_error=True,
-            filter_fn=self._check_response_success,
-            ignored_parameters=["element", "spectr_charge", "type", "ref"],
-        )
-        self.session.headers.update({"User-Agent": f"ASDCache/{version}"})
-
-    @property
-    def cache_expiry(self) -> timedelta:
-        """The cache expiry time.
-
-        Queries that are older than this time are considered stale and marked for updating, by quering the NIST ASD.
-        In case the query for new data fails, the stale, cached response will still be parsed.
-        """
-        return self.session.settings.expire_after
-
-    def set_cache_expiry(self, new: Optional[timedelta] = None, **kwargs):
-        """Set the cache expiry to a different interval (default: 1 week).
-
-        Can be done by either passing in a `timedelta` object, or valid keyword arguments for `timedelta` itself.
-        """
-        if new is None:
-            new = timedelta(**kwargs)
-        self.session.settings.expire_after = new
+        super().__init__(cache_expiry=cache_expiry, cache_path=cache_path)
 
     @staticmethod
     def _check_response_success(response: Response) -> bool:
@@ -509,7 +389,7 @@ class BibCache:
         return bib_data
 
 
-class LevelCacheAccessor:
+class LevelCacheAccessor(mixins.CacheAccessorMixin, mixins.DataHandlerMixin):
     """Accessor for the Energy Level data from the ASD, sharing cache with its parent [SpectraCache][..].
 
     This accessor is not meant for stand-alone use, but to extend a `parent` [SpectraCache][(m).] instance.
@@ -546,36 +426,6 @@ class LevelCacheAccessor:
 
     expr_L = re.compile(r"([spdfghij])[0-9A-Z()/]*$")  # Regex for extracting L from the Term of a state.
     map_L = {c: i for i, c in enumerate("spdfghij")}  # Mapping of Term-labels for L to integers.
-
-    def __init__(self, parent: SpectraCache):
-        """Initialize a LevelCacheAccessor that shares the same cache session as the provided SpectraCache."""
-        self.parent = parent
-
-    @property
-    def use_polars(self) -> bool:
-        """Flag if `polars` is to be used, if present in the environment."""
-        return self.parent.use_polars
-
-    @property
-    def session(self) -> CachedSession:
-        """Reference to the cache session."""
-        return self.parent.session
-
-    @property
-    def responses(self):
-        """Generator yielding responses from the cache that contain line data.
-
-        Usefull to loop over all responses, while avoiding to load them all in memory.
-
-        Example
-            ```python
-            cache = SpectraCache()
-            for response in cache.levels:
-                df = cache.levels.create_dataframe(response)
-                ...
-            ```
-        """
-        yield from (r for r in self.session.cache.filter() if self.nist_url in r.url)
 
     def _get_data(self, species, throw_on_error=True, **kwargs):
         """Retreive raw, ASCII-formatted data from the NIST ASD with a GET request.
@@ -648,46 +498,6 @@ class LevelCacheAccessor:
         ).drop_columns(["Prefix", "Suffix"])
         data = data.select(Schemas.ASDLevelOutputSchema.names)  # reorder according to schema
         return data
-
-    @property
-    def cached_species(self) -> list[str]:
-        """A list of all cached species for which energy levels have been cached."""
-        return self.list_cached_species()
-
-    def list_cached_species(self) -> list[str]:
-        """List all species in the cache, for which energy level information is stored.
-
-        This is determined based on the string of the original query URL.
-        """
-        species = []
-        for u in self.session.cache.urls():
-            if self.nist_url in u:
-                species.extend(extract_species(u))
-        return species
-
-    @classmethod
-    def _from_pandas(cls, response) -> pd.DataFrame:
-        """Process a response into a DataFrame using pandas, with datatypes backed by pyarrow."""
-        return cls._parse_response(response).to_pandas(types_mapper=pd.ArrowDtype)
-
-    @classmethod
-    def _from_polars(cls, response) -> "pl.DataFrame":
-        """Process a response into a DataFrame using polars."""
-        return pl.from_arrow(cls._parse_response(response))
-
-    def create_dataframe(self, response: Response) -> "pd.DataFrame|pl.DataFrame":
-        """Create a dataframe from the (cached) NIST ASD response.
-
-        Will only successfully process queries to the ASD Energy Level Database url, else raises a ValueError.
-
-        Will decide on the backend to use based on [use_polars][..].
-        """
-        if not response.url.startswith(self.nist_url):
-            msg = f"Invalid response, only the {self.nist_url} endpoint is supported, got {response.url}"
-            raise ValueError(msg)
-        if self.use_polars:
-            return self._from_polars(response)
-        return self._from_pandas(response)
 
     def fetch(self, species: str, **kwargs) -> "pd.DataFrame|pl.DataFrame":
         """Fetch the energy levels of a species from the NIST ASD Energy Levels Database, first checking the cache.
