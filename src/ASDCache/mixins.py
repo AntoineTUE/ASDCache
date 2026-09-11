@@ -80,7 +80,7 @@ class GenericCacheMixin:
 
     @property
     def responses(self):
-        """Generator yielding responses from the cache that contain line data.
+        """Generator yielding responses from the cache that contain relevant data.
 
         Usefull to loop over all responses, while avoiding to load them all in memory.
 
@@ -210,11 +210,11 @@ class DataHandlerMixin:
 
     @property
     def cached_species(self) -> list[str]:
-        """A list of all cached species for which energy levels have been cached."""
+        """A list of all cached species for which relevant data have been cached."""
         return self.list_cached_species()
 
     def list_cached_species(self) -> list[str]:
-        """List all species in the cache, for which energy level information is stored.
+        """List all species in the cache, for which relevant data is stored.
 
         This is determined based on the string of the original query URL.
         """

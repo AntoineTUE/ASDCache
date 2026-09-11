@@ -1,16 +1,14 @@
-"""Module that facilitates IO using pyarrow.
-
-Utilities for reading, parsing and transforming ASD (Atomic Spectra Database) ASCII table data using pyarrow.
+"""Module that facilitates reading, parsing and transforming ASD (Atomic Spectra Database) ASCII table data using pyarrow.
 
 The module centralises IO and lightweight vectorised parsing operations so pandas and polars backends can interoperate through arrow tables/arrays without surprising dtype mismatches.
 
 Since both pandas and polars can work with pyarrow natively, it makes matters more simple to handle data parsing with pyarrow and then convert to the desired kind of dataframe.
 
-In addition, the [pyarrow.Table][pyarrow.Table] can be converted to many other dataframe libraries, if so desired.
+In addition, the [pyarrow.Table][pyarrow.lib.Table] can be converted to many other dataframe libraries, if so desired.
 
 This module provides a generic [read_response][(m).read_response] function, that will read a (cached response) and parse it according to a provided schema (see [Schemas][(p).Schemas]).
 
-The resulting [pyarrow.Table][pyarrow.Table] can then be processed further into the desired output schema.
+The resulting [pyarrow.Table][pyarrow.lib.Table] can then be processed further into the desired output schema.
 
 For this, there are several helper function provided to aid in parsing or updating the table.
 """
@@ -35,7 +33,7 @@ def map_arrow_to_pandas_types(dtype) -> pa.DataType:
 
     The main use if this function is to ensure consistency between dataframes created by polars and pandas (which is only relevant for testing in practise).
 
-    When converting using [polars.DataFrame.to_pandas][polars.DataFrame.to_pandas] the conversion happens through an [arrow.Table][pyarrow.Table].
+    When converting using [polars.DataFrame.to_pandas][polars.DataFrame.to_pandas] the conversion happens through an [arrow.Table][pyarrow.lib.Table].
 
     By design polars enforces [pyarrow.large_string][pyarrow.large_string] for strings when converting to arrow, to handle larger than 2 GB columns.
 
@@ -46,22 +44,22 @@ def map_arrow_to_pandas_types(dtype) -> pa.DataType:
     This ensures consistency between schema and content of dataframes regardless of backend.
 
     Example:
-    ```python
-    from ASDCache import SpectraCache
-    from ASDCache.arrow import map_arrow_to_pandas_types
-    from pandas.testing import assert_frame_equal
+        ```python
+        from ASDCache import SpectraCache
+        from ASDCache.arrow import map_arrow_to_pandas_types
+        from pandas.testing import assert_frame_equal
 
-    cache_polars = SpectraCache(use_polars_backend=True)
-    data = cache.fetch("H I")
-    manual_as_pandas = data.to_pandas(types_mapper = map_arrow_to_pandas_types)
+        cache_polars = SpectraCache(use_polars_backend=True)
+        data = cache.fetch("H I")
+        manual_as_pandas = data.to_pandas(types_mapper = map_arrow_to_pandas_types)
 
-    cache_pandas = SpectraCache(use_polars_backend=False)
+        cache_pandas = SpectraCache(use_polars_backend=False)
 
-    assert_frame_equal(manual_as_pandas, cache_pandas.fetch("H I"))
+        assert_frame_equal(manual_as_pandas, cache_pandas.fetch("H I"))
 
-    # without applying map_arrow_to_pandas_types the test fails due to type mismatch
-    assert_frame_equal(data.to_pandas(), cache_pandas.fetch("H I"))
-    ```
+        # without applying map_arrow_to_pandas_types the test fails due to type mismatch
+        assert_frame_equal(data.to_pandas(), cache_pandas.fetch("H I"))
+        ```
     """
     if dtype == pa.large_string():
         dtype = pa.string()
@@ -101,6 +99,8 @@ def read_response(r: Response, schema: pa.Schema) -> pa.Table:
     If the columns `element` or `sp_num` are part of the schema but contain null values, they will be added/filled based on information extracted from the response url.
 
     This should only be the case when querying a single combination of both, e.g. 'H I' or `O III` (and not for 'Ar I-II' for instance).
+
+    For schemas used to parse data from the ASD, see [Schemas][(p).Schemas].
     """
     data = csv.read_csv(
         BytesIO(r.content),
@@ -125,8 +125,6 @@ def read_response(r: Response, schema: pa.Schema) -> pa.Table:
 def parse_fraction_from_strings(col: pa.Array) -> pa.Array:
     """Parse a PyArrow column that contains strings, that can be fractions, into floats.
 
-    Example of supported content: ["1","","5/7"]
-
     Extraction happens by splitting on "/", and dividing all elements that match a regex.
 
     Args:
@@ -134,6 +132,14 @@ def parse_fraction_from_strings(col: pa.Array) -> pa.Array:
 
     Returns:
         fractions (pa.Array): A pyarrow array with floating point data.
+
+    Example:
+        ```python
+        col = pa.array(["1/2", "3/4", "1"])
+        fractions = parse_fraction_from_strings(col)
+        print(fractions)
+        # Output: [0.5, 0.75, 1.0]
+        ```
     """
     # make contiguous if chunked
     if isinstance(col, pa.ChunkedArray):

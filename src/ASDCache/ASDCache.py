@@ -66,6 +66,7 @@ class SpectraCache(mixins.CacheSessionMixin, mixins.DataHandlerMixin):
     """
 
     nist_url = "https://physics.nist.gov/cgi-bin/ASD/lines1.pl"
+    """Base URL for the NIST ASD Lines database form."""
     query_params = {
         "submit": "Retrieve Data",
         "unit": "1",
@@ -140,6 +141,7 @@ class SpectraCache(mixins.CacheSessionMixin, mixins.DataHandlerMixin):
 
     @staticmethod
     def _parse_nist_error_message(response):
+        """Extract the error message from a NIST ASD response that contains HTML instead of ASCII data."""
         body = BeautifulSoup(response.text, features="html.parser").text
         reason = body.strip().replace("\n", "") if body else ""
         return reason
@@ -183,7 +185,7 @@ class SpectraCache(mixins.CacheSessionMixin, mixins.DataHandlerMixin):
 
     @staticmethod
     def _parse_response(response: Response) -> pa.Table:
-        """Parse a response from the ASD Lines database using Apache Arrow into a [pyarrow.Table][pyarrow.Table].
+        """Parse a response from the ASD Lines database using Apache Arrow into a [pyarrow.Table][pyarrow.lib.Table].
 
         This is a low-level API to parse data in a consistent schema before converting into a dataframe using the desired backend.
 
@@ -254,7 +256,10 @@ class SpectraCache(mixins.CacheSessionMixin, mixins.DataHandlerMixin):
         return self.create_dataframe(response)
 
     def get_all_cached(self) -> "pd.DataFrame|pl.DataFrame":
-        """Retrieve all cached data into a single dataframe."""
+        """Retrieve all cached data into a single dataframe.
+
+        Will remove duplicate data, which can occur when multiple queries overlap in the data they retrieve.
+        """
         cached_frames = [self.create_dataframe(cached) for cached in self.responses]
         if self.use_polars:
             return (
@@ -279,6 +284,14 @@ class BibCache(mixins.CacheSessionMixin):
     * Atomic Energy Levels and Spectral Bibliographic Database: [10.18434/T40K53](https://doi.org/10.18434/T40K53)
 
     References to these databases in the NIST ASD data can be looked up and will be cached.
+
+    Example:
+        ```python
+        from ASDCache import BibCache
+        bib = BibCache()
+        ref = bib.lookup("H", 1, "T8637") # transition probability bibliography lookup
+        ref = bib.lookup("H", 1 ,"L7400c29") # Level bibliography lookup
+        ```
     """
 
     nist_url = "https://physics.nist.gov/cgi-bin/ASBib1/get_ASBib_ref.cgi"
@@ -293,6 +306,11 @@ class BibCache(mixins.CacheSessionMixin):
         """Validate that data has been fetched succesfully.
 
         If this check fails, the cache should not update with this response, even when marked as stale.
+
+        Note:
+            The behaviour here is different from [SpectraCache._check_response_success][(m).].
+            Bibliographic metadata is retrieved as HTML pages, which thus cannot be discarded as failures.
+            Instead, we need to check their content to check for errors.
         """
         is_success = (response.status_code == 200) & (b"There was a problem" not in response.content)
         if not is_success:
@@ -323,6 +341,14 @@ class BibCache(mixins.CacheSessionMixin):
 
     def lookup(self, element: str, sp_num: int, reference_code: str) -> dict[str, Any]:
         """Look up a reference code for a given element state.
+
+        For any lookup, the optional comment will be looked up separately, such that it can be cached as well.
+
+        In addition, it is not required that the `element` and `sp_num` arguments are correct, since the reference code itself is unique.
+
+        These only serve to construct the URL that can be used to lookup the reference code.
+
+        They do not affect the bibliographic reference that is returned.
 
         Args:
             element (str):   The element name, e.g. `H`
@@ -466,7 +492,7 @@ class LevelCacheAccessor(mixins.CacheAccessorMixin, mixins.DataHandlerMixin):
 
     @staticmethod
     def _parse_response(response: Response) -> pa.Table:
-        """Parse a response using Apache Arrow into an [pyarrow.Table][pyarrow.Table].
+        """Parse a response using Apache Arrow into an [pyarrow.Table][pyarrow.lib.Table].
 
         This is a low-level API to parse data in a consistent schema, before converting it to a dataframe using the desired backend.
 

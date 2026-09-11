@@ -102,6 +102,7 @@ plugins:
           show_root_full_path: true
           show_root_members_full_path: false
           # Docstrings
+          inherited_members: true
           show_if_no_docstring: false
           show_docstring_attributes: false
           show_docstring_functions: true
@@ -111,7 +112,9 @@ plugins:
           line_length: 120
           show_signature_annotations: true
           # Other
-          show_bases: true
+          show_bases: false
+          show_inheritance_diagram: true
+          inheritance_diagram_direction: LR
           show_symbol_type_heading: true
           show_symbol_type_toc: true
           extra:
@@ -179,6 +182,7 @@ extra:
 extra_javascript:
   - assets/javascript/mathjax.js
   - "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS_CHTML-full,Safe"
+  - https://unpkg.com/mermaid@10.9.0/dist/mermaid.min.js
 
 nav:
   - index.md

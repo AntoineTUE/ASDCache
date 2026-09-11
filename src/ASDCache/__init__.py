@@ -1,19 +1,20 @@
-r"""`ASDCache` is a package to fetch data from the  NIST Atomic Spectra Database (ASD), utlizing caching for fast responses.
+r"""`ASDCache` is a package to fetch data from the  [NIST Atomic Spectra Database](https://www.nist.gov/pml/atomic-spectra-database) (ASD), utilizing caching for fast responses.
 
 To make the most use out of the cache, `ASDCache` is opinionated in the information it retrieves from the ASD; it always requests the same schema of information and locally computes additional fields.
 
 Data is initially fetched from the online published NIST page, using the tab-separated ASCII output format.
 
-The benefit of this format is that it is more 'machine readable' than the formatted ASCII of HTML options.
+The benefit of this format is that it is more 'machine readable' than the formatted ASCII or HTML options.
 
 This means it requires far less bespoke parsing to get rid of 'human readable' features such as repeated page column headers, or empty lines.
 
 ## Air wavelength
-To ensure a consistent schema of the retrieved data, lines are always retrieved as a function of wavelength, using `vacuum wavelength`, even between 200 to 2000 nm.
+To ensure a consistent schema of the retrieved data, lines are always retrieved as a function of `vacuum wavelength`, even between 200 to 2000 nm.
 
-Wavenumbers and Ritz wavelength will be included in the response.
+Wavenumbers and vacuum Ritz wavelength will be included in the response as well.
 
-In the range $5000\ \mathrm{cm}^{-1}<\nu<50000\ \mathrm{cm}^{-1}$ the air equivalent observed and Ritz wavelengths are calculated using the same Sellmeier equation as the NIST ASD (see [here][.utils.wavenumber_to_refractive_index]).
+In the range $5000\ \mathrm{cm}^{-1}<\nu<50000\ \mathrm{cm}^{-1}$ the air-equivalent observed and Ritz wavelengths are calculated using the same Sellmeier equation as the NIST ASD (see [here][.utils.wavenumber_to_refractive_index]).
+
 This is consistent with the approach of the ASD.
 
 ## Making use of the cache
