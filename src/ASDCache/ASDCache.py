@@ -35,11 +35,6 @@ from .utils import extract_species, extract_spectra, extract_state_from_response
 logger = logging.getLogger("ASDCache")
 
 
-SCI_EXPR = r"(?P<num>[+-]?\d*\.?\d+(?:[eE][+-]?\d+)?)"
-"""Regex pattern for processing scientific notation"""
-L_EXPR = r"(?P<L>[spdfghij])[0-9A-Z()/]*$"
-
-
 class ASDQueryError(Exception):
     """Exception raised when the NIST ASD has indicated an error with a query."""
 
@@ -511,17 +506,14 @@ class LevelCacheAccessor(mixins.CacheAccessorMixin, mixins.DataHandlerMixin):
         data = data.append_column("Ionization limit", pc.match_substring(data["Term"], "Limit"))
 
         L_mapping = {c: i for i, c in enumerate("spdfghi")}
-        ls = pc.struct_field(pc.extract_regex(data["Configuration"], L_EXPR), "L")
+        ls = arrow.parse_regex(data["Configuration"], arrow.L_EXPR, "L", pa.string())
         l_mapped = pa.array([L_mapping.get(x.as_py()) for x in ls], type=pa.int8())
         # data = data.append_column("L", pa.DictionaryArray.from_arrays(l_mapped, pa.array(L_mapping)))
         data = data.append_column("L", l_mapped)
         comment_mapping = {"]": "Derived", ")": "Theoretical", "?": "Perhaps not real", "†": "Questionable"}
         comment_mapped = pa.array([comment_mapping.get(x.as_py()) for x in data["Suffix"]], type=pa.string())
         data = data.append_column("Level comment", comment_mapped)
-        # TODO: use ASDCache.arrow.parse_sci_expr for the line below; update/refactor where SCI_EXP is defined, potentially separate module?
-        data = arrow.set_column(
-            data, "Lande", pc.struct_field(pc.extract_regex(data["Lande"], SCI_EXPR), "num").cast(pa.float64())
-        ).drop_columns(["Prefix", "Suffix"])
+        data = arrow.set_column(data, "Lande", arrow.parse_sci_expr(data["Lande"])).drop_columns(["Prefix", "Suffix"])
         data = data.select(Schemas.ASDLevelOutputSchema.names)  # reorder according to schema
         return data
 

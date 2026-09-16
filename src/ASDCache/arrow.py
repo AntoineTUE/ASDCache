@@ -1,3 +1,4 @@
+# ty: ignore[unresolved-attribute]
 """Module that facilitates reading, parsing and transforming ASD (Atomic Spectra Database) ASCII table data using pyarrow.
 
 The module centralises IO and lightweight vectorised parsing operations so pandas and polars backends can interoperate through arrow tables/arrays without surprising dtype mismatches.
@@ -22,6 +23,12 @@ from pyarrow import csv
 from requests import Response
 
 from ASDCache.utils import extract_state_from_response
+
+SCI_EXPR = r"(?P<value>[+-]?\d*\.?\d+(?:[eE][+-]?\d+)?)"
+"""Regular expression for matching scientific notation numbers, see [parse_sci_expr][(m).]"""
+
+L_EXPR = r"(?P<L>[spdfghij])[0-9A-Z()/]*$"
+"""Regular expression for matching the L term symbol, see [parse_regex][(m).]"""
 
 
 def map_arrow_to_pandas_types(dtype) -> pa.DataType:
@@ -101,6 +108,13 @@ def read_response(r: Response, schema: pa.Schema) -> pa.Table:
     This should only be the case when querying a single combination of both, e.g. 'H I' or `O III` (and not for 'Ar I-II' for instance).
 
     For schemas used to parse data from the ASD, see [Schemas][(p).Schemas].
+
+    Args:
+        r (Response): The HTTP response containing the ASD ASCII data.
+        schema (pa.Schema): The schema to adhere to when reading the response.
+
+    Returns:
+        data (pa.Table): A PyArrow Table containing the parsed data.
     """
     data = csv.read_csv(
         BytesIO(r.content),
@@ -162,16 +176,35 @@ def parse_fraction_from_strings(col: pa.Array) -> pa.Array:
     return pc.if_else(is_fraction, fraction_values, numeric_values)
 
 
+def parse_regex(col: pa.Array, pattern: str, field_name: str, dtype: pa.DataType) -> pa.Array:
+    """Extract a regex pattern from a column,using pyarrow compute functions, and cast it to the specified dtype.
+
+    Note:
+        The `pattern` must contain a named group corresponding to `field_name`.
+
+    Args:
+        col (pa.Array): String-types pyarrow array to parse.
+        pattern (str): Regex pattern with a named group.
+        field_name (str): Name of the named group to extract.
+        dtype (pa.DataType): The desired output data type.
+
+    Returns:
+        pa.Array: A pyarrow array with the extracted and casted values.
+    """
+    if not pattern.startswith(f"(?P<{field_name}>"):
+        raise ValueError(f"Pattern must start with a named group for field '{field_name}'")
+    return pc.struct_field(pc.extract_regex(col, pattern), field_name).cast(dtype)
+
+
 def parse_sci_expr(col: pa.Array) -> pa.Array:
-    """Extract scientific expression from a column using regex.
+    """Extract scientific expression from a column using [SCI_EXPR][(m).].
 
     The input array must be of a type like [pyarrow.string][pyarrow.string] or similar.
 
     The output array will be cast to [pyarrow.float64][pyarrow.float64].
     """
-    return pc.struct_field(pc.extract_regex(col, r"(?P<value>[+-]?\d*\.?\d+(?:[eE][+-]?\d+)?)"), "value").cast(
-        pa.float64()
-    )
+    # return pc.struct_field(pc.extract_regex(col, SCI_EXPR), "value").cast(pa.float64())
+    return parse_regex(col, SCI_EXPR, "value", pa.float64())
 
 
 def wn_to_n(wn: pa.Array) -> pa.Array:

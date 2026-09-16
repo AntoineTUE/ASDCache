@@ -3,7 +3,8 @@ from urllib import parse
 
 import pytest
 
-from ASDCache.ASDCache import SCI_EXPR, SpectraCache
+from ASDCache.arrow import L_EXPR, SCI_EXPR
+from ASDCache.ASDCache import SpectraCache
 from ASDCache.utils import extract_species
 
 
