@@ -13,6 +13,7 @@ from pandas.testing import assert_frame_equal as pandas_equal
 from polars.testing import assert_frame_equal as polars_equal
 
 from ASDCache import SpectraCache
+from ASDCache.arrow import map_arrow_to_pandas_types
 from ASDCache.Schemas import ASDLineOutputSchema
 
 
@@ -83,7 +84,7 @@ def test_equivalent_result_for_backends_with_pandas(cache_location, species):
     response = cache._get_data(*species)
     df_pandas = cache._from_pandas(response)
     df_polars = cache._from_polars(response)
-    polars_as_pandas = df_polars.to_pandas()
+    polars_as_pandas = df_polars.to_pandas(types_mapper=map_arrow_to_pandas_types)
     assert df_pandas.shape == df_polars.shape
     pandas_equal(polars_as_pandas, df_pandas)
 
