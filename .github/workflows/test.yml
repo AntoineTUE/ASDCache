@@ -2,13 +2,18 @@ name: test
 
 on:
   push:
-    branches: [main]
-  pull_request_target:
-    branches: [main]
+    branches-ignore:
+      - gh-pages
+  pull_request:
+    branches:
+      - main
 
 concurrency:
   group: test-${{ github.head_ref }}
   cancel-in-progress: true
+
+permissions:
+  contents: read
 
 env:
   PYTHONUNBUFFERED: "1"
