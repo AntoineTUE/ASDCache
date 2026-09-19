@@ -15,7 +15,7 @@
         <link rel="canonical" href="https://antoinetue.github.io/ASDCache/latest/reference/ASDCache/utils/">
       
       
-        <link rel="prev" href="../ASDCache/">
+        <link rel="prev" href="../mixins/">
       
       
       
@@ -565,6 +565,90 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../Schemas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>Schemas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../arrow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>arrow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mixins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>mixins
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -643,6 +727,28 @@
     <span class="md-ellipsis">
       
         <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;wavenumber_to_refractive_index
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ASDCache.utils.extract_query_parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;extract_query_parameters
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ASDCache.utils.extract_spectra" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;extract_spectra
       
     </span>
   </a>
@@ -763,6 +869,22 @@
               </td>
             </tr>
             <tr class="doc-section-item">
+              <td><code><a class="autorefs autorefs-internal" title="            extract_query_parameters (ASDCache.utils.extract_query_parameters)" href="#ASDCache.utils.extract_query_parameters">extract_query_parameters</a></code></td>
+              <td>
+                <div class="doc-md-description">
+                  <p>Extract the query parameters from a url.</p>
+                </div>
+              </td>
+            </tr>
+            <tr class="doc-section-item">
+              <td><code><a class="autorefs autorefs-internal" title="            extract_spectra (ASDCache.utils.extract_spectra)" href="#ASDCache.utils.extract_spectra">extract_spectra</a></code></td>
+              <td>
+                <div class="doc-md-description">
+                  <p>Extract a list of <code>(element,wavelength_range)</code> tuples from a url-string, or a Response.</p>
+                </div>
+              </td>
+            </tr>
+            <tr class="doc-section-item">
               <td><code><a class="autorefs autorefs-internal" title="            extract_species (ASDCache.utils.extract_species)" href="#ASDCache.utils.extract_species">extract_species</a></code></td>
               <td>
                 <div class="doc-md-description">
@@ -816,10 +938,10 @@
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/ASDCache/utils.py</code></summary>
               <div class="highlight"><pre><span></span><code><span class="linenos" data-linenos="13 "></span><span class="k">def</span><span class="w"> </span><span class="nf">roman_to_int</span><span class="p">(</span><span class="n">roman</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="linenos" data-linenos="14 "></span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse a Roman numeral into an integer.</span>
+<span class="linenos" data-linenos="14 "></span><span class="w">    </span><span class="sd">"""Parse a Roman numeral into an integer.</span>
 <span class="linenos" data-linenos="15 "></span>
-<span class="linenos" data-linenos="16 "></span><span class="sd">    Supports numerals up to &quot;M&quot;.</span>
-<span class="linenos" data-linenos="17 "></span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos" data-linenos="16 "></span><span class="sd">    Supports numerals up to "M".</span>
+<span class="linenos" data-linenos="17 "></span><span class="sd">    """</span>
 <span class="linenos" data-linenos="18 "></span>    <span class="n">roman</span> <span class="o">=</span> <span class="n">roman</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 <span class="linenos" data-linenos="19 "></span>    <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="linenos" data-linenos="20 "></span>    <span class="n">previous</span> <span class="o">=</span> <span class="mi">0</span>
@@ -861,7 +983,7 @@
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/ASDCache/utils.py</code></summary>
               <div class="highlight"><pre><span></span><code><span class="linenos" data-linenos="31 "></span><span class="k">def</span><span class="w"> </span><span class="nf">wavenumber_to_refractive_index</span><span class="p">(</span><span class="n">wavenumbers</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="linenos" data-linenos="32 "></span><span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the refractive index $n$ in air for a transition, using the 5-term Sellmeier formula used by NIST.</span>
+<span class="linenos" data-linenos="32 "></span><span class="w">    </span><span class="sa">r</span><span class="sd">"""Calculate the refractive index $n$ in air for a transition, using the 5-term Sellmeier formula used by NIST.</span>
 <span class="linenos" data-linenos="33 "></span>
 <span class="linenos" data-linenos="34 "></span><span class="sd">    The used Sellmeier formula is the one from E.R. Peck and K. Reeder [J. Opt. Soc. Am. 62, 958 (1972)](http://dx.doi.org/10.1364/JOSA.62.000958).</span>
 <span class="linenos" data-linenos="35 "></span>
@@ -872,9 +994,170 @@
 <span class="linenos" data-linenos="40 "></span><span class="sd">    See also [the ASD documentation on the topic](https://physics.nist.gov/PhysRefData/ASD/Html/lineshelp.html#Conversion%20between%20air%20and%20vacuum%20wavelengths).</span>
 <span class="linenos" data-linenos="41 "></span>
 <span class="linenos" data-linenos="42 "></span><span class="sd">    Using this refractive index, air equivalent wavelengths consistent with the ASD can be calculated, without the need to query them separately.</span>
-<span class="linenos" data-linenos="43 "></span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos" data-linenos="43 "></span><span class="sd">    """</span>
 <span class="linenos" data-linenos="44 "></span>    <span class="n">sigma</span> <span class="o">=</span> <span class="n">wavenumbers</span> <span class="o">*</span> <span class="mf">1e-4</span>  <span class="c1"># um^-1</span>
 <span class="linenos" data-linenos="45 "></span>    <span class="k">return</span> <span class="mi">1</span> <span class="o">+</span> <span class="mf">1e-8</span> <span class="o">*</span> <span class="p">(</span><span class="mf">8060.51</span> <span class="o">+</span> <span class="mi">2480990</span> <span class="o">/</span> <span class="p">(</span><span class="mf">132.274</span> <span class="o">-</span> <span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mf">17455.7</span> <span class="o">/</span> <span class="p">(</span><span class="mf">39.32957</span> <span class="o">-</span> <span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+</code></pre></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="ASDCache.utils.extract_query_parameters" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">extract_query_parameters</span>
+
+
+<a href="#ASDCache.utils.extract_query_parameters" class="headerlink" title="Permanent link">&para;</a></h2>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">extract_query_parameters</span><span class="p">(</span><span class="n">url_or_response</span><span class="p">:</span> <span class="n"><span title="str">str</span></span> <span class="o">|</span> <span class="n"><span title="requests.Response">Response</span></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><span title="dict">dict</span></span><span class="p">[</span><span class="n"><span title="str">str</span></span><span class="p">,</span> <span class="n"><span title="str">str</span></span><span class="p">]</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Extract the query parameters from a url.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>url_or_response</code>
+            </td>
+            <td>
+                  <code>(<span title="str">str</span>, <span title="requests.Response">Response</span>)</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Either a url string or Response-object</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>params</code></td>            <td>
+                  <code><span title="dict">dict</span>[<span title="str">str</span>, <span title="str">str</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>a dictionary containing all query key-value pairs as strings.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/ASDCache/utils.py</code></summary>
+              <div class="highlight"><pre><span></span><code><span class="linenos" data-linenos="48 "></span><span class="k">def</span><span class="w"> </span><span class="nf">extract_query_parameters</span><span class="p">(</span><span class="n">url_or_response</span><span class="p">:</span> <span class="s2">"str | Response"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="linenos" data-linenos="49 "></span><span class="w">    </span><span class="sd">"""Extract the query parameters from a url.</span>
+<span class="linenos" data-linenos="50 "></span>
+<span class="linenos" data-linenos="51 "></span><span class="sd">    Args:</span>
+<span class="linenos" data-linenos="52 "></span><span class="sd">        url_or_response (str,Response): Either a url string or Response-object</span>
+<span class="linenos" data-linenos="53 "></span>
+<span class="linenos" data-linenos="54 "></span><span class="sd">    Returns:</span>
+<span class="linenos" data-linenos="55 "></span><span class="sd">        params (dict[str,str]): a dictionary containing all query key-value pairs as strings.</span>
+<span class="linenos" data-linenos="56 "></span><span class="sd">    """</span>
+<span class="linenos" data-linenos="57 "></span>    <span class="n">query</span> <span class="o">=</span> <span class="n">parse</span><span class="o">.</span><span class="n">urlsplit</span><span class="p">(</span><span class="n">url_or_response</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">url_or_response</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">url_or_response</span><span class="o">.</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">query</span>
+<span class="linenos" data-linenos="58 "></span>    <span class="n">params</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">parse</span><span class="o">.</span><span class="n">parse_qsl</span><span class="p">(</span><span class="n">query</span><span class="p">))</span>
+<span class="linenos" data-linenos="59 "></span>    <span class="k">return</span> <span class="n">params</span>
+</code></pre></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="ASDCache.utils.extract_spectra" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">extract_spectra</span>
+
+
+<a href="#ASDCache.utils.extract_spectra" class="headerlink" title="Permanent link">&para;</a></h2>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">extract_spectra</span><span class="p">(</span><span class="n">url_or_response</span><span class="p">:</span> <span class="n"><span title="str">str</span></span> <span class="o">|</span> <span class="n"><span title="requests.Response">Response</span></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><span title="list">list</span></span><span class="p">[</span><span class="n"><span title="tuple">tuple</span></span><span class="p">[</span><span class="n"><span title="str">str</span></span><span class="p">,</span> <span class="n"><span title="tuple">tuple</span></span><span class="p">[</span><span class="n"><span title="float">float</span></span><span class="p">,</span> <span class="o">...</span><span class="p">]]]</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Extract a list of <code>(element,wavelength_range)</code> tuples from a url-string, or a Response.</p>
+<p>Each tuple contains an element string (e.g. <code>'H'</code>) and a tuple of <code>(minimum_wavelength, maximum_wavelength)</code>.</p>
+<p>The wavelength range limits are floats.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>url_or_response</code>
+            </td>
+            <td>
+                  <code>(<span title="str">str</span>, <span title="requests.Response">Response</span>)</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Either a url string or Response-object</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/ASDCache/utils.py</code></summary>
+              <div class="highlight"><pre><span></span><code><span class="linenos" data-linenos="62 "></span><span class="k">def</span><span class="w"> </span><span class="nf">extract_spectra</span><span class="p">(</span><span class="n">url_or_response</span><span class="p">:</span> <span class="s2">"str | Response"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">]]]:</span>
+<span class="linenos" data-linenos="63 "></span><span class="w">    </span><span class="sd">"""Extract a list of `(element,wavelength_range)` tuples from a url-string, or a Response.</span>
+<span class="linenos" data-linenos="64 "></span>
+<span class="linenos" data-linenos="65 "></span><span class="sd">    Each tuple contains an element string (e.g. `'H'`) and a tuple of `(minimum_wavelength, maximum_wavelength)`.</span>
+<span class="linenos" data-linenos="66 "></span>
+<span class="linenos" data-linenos="67 "></span><span class="sd">    The wavelength range limits are floats.</span>
+<span class="linenos" data-linenos="68 "></span>
+<span class="linenos" data-linenos="69 "></span><span class="sd">    Args:</span>
+<span class="linenos" data-linenos="70 "></span><span class="sd">        url_or_response (str,Response): Either a url string or Response-object</span>
+<span class="linenos" data-linenos="71 "></span>
+<span class="linenos" data-linenos="72 "></span><span class="sd">    """</span>
+<span class="linenos" data-linenos="73 "></span>    <span class="n">params</span> <span class="o">=</span> <span class="n">extract_query_parameters</span><span class="p">(</span><span class="n">url_or_response</span><span class="p">)</span>
+<span class="linenos" data-linenos="74 "></span>    <span class="n">wls</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="p">[</span><span class="n">params</span><span class="p">[</span><span class="s2">"low_w"</span><span class="p">],</span> <span class="n">params</span><span class="p">[</span><span class="s2">"upp_w"</span><span class="p">]]))</span>
+<span class="linenos" data-linenos="75 "></span>    <span class="k">return</span> <span class="p">[(</span><span class="n">name</span><span class="p">,</span> <span class="n">wls</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">params</span><span class="p">[</span><span class="s2">"spectra"</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">";"</span><span class="p">)]</span>
 </code></pre></div>
             </details>
     </div>
@@ -889,7 +1172,7 @@
 
 
 <a href="#ASDCache.utils.extract_species" class="headerlink" title="Permanent link">&para;</a></h2>
-<div class="doc-signature highlight"><pre><span></span><code><span class="nf">extract_species</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="n"><span title="str">str</span></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><span title="list">list</span></span><span class="p">[</span><span class="n"><span title="str">str</span></span><span class="p">]</span>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">extract_species</span><span class="p">(</span><span class="n">url_or_response</span><span class="p">:</span> <span class="n"><span title="str">str</span></span> <span class="o">|</span> <span class="n"><span title="requests.Response">Response</span></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><span title="list">list</span></span><span class="p">[</span><span class="n"><span title="str">str</span></span><span class="p">]</span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
@@ -902,20 +1185,20 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/ASDCache/utils.py</code></summary>
-              <div class="highlight"><pre><span></span><code><span class="linenos" data-linenos="48 "></span><span class="k">def</span><span class="w"> </span><span class="nf">extract_species</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="linenos" data-linenos="49 "></span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract the queried species (or in NIST terminology &#39;spectra&#39;) from a URL request for the NIST ASD.</span>
-<span class="linenos" data-linenos="50 "></span>
-<span class="linenos" data-linenos="51 "></span><span class="sd">    This will be a list of strings, looking like: `[&#39;H I&#39;,&#39;O I-III&#39;,&#39;All spectra&#39;,&#39;198Hg I&#39;]`</span>
-<span class="linenos" data-linenos="52 "></span>
-<span class="linenos" data-linenos="53 "></span><span class="sd">    For the NIST ASD Lines database, this corresponds to the `spectra` parameter.</span>
-<span class="linenos" data-linenos="54 "></span>
-<span class="linenos" data-linenos="55 "></span><span class="sd">    For the NIST ASD Levels database, this corresponds to the `spectrum` parameter, as it only supports single spectrum lookup.</span>
-<span class="linenos" data-linenos="56 "></span><span class="sd">    &quot;&quot;&quot;</span>
-<span class="linenos" data-linenos="57 "></span>    <span class="n">params</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">parse</span><span class="o">.</span><span class="n">parse_qsl</span><span class="p">(</span><span class="n">parse</span><span class="o">.</span><span class="n">urlsplit</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">query</span><span class="p">))</span>
-<span class="linenos" data-linenos="58 "></span>    <span class="k">if</span> <span class="s2">&quot;spectra&quot;</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
-<span class="linenos" data-linenos="59 "></span>        <span class="k">return</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;spectra&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">)</span>
-<span class="linenos" data-linenos="60 "></span>    <span class="c1"># NIST Levels database only supports single spectrum</span>
-<span class="linenos" data-linenos="61 "></span>    <span class="k">return</span> <span class="p">[</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;spectrum&quot;</span><span class="p">]]</span>
+              <div class="highlight"><pre><span></span><code><span class="linenos" data-linenos="78 "></span><span class="k">def</span><span class="w"> </span><span class="nf">extract_species</span><span class="p">(</span><span class="n">url_or_response</span><span class="p">:</span> <span class="s2">"str | Response"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="linenos" data-linenos="79 "></span><span class="w">    </span><span class="sd">"""Extract the queried species (or in NIST terminology 'spectra') from a URL request for the NIST ASD.</span>
+<span class="linenos" data-linenos="80 "></span>
+<span class="linenos" data-linenos="81 "></span><span class="sd">    This will be a list of strings, looking like: `['H I','O I-III','All spectra','198Hg I']`</span>
+<span class="linenos" data-linenos="82 "></span>
+<span class="linenos" data-linenos="83 "></span><span class="sd">    For the NIST ASD Lines database, this corresponds to the `spectra` parameter.</span>
+<span class="linenos" data-linenos="84 "></span>
+<span class="linenos" data-linenos="85 "></span><span class="sd">    For the NIST ASD Levels database, this corresponds to the `spectrum` parameter, as it only supports single spectrum lookup.</span>
+<span class="linenos" data-linenos="86 "></span><span class="sd">    """</span>
+<span class="linenos" data-linenos="87 "></span>    <span class="n">params</span> <span class="o">=</span> <span class="n">extract_query_parameters</span><span class="p">(</span><span class="n">url_or_response</span><span class="p">)</span>
+<span class="linenos" data-linenos="88 "></span>    <span class="k">if</span> <span class="s2">"spectra"</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+<span class="linenos" data-linenos="89 "></span>        <span class="k">return</span> <span class="n">params</span><span class="p">[</span><span class="s2">"spectra"</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">";"</span><span class="p">)</span>
+<span class="linenos" data-linenos="90 "></span>    <span class="c1"># NIST Levels database only supports single spectrum</span>
+<span class="linenos" data-linenos="91 "></span>    <span class="k">return</span> <span class="p">[</span><span class="n">params</span><span class="p">[</span><span class="s2">"spectrum"</span><span class="p">]]</span>
 </code></pre></div>
             </details>
     </div>
@@ -930,7 +1213,7 @@
 
 
 <a href="#ASDCache.utils.extract_state_from_response" class="headerlink" title="Permanent link">&para;</a></h2>
-<div class="doc-signature highlight"><pre><span></span><code><span class="nf">extract_state_from_response</span><span class="p">(</span><span class="n">response</span><span class="p">:</span> <span class="n"><span title="requests.Response">Response</span></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><span title="tuple">tuple</span></span><span class="p">[</span><span class="n"><span title="str">str</span></span><span class="p">,</span> <span class="n"><span title="int">int</span></span><span class="p">]</span>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">extract_state_from_response</span><span class="p">(</span><span class="n">url_or_response</span><span class="p">:</span> <span class="n"><span title="requests.Response">Response</span></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><span title="tuple">tuple</span></span><span class="p">[</span><span class="n"><span title="str">str</span></span><span class="p">,</span> <span class="n"><span title="int">int</span></span><span class="p">]</span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
@@ -944,23 +1227,23 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/ASDCache/utils.py</code></summary>
-              <div class="highlight"><pre><span></span><code><span class="linenos" data-linenos="64 "></span><span class="k">def</span><span class="w"> </span><span class="nf">extract_state_from_response</span><span class="p">(</span><span class="n">response</span><span class="p">:</span> <span class="s2">&quot;Response&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
-<span class="linenos" data-linenos="65 "></span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract the element and ionization state from the url of a response.</span>
-<span class="linenos" data-linenos="66 "></span>
-<span class="linenos" data-linenos="67 "></span><span class="sd">    Only supports queries for a single species, i.e. `&#39;H I&#39;` is valid, but `&#39;Ar I-III&#39;` is not (3 species).</span>
-<span class="linenos" data-linenos="68 "></span>
-<span class="linenos" data-linenos="69 "></span><span class="sd">    When querying only a single state, e.g. &#39;H I&#39;, this information will not be present as a column in data: the `element` and `sp_num` columns will not be included.</span>
-<span class="linenos" data-linenos="70 "></span>
-<span class="linenos" data-linenos="71 "></span><span class="sd">    This information is parsed from the query url instead, so it can be added.</span>
-<span class="linenos" data-linenos="72 "></span>
-<span class="linenos" data-linenos="73 "></span><span class="sd">    Since the `sp_num` column is of an integer type, the roman numerals in the url are converted to integers.</span>
-<span class="linenos" data-linenos="74 "></span><span class="sd">    &quot;&quot;&quot;</span>
-<span class="linenos" data-linenos="75 "></span>    <span class="n">species</span> <span class="o">=</span> <span class="n">extract_species</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>  <span class="c1"># ty:ignore[invalid-argument-type]</span>
-<span class="linenos" data-linenos="76 "></span>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">species</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-<span class="linenos" data-linenos="77 "></span>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Must use a single-species query, but got </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">species</span><span class="p">)</span>
-<span class="linenos" data-linenos="78 "></span>    <span class="n">element</span><span class="p">,</span> <span class="n">numeral</span> <span class="o">=</span> <span class="n">species</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="linenos" data-linenos="79 "></span>    <span class="n">numeric</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">roman_to_int</span><span class="p">(</span><span class="n">numeral</span><span class="p">)</span> <span class="k">if</span> <span class="n">numeral</span> <span class="k">else</span> <span class="mi">1</span>
-<span class="linenos" data-linenos="80 "></span>    <span class="k">return</span> <span class="n">element</span><span class="p">,</span> <span class="n">numeric</span>
+              <div class="highlight"><pre><span></span><code><span class="linenos" data-linenos=" 94 "></span><span class="k">def</span><span class="w"> </span><span class="nf">extract_state_from_response</span><span class="p">(</span><span class="n">url_or_response</span><span class="p">:</span> <span class="s2">"Response"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="linenos" data-linenos=" 95 "></span><span class="w">    </span><span class="sd">"""Extract the element and ionization state from the url of a response.</span>
+<span class="linenos" data-linenos=" 96 "></span>
+<span class="linenos" data-linenos=" 97 "></span><span class="sd">    Only supports queries for a single species, i.e. `'H I'` is valid, but `'Ar I-III'` is not (3 species).</span>
+<span class="linenos" data-linenos=" 98 "></span>
+<span class="linenos" data-linenos=" 99 "></span><span class="sd">    When querying only a single state, e.g. 'H I', this information will not be present as a column in data: the `element` and `sp_num` columns will not be included.</span>
+<span class="linenos" data-linenos="100 "></span>
+<span class="linenos" data-linenos="101 "></span><span class="sd">    This information is parsed from the query url instead, so it can be added.</span>
+<span class="linenos" data-linenos="102 "></span>
+<span class="linenos" data-linenos="103 "></span><span class="sd">    Since the `sp_num` column is of an integer type, the roman numerals in the url are converted to integers.</span>
+<span class="linenos" data-linenos="104 "></span><span class="sd">    """</span>
+<span class="linenos" data-linenos="105 "></span>    <span class="n">species</span> <span class="o">=</span> <span class="n">extract_species</span><span class="p">(</span><span class="n">url_or_response</span><span class="p">)</span>
+<span class="linenos" data-linenos="106 "></span>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">species</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+<span class="linenos" data-linenos="107 "></span>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Must use a single-species query, but got </span><span class="si">%s</span><span class="s2">"</span><span class="p">,</span> <span class="n">species</span><span class="p">)</span>
+<span class="linenos" data-linenos="108 "></span>    <span class="n">element</span><span class="p">,</span> <span class="n">numeral</span> <span class="o">=</span> <span class="n">species</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="linenos" data-linenos="109 "></span>    <span class="n">numeric</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">roman_to_int</span><span class="p">(</span><span class="n">numeral</span><span class="p">)</span> <span class="k">if</span> <span class="n">numeral</span> <span class="k">else</span> <span class="mi">1</span>
+<span class="linenos" data-linenos="110 "></span>    <span class="k">return</span> <span class="n">element</span><span class="p">,</span> <span class="n">numeric</span>
 </code></pre></div>
             </details>
     </div>
@@ -1006,7 +1289,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../ASDCache/" class="md-footer__link md-footer__link--prev" aria-label="Previous: &lt;code class=&#34;doc-symbol doc-symbol-nav doc-symbol-module&#34;&gt;&lt;/code&gt;ASDCache">
+          <a href="../mixins/" class="md-footer__link md-footer__link--prev" aria-label="Previous: &lt;code class=&#34;doc-symbol doc-symbol-nav doc-symbol-module&#34;&gt;&lt;/code&gt;mixins">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1016,7 +1299,7 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>ASDCache
+                <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>mixins
               </div>
             </div>
           </a>
@@ -1078,6 +1361,8 @@
         <script src="../../../assets/javascript/mathjax.js"></script>
       
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS_CHTML-full,Safe"></script>
+      
+        <script src="https://unpkg.com/mermaid@10.9.0/dist/mermaid.min.js"></script>
       
     
   </body>

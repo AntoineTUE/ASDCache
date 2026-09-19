@@ -304,6 +304,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data schema overview
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -320,6 +338,47 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#asd-lines-schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ASD Lines schema
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#asd-energy-level-schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ASD Energy Level schema
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -576,6 +635,90 @@
   
   
     <li class="md-nav__item">
+      <a href="../reference/ASDCache/Schemas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>Schemas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/ASDCache/arrow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>arrow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/ASDCache/mixins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>mixins
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../reference/ASDCache/utils/" class="md-nav__link">
         
   
@@ -633,6 +776,9 @@
 
 
 <h1 id="data-schema-overview">Data schema overview<a class="headerlink" href="#data-schema-overview" title="Permanent link">&para;</a></h1>
+<h2 id="asd-lines-schema">ASD Lines schema<a class="headerlink" href="#asd-lines-schema" title="Permanent link">&para;</a></h2>
+<p>Data retrieved from the ASD Lines database uses the following schema.</p>
+<p>See also <a href="../reference/ASDCache/Schemas/#ASDCache.Schemas.ASDLineOutputSchema">ASDLineOutputASchema</a></p>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
 <p>The schema of the data used in <code>ASDCache</code> in principle reflects that of the NIST ASD Line Table, using the tab-separated format.
@@ -789,13 +935,13 @@ You can find the relevant information on the included data on <a href="https://p
 <tr>
 <td><code>g_i</code></td>
 <td><code>float</code></td>
-<td>Lower Landé <span class="arithmatex"><span class="MathJax_Preview">g</span><script type="math/tex">g</script></span> factor</td>
+<td>Lower statistical weight</td>
 <td></td>
 </tr>
 <tr>
 <td><code>g_k</code></td>
 <td><code>float</code></td>
-<td>Upper Landé <span class="arithmatex"><span class="MathJax_Preview">g</span><script type="math/tex">g</script></span> factor</td>
+<td>Upper statistical weight</td>
 <td></td>
 </tr>
 <tr>
@@ -814,6 +960,110 @@ You can find the relevant information on the included data on <a href="https://p
 <td><code>line_ref</code></td>
 <td><code>str</code></td>
 <td>Energy Levels and Wavelengths Bibliographic Reference</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="asd-energy-level-schema">ASD Energy Level schema<a class="headerlink" href="#asd-energy-level-schema" title="Permanent link">&para;</a></h2>
+<p>Data retrieved from the ASD Lines database uses the following schema.</p>
+<p>See also <a href="../reference/ASDCache/Schemas/#ASDCache.Schemas.ASDLevelOutputSchema">ASDLevelOutputASchema</a></p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>The schema of the data used in <code>ASDCache</code> in principle reflects that of the NIST ASD Energy Levels Table, using the tab-separated format.
+You can find the relevant information on the included data on <a href="https://physics.nist.gov/PhysRefData/ASD/Html/levelshelp.html#LOUTCONFIG">this page</a> of the NIST ASD documentation.</p>
+</div>
+<table>
+<thead>
+<tr>
+<th>Column name</th>
+<th>Data type</th>
+<th>Description</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>element</code></td>
+<td><code>str</code></td>
+<td>atomic element</td>
+<td></td>
+</tr>
+<tr>
+<td><code>sp_num</code></td>
+<td><code>int</code></td>
+<td>ionization degree, starting with 1 for the unionized atom</td>
+<td>Only integers, not roman numerals</td>
+</tr>
+<tr>
+<td><code>Configuration</code></td>
+<td><code>str</code></td>
+<td>electronic configuration of the level</td>
+<td></td>
+</tr>
+<tr>
+<td><code>Term</code></td>
+<td><code>str</code></td>
+<td>term symbol of the level</td>
+<td></td>
+</tr>
+<tr>
+<td><code>J</code></td>
+<td><code>float</code></td>
+<td>total electronic angular momentum</td>
+<td>Numeric representation of the J value</td>
+</tr>
+<tr>
+<td><code>g</code></td>
+<td><code>float</code></td>
+<td>Statistical weight of atomic level</td>
+<td></td>
+</tr>
+<tr>
+<td><code>Level (cm-1)</code></td>
+<td><code>float</code></td>
+<td>level energy</td>
+<td></td>
+</tr>
+<tr>
+<td><code>Uncertainty (cm-1)</code></td>
+<td><code>float</code></td>
+<td>uncertainty on the level energy</td>
+<td></td>
+</tr>
+<tr>
+<td><code>Splitting</code></td>
+<td><code>float</code></td>
+<td>fine-structure splitting or related splitting value</td>
+<td></td>
+</tr>
+<tr>
+<td><code>Lande</code></td>
+<td><code>float</code></td>
+<td>Landé <span class="arithmatex"><span class="MathJax_Preview">g</span><script type="math/tex">g</script></span> factor as reported by ASD</td>
+<td></td>
+</tr>
+<tr>
+<td><code>L</code></td>
+<td><code>int</code></td>
+<td>orbital angular momentum quantum number</td>
+<td></td>
+</tr>
+<tr>
+<td><code>Ionization limit</code></td>
+<td><code>bool</code></td>
+<td>whether the level corresponds to the ionization limit</td>
+<td></td>
+</tr>
+<tr>
+<td><code>Leading percentages</code></td>
+<td><code>str</code></td>
+<td>dominant configuration/term composition of the level</td>
+<td></td>
+</tr>
+<tr>
+<td><code>Reference</code></td>
+<td><code>str</code></td>
+<td>bibliographic reference for the level</td>
 <td></td>
 </tr>
 </tbody>
@@ -840,7 +1090,7 @@ You can find the relevant information on the included data on <a href="https://p
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="January 16, 2025 10:59:00 UTC">January 16, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 11, 2026 08:25:02 UTC">September 11, 2026</span>
   </span>
 
     
@@ -967,6 +1217,8 @@ You can find the relevant information on the included data on <a href="https://p
         <script src="../assets/javascript/mathjax.js"></script>
       
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS_CHTML-full,Safe"></script>
+      
+        <script src="https://unpkg.com/mermaid@10.9.0/dist/mermaid.min.js"></script>
       
     
   </body>
