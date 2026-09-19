@@ -16,6 +16,8 @@ from urllib import parse
 
 import numpy as np
 import pandas as pd
+import pyarrow as pa
+import pyarrow.compute as pc
 from bs4 import BeautifulSoup
 from requests import Response
 from requests_cache import CachedResponse, CachedSession, OriginalResponse
@@ -26,71 +28,18 @@ if importlib.util.find_spec("polars"):
 else:
     POLARS_AVAILABLE = False
 
+from . import Schemas, arrow, mixins
 from ._version import version
-from .utils import extract_species, extract_state_from_response, wavenumber_to_refractive_index
+from .utils import extract_species, extract_spectra, extract_state_from_response, wavenumber_to_refractive_index
 
 logger = logging.getLogger("ASDCache")
-
-ASDSchema: dict[str, type] = {
-    "element": str,
-    "sp_num": int,
-    "obs_wl_vac(nm)": float,
-    "unc_obs_wl": float,
-    "obs_wl_air(nm)": float,
-    "ritz_wl_vac(nm)": float,
-    "unc_ritz_wl": float,
-    "ritz_wl_air(nm)": float,
-    "wn(cm-1)": float,
-    "intens": float,
-    "Aki(s^-1)": float,
-    "fik": float,
-    "S(a.u.)": float,
-    "log_gf": float,
-    "Acc": str,
-    "Ei(cm-1)": float,
-    "Ek(cm-1)": float,
-    "conf_i": str,
-    "term_i": str,
-    "J_i": str,
-    "conf_k": str,
-    "term_k": str,
-    "J_k": str,
-    "g_i": float,
-    "g_k": float,
-    "Type": str,
-    "tp_ref": str,
-    "line_ref": str,
-}
-"""Schema enforced by [SpectraCache][..]."""
-
-ASDLevelSchema: dict[str, type] = {
-    "element": str,
-    "sp_num": int,
-    "Configuration": str,
-    "Term": str,
-    "J": float,
-    "g": float,
-    "Level (cm-1)": float,
-    "Uncertainty (cm-1)": float,
-    "Splitting": float,
-    "Lande": float,
-    "L": float,
-    "Level comment": str,
-    "Ionization limit": bool,
-    "Reference": str,
-    "Leading percentages": str,
-}
-"""Schema enforced by [LevelCacheAccessor][..]."""
-
-SCI_EXPR = r"([+-]?\d*\.?\d+(?:[eE][+-]?\d+)?)"
-"""Regex pattern for processing scientific notation"""
 
 
 class ASDQueryError(Exception):
     """Exception raised when the NIST ASD has indicated an error with a query."""
 
 
-class SpectraCache:
+class SpectraCache(mixins.CacheSessionMixin, mixins.DataHandlerMixin):
     """A class acting as the entrypoint to retrieve data from the NIST Atomic Spectra Database that uses caching.
 
     The `SpectraCache` instance acts as an access point to the cache, which stores responses on the local system in a SQLite database.
@@ -112,6 +61,7 @@ class SpectraCache:
     """
 
     nist_url = "https://physics.nist.gov/cgi-bin/ASD/lines1.pl"
+    """Base URL for the NIST ASD Lines database form."""
     query_params = {
         "submit": "Retrieve Data",
         "unit": "1",
@@ -151,7 +101,7 @@ class SpectraCache:
     def __init__(
         self, use_polars_backend=False, cache_expiry=timedelta(weeks=2), cache_path: Optional[Path] = None, **kwargs
     ):
-        """Initialize an instance that handles cached data lookup of the NIST ASD.
+        """Initialize an instance that handles cached data lookup of the NIST ASD Lines database.
 
         Args:
             use_polars_backend (bool): Flag to use polars as DataFrame backend, if available
@@ -160,41 +110,11 @@ class SpectraCache:
         """
         if "strict_matching" in kwargs:
             print("The `strict_matching` kwargs has been deprecated")
-        # `filter_fn` keeps responses with errors out of the cache, error must still be raised
-        self.session = CachedSession(
-            "NIST_ASD_cache" if cache_path is None else cache_path,
-            use_cache_dir=True,
-            expire_after=cache_expiry,
-            stale_if_error=True,
-            filter_fn=self._check_response_success,
+        super().__init__(
+            use_polars_backend=use_polars_backend, cache_expiry=cache_expiry, cache_path=cache_path, **kwargs
         )
-        self.session.stream = True
-        self.session.headers.update({"User-Agent": f"ASDCache/{version}"})
-        if (use_polars_backend) and (not POLARS_AVAILABLE):
-            warnings.warn("Cannot find `polars` as a backend, falling back to `pandas`", stacklevel=2)
-            self.use_polars = False
-        else:
-            self.use_polars = use_polars_backend
-        self.levels = LevelCacheAccessor(self)
+        self.levels: LevelCacheAccessor = LevelCacheAccessor(self)
         """Accessor for ASD Energy Level database queries."""
-
-    @property
-    def cache_expiry(self) -> timedelta:
-        """The cache expiry time.
-
-        Queries that are older than this time are considered stale and marked for updating, by quering the NIST ASD.
-        In case the query for new data fails, the stale, cached response will still be parsed.
-        """
-        return self.session.settings.expire_after
-
-    def set_cache_expiry(self, new: Optional[timedelta] = None, **kwargs):
-        """Set the cache expiry to a different interval (default: 1 week).
-
-        Can be done by either passing in a `timedelta` object, or valid keyword arguments for `timedelta` itself.
-        """
-        if new is None:
-            new = timedelta(**kwargs)
-        self.session.settings.expire_after = new
 
     @staticmethod
     def _check_response_success(response: Response) -> bool:
@@ -216,14 +136,10 @@ class SpectraCache:
 
     @staticmethod
     def _parse_nist_error_message(response):
+        """Extract the error message from a NIST ASD response that contains HTML instead of ASCII data."""
         body = BeautifulSoup(response.text, features="html.parser").text
         reason = body.strip().replace("\n", "") if body else ""
         return reason
-
-    def _build_query(self, standard_query: dict[str, str], **kwargs):
-        query_params = standard_query.copy()
-        query_params.update(**kwargs)
-        return query_params
 
     def _get_data(
         self, species: str, wl_range: tuple[float, float] = (170, 1000), throw_on_error=True, **kwargs
@@ -238,10 +154,14 @@ class SpectraCache:
 
         It is possible to override any standard query parameter (see [query_params][..]]) by passing them as kwargs.
         """
+        force_refresh = kwargs.pop("force_refresh", False)
+        only_if_cached = kwargs.pop("only_if_cached", False)
         query_params = self._build_query(
             self.query_params, spectra=species, low_w=min(wl_range), upp_w=max(wl_range), **kwargs
         )
-        response: Response = self.session.get(self.nist_url, params=query_params)
+        response: Response = self.session.get(
+            self.nist_url, params=query_params, force_refresh=force_refresh, only_if_cached=only_if_cached
+        )
         response.raise_for_status()
         # Check if response is not a HTML document instead of ASCII formatted data, indicating query error.
         if not self._check_response_success(response) and throw_on_error:
@@ -258,36 +178,52 @@ class SpectraCache:
             )
         return response
 
-    @property
-    def cached_species(self) -> list[str]:
-        """A list of all cached species."""
-        return self.list_cached_species()
+    @staticmethod
+    def _parse_response(response: Response) -> pa.Table:
+        """Parse a response from the ASD Lines database using Apache Arrow into a [pyarrow.Table][pyarrow.lib.Table].
 
-    def list_cached_species(self) -> list[str]:
-        """List all species in the cache, based on the string of the original query URL."""
-        species = []
-        for u in self.session.cache.urls():
-            if self.nist_url in u:
-                species.extend(extract_species(u))
-        return species
+        This is a low-level API to parse data in a consistent schema before converting into a dataframe using the desired backend.
 
-    @property
-    def responses(self):
-        """Generator yielding responses from the cache that contain line data.
+        Using pyarrow means the majority of the parsing logic is similar, before converting to either pandas or polars (or any other dataframe library with pyarrow support).
 
-        Usefull to loop over all responses, while avoiding to load them all in memory.
+        Args:
+            response (Response): A (cached) response from the ASD Lines database.
 
-        Example
-            ```python
-            cache = SpectraCache()
-            for response in cache:
-                df = cache.create_dataframe(response)
-                ...
-            ```
+        Returns:
+            data (pa.Table): A Table with atomic spectra data from the ASD.
         """
-        yield from (r for r in self.session.cache.filter() if self.nist_url in r.url)
+        data = arrow.read_response(response, schema=Schemas.line_parsing_schema)
+        for col in ["obs_wl_vac(nm)", "Ei(cm-1)", "Ek(cm-1)", "intens", "ritz_wl_vac(nm)"]:
+            data = arrow.set_column(data, col, arrow.parse_sci_expr(data[col]))
+        data = arrow.set_column(data, "Type", pc.fill_null(data["Type"], "E1"))
 
-    def fetch(self, species, wl_range=(170, 1000)) -> "pd.DataFrame|pl.DataFrame":
+        # vac-to-air conversion using vectorized pyarrow compute functions
+        mask = pc.and_(
+            pc.greater_equal(data["wn(cm-1)"], pa.scalar(5000, pa.float64())),
+            pc.less_equal(data["wn(cm-1)"], pa.scalar(50000, pa.float64())),
+        )
+        n_refractive = arrow.wn_to_n(data["wn(cm-1)"])
+        for src_col, dest_col in zip(["obs_wl_vac(nm)", "ritz_wl_vac(nm)"], ["obs_wl_air(nm)", "ritz_wl_air(nm)"]):
+            air_equiv = pc.if_else(mask, pc.divide(data[src_col], n_refractive), pa.scalar(np.nan, pa.float64()))
+            data = arrow.set_column(data, dest_col, air_equiv)
+        data = data.select(Schemas.ASDLineOutputSchema.names)
+        if not pc.all(pc.true_unless_null(data["Type"])):
+            raise ValueError("Validation failed: 'Type' column contains `null` values.")
+        return data
+
+    @property
+    def cached_spectra(self) -> set[tuple[str, tuple[float, float]]]:
+        """A set containing all unique pairs of (element,wavelength_interval) combinations.
+
+        This set is computed from all cached responses; it does not correspond to individual queries/responses.
+        """
+        spectra = set()
+        for r in self.responses:
+            for spectrum in extract_spectra(r):
+                spectra.add(spectrum)
+        return spectra
+
+    def fetch(self, species, wl_range=(170, 1000), **kwargs) -> "pd.DataFrame|pl.DataFrame":
         """Fetch information on a species from the ASD and return it as a DataFrame, first checking the cache.
 
         This supports loading multiple species in one go by using the same notation as the NIST ASD form.
@@ -301,176 +237,39 @@ class SpectraCache:
         Both these operations will fetch data online and be stored as separate cache entries.
 
         Likewise, when you first query "All spectra", and later "Ar I-II", the latter will not use the previously cached data.
+
+        Args:
+            species (str): A species query string, e.g. `'H I'`, `'198Hg I-III'` or `'All spectra'`.
+            wl_range (tuple[float,float]): A tuple specifying the wavelength range, e.g. `(170, 1000)`.
+
+        Keyword Args:
+            force_refresh (bool): If True, force a refresh of the cached response.
+            only_if_cached (bool): If True, only use the cached response and do not make a network request.
         """
         # TODO: add kwargs for read-only/offline access etc.
-        response = self._get_data(species, wl_range)
+        response = self._get_data(species, wl_range, **kwargs)
         return self.create_dataframe(response)
 
-    def create_dataframe(self, response) -> "pd.DataFrame|pl.DataFrame":
-        """Create a dataframe from the (cached) NIST ASD response, using the chosen backend at class instantiation."""
-        if self.use_polars:
-            return self._from_polars(response)
-        return self._from_pandas(response)
-
-    @classmethod
-    def _from_pandas(cls, response: Response) -> "pd.DataFrame":
-        r"""Transform a (cached) NIST ASD response into a pandas DataFrame.
-
-        Calculates the air equivalent wavelength from the vacuum wavelength using the same Sellmeier equation as the NIST ASD.
-
-        Note that this conversion is only performed for lines with $200\ nm < \lambda < 2000\ nm$, like the ASD.
-
-        For lines outside of this range, it uses NaN values.
-        """
-        schema = {
-            "obs_wl_vac(nm)": str,
-            "ritz_wl_vac(nm)": str,
-            "wn(cm-1)": float,
-            "intens": str,
-            "Aki(s^-1)": float,
-            "fik": float,
-            "S(a.u.)": float,
-            "log_gf": float,
-            "Acc": str,
-            "Ei(cm-1)": str,
-            "Ek(cm-1)": str,
-            "conf_i": str,
-            "conf_k": str,
-            "term_i": str,
-            "term_k": str,
-            "g_i": float,
-            "g_k": float,
-            "J_i": str,
-            "J_k": str,
-            "Type": str,
-            "tp_ref": str,
-            "line_ref": str,
-            "": str,
-        }
-        df = pd.read_csv(StringIO(response.text), sep="\t", dtype=schema)
-        # Detect if pandas uses new `StringDtype`, or legacy `object` dtype for strings.
-        # This affects NaN handling for strings.
-        # Pandas 3.0 and up use the StringDtype, while pandas 2 can opt-in to this
-        # The 'Type' column should exist, 'element' may not.
-        uses_new_string_dtype = pd.api.types.is_string_dtype(df["Type"])
-        for col in ["obs_wl_vac(nm)", "ritz_wl_vac(nm)", "intens", "Ei(cm-1)", "Ek(cm-1)"]:
-            df[col] = df.loc[:, col].str.extract(SCI_EXPR).astype(float)
-        # Any missing value implies line is an E1 (electric dipole) transition
-        if uses_new_string_dtype:
-            df["Type"] = df.loc[:, "Type"].fillna("E1")
-        else:
-            df["Type"] = df.loc[:, "Type"].astype(str).replace("nan", "E1")
-        df["tp_ref"] = df.loc[:, "tp_ref"].fillna("")
-        df["obs_wl_air(nm)"] = np.nan
-        air_equiv_range = df["wn(cm-1)"].between(5000, 50000)  # range where air wavelength is computed.
-        df["obs_wl_air(nm)"] = df.loc[air_equiv_range, "obs_wl_vac(nm)"] / wavenumber_to_refractive_index(
-            df.loc[air_equiv_range, "wn(cm-1)"]
-        )
-        df["ritz_wl_air(nm)"] = np.nan
-        df["ritz_wl_air(nm)"] = df.loc[air_equiv_range, "ritz_wl_vac(nm)"] / wavenumber_to_refractive_index(
-            df.loc[air_equiv_range, "wn(cm-1)"]
-        )
-        df = df.drop([c for c in df.columns if "Unnamed" in c], axis=1).reset_index(drop=True)
-        if "element" not in df.columns:
-            # cast roman numerals to int for consistency with queries with multiple ionization states, e.g. Ar I vs Ar I-II
-            # As 'element' and 'sp_num' columns are only missing for single-species queries, assign as constants, not vectors.
-            element, numeric = extract_state_from_response(response)
-            df["element"] = element
-            df["sp_num"] = numeric
-        df["unc_obs_wl"] = pd.to_numeric(df["unc_obs_wl"]) if "unc_obs_wl" in df.columns else np.nan
-        df["unc_ritz_wl"] = pd.to_numeric(df["unc_ritz_wl"]) if "unc_ritz_wl" in df.columns else np.nan
-        return df.loc[:, list(ASDSchema)]
-
-    @classmethod
-    def _from_polars(cls, response: Response) -> "pl.DataFrame":
-        r"""Transform a (cached) NIST ASD response into a polars DataFrame.
-
-        Calculates the air equivalent wavelength from the vacuum wavelength using the same Sellmeier equation as the NIST ASD.
-
-        Note that this conversion is only performed for lines with $200\ nm < \lambda < 2000\ nm$, like the ASD.
-
-        For lines outside of this range, it uses NaN values.
-        """
-        # initial schema when parsing from text
-        schema = {
-            "obs_wl_vac(nm)": pl.String,
-            "ritz_wl_vac(nm)": pl.String,
-            "wn(cm-1)": pl.Float64,
-            "intens": pl.String,
-            "Aki(s^-1)": pl.Float64,
-            "fik": pl.Float64,
-            "S(a.u.)": pl.Float64,
-            "log_gf": pl.Float64,
-            "Acc": pl.String,
-            "Ei(cm-1)": pl.String,
-            "Ek(cm-1)": pl.String,
-            "conf_i": pl.String,
-            "conf_k": pl.String,
-            "term_i": pl.String,
-            "term_k": pl.String,
-            "g_i": pl.Float64,
-            "g_k": pl.Float64,
-            "J_i": pl.String,
-            "J_k": pl.String,
-            "": pl.String,
-        }
-
-        df = pl.read_csv(
-            StringIO(response.text),
-            separator="\t",
-            schema_overrides=schema,
-            null_values="",
-        )
-        sci_cols = ["obs_wl_vac(nm)", "Ei(cm-1)", "Ek(cm-1)", "intens", "ritz_wl_vac(nm)"]
-        cast_to_scientific_notation = [
-            pl.col(c).str.extract(SCI_EXPR).replace("", None).cast(pl.Float64).alias(c) for c in sci_cols
-        ]
-        df = df.with_columns(
-            *cast_to_scientific_notation,
-            pl.col("S(a.u.)").cast(pl.Float64),
-            pl.col("Type").replace(None, "E1"),
-            pl.col("tp_ref").replace(None, ""),
-        ).drop([""])
-        # compute air wavelengths between 5000 cm-1 and 50000 cm-1
-        air_equiv_range = pl.col("wn(cm-1)").is_between(5000, 50000)
-        df = df.with_columns(
-            pl.when(air_equiv_range)
-            .then(pl.col("obs_wl_vac(nm)") / wavenumber_to_refractive_index(pl.col("wn(cm-1)")))
-            .otherwise(np.nan)
-            .alias("obs_wl_air(nm)"),
-            pl.when(air_equiv_range)
-            .then(pl.col("ritz_wl_vac(nm)") / wavenumber_to_refractive_index(pl.col("wn(cm-1)")))
-            .otherwise(np.nan)
-            .alias("ritz_wl_air(nm)"),
-        )
-        if "element" not in df.columns:
-            element, numeric = extract_state_from_response(response)
-            df = df.with_columns(pl.lit(element).alias("element"), pl.lit(numeric, dtype=pl.Int64).alias("sp_num"))
-        # Cast to float, or create column filled with `null` if missing.
-        exprs = [
-            (pl.col(c) if c in df.columns else pl.lit(None).alias(c)).cast(pl.Float64)
-            for c in ["unc_obs_wl", "unc_ritz_wl"]
-        ]
-        df = df.with_columns(exprs)
-        return df.match_to_schema(ASDSchema)  # force exception if not schema-compliant
-
     def get_all_cached(self) -> "pd.DataFrame|pl.DataFrame":
-        """Retrieve all cached data into a single dataframe."""
+        """Retrieve all cached data into a single dataframe.
+
+        Will remove duplicate data, which can occur when multiple queries overlap in the data they retrieve.
+        """
         cached_frames = [self.create_dataframe(cached) for cached in self.responses]
         if self.use_polars:
             return (
                 pl.concat(cached_frames).unique()
                 if len(cached_frames) > 0
-                else pl.DataFrame({k: [] for k in ASDSchema}, schema=ASDSchema)
+                else pl.DataFrame(Schemas.ASDLineOutputSchema.empty_table())
             )
         return (
             pd.concat(cached_frames).drop_duplicates().reset_index(drop=True)
             if len(cached_frames) > 0
-            else pd.DataFrame({k: pd.Series(dtype=v) for k, v in ASDSchema.items()})
+            else Schemas.ASDLineOutputSchema.empty_table().to_pandas()
         )
 
 
-class BibCache:
+class BibCache(mixins.CacheSessionMixin):
     r"""A class for handling lookups of bibliographic metadata from the NIST ASD.
 
     Supports both bibliographic reference databases curated by NIST:
@@ -480,46 +279,33 @@ class BibCache:
     * Atomic Energy Levels and Spectral Bibliographic Database: [10.18434/T40K53](https://doi.org/10.18434/T40K53)
 
     References to these databases in the NIST ASD data can be looked up and will be cached.
+
+    Example:
+        ```python
+        from ASDCache import BibCache
+        bib = BibCache()
+        ref = bib.lookup("H", 1, "T8637") # transition probability bibliography lookup
+        ref = bib.lookup("H", 1 ,"L7400c29") # Level bibliography lookup
+        ```
     """
 
     nist_url = "https://physics.nist.gov/cgi-bin/ASBib1/get_ASBib_ref.cgi"
     reference_expr = re.compile(r"([A-Z])?([\d]+)?([a-z]+[\d]*)?")
 
-    def __init__(self, cache_expiry=timedelta(weeks=1)):
+    def __init__(self, cache_expiry=timedelta(weeks=2), cache_path: Optional[Path] = None):
         """Initialize an instance that handles cached retrieval of ASD bibliographic references."""
-        self.session = CachedSession(
-            "NIST_ASD_Bibliography_cache",
-            use_cache_dir=True,
-            expire_after=cache_expiry,
-            stale_if_error=True,
-            filter_fn=self._check_response_success,
-            ignored_parameters=["element", "spectr_charge", "type", "ref"],
-        )
-        self.session.headers.update({"User-Agent": f"ASDCache/{version}"})
-
-    @property
-    def cache_expiry(self) -> timedelta:
-        """The cache expiry time.
-
-        Queries that are older than this time are considered stale and marked for updating, by quering the NIST ASD.
-        In case the query for new data fails, the stale, cached response will still be parsed.
-        """
-        return self.session.settings.expire_after
-
-    def set_cache_expiry(self, new: Optional[timedelta] = None, **kwargs):
-        """Set the cache expiry to a different interval (default: 1 week).
-
-        Can be done by either passing in a `timedelta` object, or valid keyword arguments for `timedelta` itself.
-        """
-        if new is None:
-            new = timedelta(**kwargs)
-        self.session.settings.expire_after = new
+        super().__init__(cache_expiry=cache_expiry, cache_path=cache_path)
 
     @staticmethod
     def _check_response_success(response: Response) -> bool:
         """Validate that data has been fetched succesfully.
 
         If this check fails, the cache should not update with this response, even when marked as stale.
+
+        Note:
+            The behaviour here is different from [SpectraCache._check_response_success][(m).].
+            Bibliographic metadata is retrieved as HTML pages, which thus cannot be discarded as failures.
+            Instead, we need to check their content to check for errors.
         """
         is_success = (response.status_code == 200) & (b"There was a problem" not in response.content)
         if not is_success:
@@ -550,6 +336,14 @@ class BibCache:
 
     def lookup(self, element: str, sp_num: int, reference_code: str) -> dict[str, Any]:
         """Look up a reference code for a given element state.
+
+        For any lookup, the optional comment will be looked up separately, such that it can be cached as well.
+
+        In addition, it is not required that the `element` and `sp_num` arguments are correct, since the reference code itself is unique.
+
+        These only serve to construct the URL that can be used to lookup the reference code.
+
+        They do not affect the bibliographic reference that is returned.
 
         Args:
             element (str):   The element name, e.g. `H`
@@ -616,7 +410,7 @@ class BibCache:
         return bib_data
 
 
-class LevelCacheAccessor:
+class LevelCacheAccessor(mixins.CacheAccessorMixin, mixins.DataHandlerMixin):
     """Accessor for the Energy Level data from the ASD, sharing cache with its parent [SpectraCache][..].
 
     This accessor is not meant for stand-alone use, but to extend a `parent` [SpectraCache][(m).] instance.
@@ -654,20 +448,6 @@ class LevelCacheAccessor:
     expr_L = re.compile(r"([spdfghij])[0-9A-Z()/]*$")  # Regex for extracting L from the Term of a state.
     map_L = {c: i for i, c in enumerate("spdfghij")}  # Mapping of Term-labels for L to integers.
 
-    def __init__(self, parent: SpectraCache):
-        """Initialize a LevelCacheAccessor that shares the same cache session as the provided SpectraCache."""
-        self.parent = parent
-
-    @property
-    def use_polars(self) -> bool:
-        """Flag if `polars` is to be used, if present in the environment."""
-        return self.parent.use_polars
-
-    @property
-    def session(self) -> CachedSession:
-        """Reference to the cache session."""
-        return self.parent.session
-
     def _get_data(self, species, throw_on_error=True, **kwargs):
         """Retreive raw, ASCII-formatted data from the NIST ASD with a GET request.
 
@@ -676,9 +456,21 @@ class LevelCacheAccessor:
         Returns the raw response, which will be cached, if it is valid, see [SpectraCache._check_response_success][(m).]
 
         If the response does not contain ASCII-data, but HTML intstead, an [ASDQueryError][(m).] will be raised.
+
+        Args:
+            species (str):  The species to query, e.g. `H I`, `O II`, `Fe III`, etc.
+            throw_on_error (bool):   If True, raise an [ASDQueryError][(m).] if the response does not contain ASCII data.
+
+        Keyword Args:
+            force_refresh (bool): If True, force a refresh of the cached response.
+            only_if_cached (bool): If True, only use the cached response and do not make a network request.
         """
+        force_refresh = kwargs.pop("force_refresh", False)
+        only_if_cached = kwargs.pop("only_if_cached", False)
         query = self.parent._build_query(self.query_params, spectrum=species)
-        response: Response = self.session.get(self.nist_url, params=query)
+        response: Response = self.session.get(
+            self.nist_url, params=query, force_refresh=force_refresh, only_if_cached=only_if_cached
+        )
         response.raise_for_status()
         if not self.parent._check_response_success(response) and throw_on_error:
             reason = self.parent._parse_nist_error_message(response)
@@ -693,150 +485,49 @@ class LevelCacheAccessor:
             )
         return response
 
-    @property
-    def cached_species(self) -> list[str]:
-        """A list of all cached species for which energy levels have been cached."""
-        return self.list_cached_species()
+    @staticmethod
+    def _parse_response(response: Response) -> pa.Table:
+        """Parse a response using Apache Arrow into an [pyarrow.Table][pyarrow.lib.Table].
 
-    def list_cached_species(self) -> list[str]:
-        """List all species in the cache, for which energy level information is stored.
+        This is a low-level API to parse data in a consistent schema, before converting it to a dataframe using the desired backend.
 
-        This is determined based on the string of the original query URL.
+        Using pyarrow means the majority of the parsing logic is similar, before converting to either pandas or polars (or any other dataframe library with pyarrow support).
+
+        Args:
+            response (Response): A (cached) response from the ASD Energy Level database.
+
+        Returns:
+            data (pa.Table): A Table with energy level data from the ASD.
         """
-        species = []
-        for u in self.session.cache.urls():
-            if self.nist_url in u:
-                species.extend(extract_species(u))
-        return species
-
-    @classmethod
-    def _from_pandas(cls, response) -> pd.DataFrame:
-        """Process a response into a DataFrame using pandas.
-
-        Will produce a DataFrame that adheres to [ASDLevelSchema][(m).].
-        """
-        parse_schema = {
-            "Configuration": str,
-            "Term": str,
-            "J": str,
-            "g": float,
-            "Prefix": str,
-            "Level (cm-1)": float,
-            "Suffix": str,
-            "Uncertainty (cm-1)": float,
-            "Splitting": float,
-            "Lande": str,
-            "Leading percentages": str,
-            "Reference": str,
-        }  # Force initial schema when parsing for reliable data handling; coerce J as str initially etc.
-        element, sp_num = extract_state_from_response(response)
-        df = pd.read_csv(
-            StringIO(response.text),
-            sep="\t",
-            dtype=parse_schema,
+        data = arrow.read_response(response, schema=Schemas.level_parsing_schema)
+        data = arrow.set_column(
+            data, "J", arrow.parse_fraction_from_strings(pc.replace_substring(data["J"], "---", "nan"))
         )
-        df["element"] = element
-        df["sp_num"] = sp_num
-        # Chained replacement needed; replacing using a dict mapping only supported on pandas 3.0 it seems
-        df["Level comment"] = df.Prefix.str.replace("(", "Theoretical").str.replace("[", "Derived").fillna("")
-        df["Ionization limit"] = df.Term.str.contains("Limit")
-        # Extract and compute fractions
-        fracs = df["J"].str.replace("---", "nan").str.split("/", expand=True).astype(float)
+        data = data.append_column("Ionization limit", pc.match_substring(data["Term"], "Limit"))
 
-        # Below does not handle when J is either uncertain (content like: `J1 or J2 or J3`), or when J is unresolved (content like: `J1,J2`)
-        df["J"] = fracs.loc[:, 0] / (fracs.loc[:, 1].fillna(1)) if fracs.shape[1] > 1 else fracs
-        df["L"] = df.Configuration.str.extract(cls.expr_L, expand=False).map(cls.map_L).astype(float)
-        df = df.drop(["Prefix", "Suffix"], axis=1)
+        L_mapping = {c: i for i, c in enumerate("spdfghi")}
+        ls = arrow.parse_regex(data["Configuration"], arrow.L_EXPR, "L", pa.string())
+        l_mapped = pa.array([L_mapping.get(x.as_py()) for x in ls], type=pa.int8())
+        # data = data.append_column("L", pa.DictionaryArray.from_arrays(l_mapped, pa.array(L_mapping)))
+        data = data.append_column("L", l_mapped)
+        comment_mapping = {"]": "Derived", ")": "Theoretical", "?": "Perhaps not real", "†": "Questionable"}
+        comment_mapped = pa.array([comment_mapping.get(x.as_py()) for x in data["Suffix"]], type=pa.string())
+        data = data.append_column("Level comment", comment_mapped)
+        data = arrow.set_column(data, "Lande", arrow.parse_sci_expr(data["Lande"])).drop_columns(["Prefix", "Suffix"])
+        data = data.select(Schemas.ASDLevelOutputSchema.names)  # reorder according to schema
+        return data
 
-        if "Lande" in df.columns:
-            # TODO: Lande: trailing `:` denotes significantly less accurate value; trailing `?` denotes tentative
-            # Not documented about Lande column: a final digit between () for significance, e.g. encoutered for Sn II.
-            df["Lande"] = df.loc[:, "Lande"].str.extract(SCI_EXPR).astype(float)
-        # Insert missing columns as NaN for now
-        for c in set(ASDLevelSchema) - set(df.columns):
-            df[c] = np.nan
-        return df.loc[:, [c for c in ASDLevelSchema if c in df.columns]]
-
-    @classmethod
-    def _from_polars(cls, response) -> "pl.DataFrame":
-        """Process a response into a DataFrame using polars.
-
-        Will produce a DataFrame that adheres to [ASDLevelSchema][(m).].
-        """
-        parse_schema = {
-            "Configuration": pl.String(),
-            "Term": pl.String(),
-            "J": pl.String(),
-            "g": pl.Float64(),
-            "Prefix": pl.String(),
-            "Level (cm-1)": pl.Float64(),
-            "Suffix": pl.String(),
-            "Uncertainty (cm-1)": pl.Float64(),
-            "Splitting": pl.Float64(),
-            "Lande": pl.String(),
-            "Leading percentages": pl.String(),
-            "Reference": pl.String(),
-        }
-        element, sp_num = extract_state_from_response(response)
-
-        df = pl.read_csv(
-            StringIO(response.text),
-            separator="\t",
-            schema_overrides=parse_schema,
-        )
-        df = df.with_columns(
-            pl.lit(element).alias("element"),
-            pl.lit(sp_num).alias("sp_num").cast(pl.Int64()),
-            pl.col("Prefix").str.replace(r"\(", "Theoretical").str.replace(r"\[", "Derived").alias("Level comment"),
-            pl.col("Term").str.contains("Limit").alias("Ionization limit"),
-            pl.col("Configuration").str.extract(cls.expr_L.pattern).replace(cls.map_L).cast(pl.Float64).alias("L"),
-        ).drop(["Prefix", "Suffix"])
-        # Extract and compute fractions
-        fracs = df.select(pl.col("J").replace("---", "").replace("", "nan")).select(
-            pl.col("J").str.split_exact("/", 1).struct.unnest().cast(pl.Float64)
-        )
-        df = df.with_columns(
-            fracs.with_columns(pl.col("field_1").fill_null(1)).select(
-                (pl.col("field_0") / pl.col("field_1")).alias("J")
-            )
-        )
-        if "Lande" in df.columns:
-            # TODO: Lande: trailing `:` denotes significantly less accurate value; trailing `?` denotes tentative
-            # Not documented about Lande column: a final digit between () for significance, e.g. encoutered for Sn II.
-            # For now: simply parse SCI_EXPR
-            df = df.with_columns(pl.col("Lande").str.extract(SCI_EXPR).replace("", None).cast(pl.Float64))
-
-        # Force empty strings as null for compatibility with pandas; implies values are missing
-        str_as_null = ["Configuration", "Term", "Reference"]
-        expr_as_null = [pl.when(pl.col(c) == "").then(pl.lit(None)).otherwise(pl.col(c)).alias(c) for c in str_as_null]
-        df = df.with_columns(*expr_as_null)
-
-        # Handle missing columns; ASD omits columns if no data available, such as Lande factors
-        df = df.with_columns([pl.lit(None).cast(t).alias(c) for c, t in ASDLevelSchema.items() if c not in df.columns])
-
-        return df.match_to_schema(ASDLevelSchema)
-
-    def create_dataframe(self, response: Response) -> "pd.DataFrame|pl.DataFrame":
-        """Create a dataframe from the (cached) NIST ASD response.
-
-        Will only successfully process queries to the ASD Energy Level Database url, else raises a ValueError.
-
-        Will decide on the backend to use based on [use_polars][..].
-        """
-        if not response.url.startswith(self.nist_url):
-            msg = f"Invalid response, only the {self.nist_url} endpoint is supported, got {response.url}"
-            raise ValueError(msg)
-        if self.use_polars:
-            return self._from_polars(response)
-        return self._from_pandas(response)
-
-    def fetch(self, species: str) -> "pd.DataFrame|pl.DataFrame":
+    def fetch(self, species: str, **kwargs) -> "pd.DataFrame|pl.DataFrame":
         """Fetch the energy levels of a species from the NIST ASD Energy Levels Database, first checking the cache.
 
         Only a single species can be queried per call, due to the inner workings of the ASD (unlike [SpectraCache.fetch][(m).]).
 
         Args:
             species (str): A single species query string, e.g. `'H I'` or `'198Hg II'`.
+
+        Keyword Args:
+            force_refresh (bool): If True, force a refresh of the cached response.
+            only_if_cached (bool): If True, only use the cached response and do not make a network request.
         """
-        response = self._get_data(species)
+        response = self._get_data(species, **kwargs)
         return self.create_dataframe(response)

@@ -16,10 +16,12 @@ def pytest_sessionstart(session):
     import numpy as np
     import pandas as pd
     import polars as pl
+    import pyarrow as pa
 
     print(f"numpy: {np.__version__}")
     print(f"pandas: {pd.__version__}")
     print(f"polars: {pl.__version__}")
+    print(f"pyarrow: {pa.__version__}")
 
 
 @pytest.fixture

@@ -69,7 +69,7 @@ More elaborate examples can be found in the [example section of the documentatio
 from ASDCache import SpectraCache, BibCache
 import matplotlib.pyplot as plt
 
-nist = ASDCache()
+nist = SpectraCache()
 lines_H_I = nist.fetch("H I")
 
 
