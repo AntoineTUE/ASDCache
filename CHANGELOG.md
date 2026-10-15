@@ -1,5 +1,26 @@
 # Changelog
 
+## Version 0.3.0
+
+### Added
+
+  * Add support for the ASD Energy Level Database, accessible via the `SpectraCache.level` attribute
+  * All data parsing based on PyArrow for the ASD Lines and Energy Level databases
+    * Only a single logic branch to maintain
+    * Easier checking if the data is equivalent between pandas and polars as dataframe frameworks.
+  * Added user agent info identifying ASDCache when querying the ASD.
+  * The `cached_spectra` attribute to list the set of cached spectra.
+  * Add support for `force_refresh` and `only_if_cached` keyword arguments for cache control
+  * Shared behaviour between caching classes implemented through several mixins;
+
+
+### Changed
+
+  * Only a single cache file is needed for all databases (and used by default), instead of a separate file for e.g. SpectraCache and BibCache.
+  * Separate code paths for pandas and polars parsing have been removed in favour of a single path through a PyArrow.Table
+  * Info such as the queried species is now extracted from the request URL based on url parameters instead of regexes.
+  * Various updates to docs, code formatting and tests.
+
 ## Version 0.2.4
 
 * Fix #2: a regression when using the polars backend: missing uncertainty data is handled properly again
