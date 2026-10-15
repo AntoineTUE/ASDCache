@@ -144,7 +144,7 @@ features = ["polars"]
 
 [tool.hatch.envs.legacy]
 python = "3.11"
-dependencies = ["pandas~=2.0", "numpy<2.0", "pyarrow~=25.0"]
+dependencies = ["pandas~=2.0", "numpy<2.0", "pyarrow<26.0"]
 installer = "uv"
 features = ["polars", "dev"]
 
@@ -204,7 +204,7 @@ matrix.pandas.dependencies = [
 matrix.numpy.dependencies = [
     { value = "numpy~=2.0", if = ["numpy-2.x"] },
     { value = "numpy<2.0", if = ["numpy-legacy"] },
-    { value = "pyarrow~=25.0", if = ["numpy-legacy"] }
+    { value = "pyarrow<26.0", if = ["numpy-legacy"] }
 ]
 matrix.polars.features = [
     { value = "polars", if = ["polars"] },
