@@ -7,10 +7,10 @@ name = "ASDCache"
 description = "A Python module to retrieve data from the NIST Atomic Spectra Database (ASD), using caching for fast, efficient data handling"
 readme = "README.md"
 requires-python = ">=3.9"
-license = { text = "MIT"}
-keywords = ["NIST", "ASD","Atomic Spectra Database", "spectra","spectrum","spectroscopy","atoms"]
+license = { text = "MIT" }
+keywords = ["NIST", "ASD", "Atomic Spectra Database", "spectra", "spectrum", "spectroscopy", "atoms"]
 authors = [
-    { name = "Antoine Salden", email = "t.p.w.salden@tue.nl" },
+    { name = "Antoine Salden", email = "t.p.w.salden@tue.nl" }
 ]
 
 classifiers = [
@@ -24,12 +24,12 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
-    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.14"
 ]
 dependencies = [
-    "requests_cache>=1.2.0", 
+    "requests_cache>=1.2.0",
     "pandas>=2.0",
-    "numpy>=1.20.3", 
+    "numpy>=1.20.3",
     "beautifulsoup4>=4.12",
     "pyarrow"
 ]
@@ -52,11 +52,11 @@ docs = [
     "ruff>=0.15.13",
     "pygments>=2.20.0"
 ]
+dev = ["matplotlib", "ipython", "ipykernel", "prek"]
 
 [project.urls]
-Documentation = "https://antoinetue.github.io/asdcache"
-Source = "https://github.com/AntoineTUE/asdcache"
-
+Documentation = "https://antoinetue.github.io/ASDCache"
+Source = "https://github.com/AntoineTUE/ASDCache"
 
 [tool.hatch.version]
 source = "vcs"
@@ -85,7 +85,7 @@ omit = ["_version.py"]
 [tool.coverage.paths]
 source = [
     "src/",
-    "*/site-packages/",
+    "*/site-packages/"
 ]
 
 [tool.coverage.report]
@@ -97,7 +97,7 @@ exclude_lines = [
     "raise NotImplementedError",
     "if 0:",
     "if __name__ == .__main__.:",
-    "if TYPE_CHECKING:",
+    "if TYPE_CHECKING:"
 ]
 
 [tool.ruff]
@@ -114,7 +114,7 @@ include = [
 extend-exclude = ["docs/assets/scripts/gen_ref_pages.py"]
 
 [tool.ruff.lint]
-select = ["E4", "E7", "E9", "F","C4", "SIM", "NPY", "PD","B","UP","D","I"]
+select = ["E4", "E7", "E9", "F", "C4", "SIM", "NPY", "PD", "B", "UP", "D", "I"]
 ignore = ["F401"]
 
 [tool.ruff.lint.pydocstyle]
@@ -125,7 +125,7 @@ known-first-party = ["src"]
 
 [tool.ruff.lint.per-file-ignores]
 "examples/*" = ["T201"]
-"tests/**/*" = ["PLR2004", "S101", "TID252","D","F401"]
+"tests/**/*" = ["PLR2004", "S101", "TID252", "D", "F401"]
 
 [tool.hatch.metadata.hooks.fancy-pypi-readme]
 content-type = "text/markdown"
@@ -139,16 +139,14 @@ cache-keys = [{ git = true }]
 [tool.hatch.envs.default]
 python = "3.12"
 post-install-commands = ["prek install"]
-dependencies = ["matplotlib", "ipython","ipykernel","prek"]
 installer = "uv"
 features = ["polars"]
 
 [tool.hatch.envs.legacy]
 python = "3.11"
-dependencies=["matplotlib","ipython","ipykernel","pandas~=2.0","numpy<2.0"]
-installer="uv"
-features=["polars"]
-
+dependencies = ["pandas~=2.0", "numpy<2.0"]
+installer = "uv"
+features = ["polars", "dev"]
 
 [tool.hatch.envs.hatch-test]
 randomize = false
@@ -168,10 +166,9 @@ dependencies = [
     "pytest-xdist[psutil]~=3.5",
     'pytest-cov~=7.1.0; python_version>="3.10"',
     "pytest-recording",
-    "pytest-sugar~=1.1.1",
+    "pytest-sugar~=1.1.1"
 ]
-extra-dependencies = ["hypothesis","pytest-benchmark"]
-
+extra-dependencies = ["hypothesis", "pytest-benchmark"]
 
 [tool.hatch.envs.docs]
 skip-install = true
@@ -191,43 +188,42 @@ dependencies = ["ruff>=0.15.13"]
 style = [
     "echo \"VERSION: `ruff --version`\"",
     "ruff check {args:.}",
-    "ruff format --check {args:.}",
+    "ruff format --check {args:.}"
 ]
 fix = [
     "ruff format {args:.}",
     "ruff check --fix {args:.}",
-    "style",  # feedback on what is not fixable
+    "style"                      # feedback on what is not fixable
 ]
-
 
 [tool.hatch.envs.hatch-test.overrides]
 matrix.pandas.dependencies = [
     { value = "pandas~=2.0", if = ["pandas-2.x"] },
-    { value = "pandas~=3.0", if = ["pandas-3.x"] },
+    { value = "pandas~=3.0", if = ["pandas-3.x"] }
 ]
 matrix.numpy.dependencies = [
     { value = "numpy~=2.0", if = ["numpy-2.x"] },
-    {value = "numpy<2.0", if =  ["numpy-legacy"]},
+    { value = "numpy<2.0", if = ["numpy-legacy"] }
 ]
 matrix.polars.features = [
-    { value = "polars", if = ["polars"]},
-    { value = "polars-compat", if = ["polars-compat"]},
+    { value = "polars", if = ["polars"] },
+    { value = "polars-compat", if = ["polars-compat"] }
 ]
 
 [[tool.hatch.envs.hatch-test.matrix]]
-python = ["3.9","3.10"]
-numpy = ["numpy-2.x","numpy-legacy"]
+python = ["3.9", "3.10"]
+numpy = ["numpy-2.x", "numpy-legacy"]
 pandas = ["pandas-2.x"]
-polars = ["polars","polars-compat"]
+polars = ["polars", "polars-compat"]
 
 [[tool.hatch.envs.hatch-test.matrix]]
-python = ["3.11","3.12"]
-numpy = ["numpy-2.x","numpy-legacy"]
-pandas = ["pandas-2.x","pandas-3.x"]
-polars = ["polars","polars-compat"]
+python = ["3.11", "3.12"]
+numpy = ["numpy-2.x", "numpy-legacy"]
+pandas = ["pandas-2.x", "pandas-3.x"]
+polars = ["polars", "polars-compat"]
 
 [[tool.hatch.envs.hatch-test.matrix]]
 python = ["3.13", "3.14"]
 numpy = ["numpy-2.x"]
-pandas = ["pandas-2.x","pandas-3.x"]
-polars = ["polars","polars-compat"]
+pandas = ["pandas-2.x", "pandas-3.x"]
+polars = ["polars", "polars-compat"]
