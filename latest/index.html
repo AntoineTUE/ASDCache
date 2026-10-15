@@ -672,6 +672,90 @@
   
   
     <li class="md-nav__item">
+      <a href="reference/ASDCache/Schemas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>Schemas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/ASDCache/arrow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>arrow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/ASDCache/mixins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>mixins
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="reference/ASDCache/utils/" class="md-nav__link">
         
   
@@ -781,19 +865,19 @@
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ASDCache</span><span class="w"> </span><span class="kn">import</span> <span class="n">SpectraCache</span><span class="p">,</span> <span class="n">BibCache</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
-<span class="n">nist</span> <span class="o">=</span> <span class="n">ASDCache</span><span class="p">()</span>
-<span class="n">lines_H_I</span> <span class="o">=</span> <span class="n">nist</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="s2">&quot;H I&quot;</span><span class="p">)</span>
+<span class="n">nist</span> <span class="o">=</span> <span class="n">SpectraCache</span><span class="p">()</span>
+<span class="n">lines_H_I</span> <span class="o">=</span> <span class="n">nist</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="s2">"H I"</span><span class="p">)</span>
 
 
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">lines_H_I</span><span class="p">[</span><span class="s1">&#39;obs_wl_air(nm)&#39;</span><span class="p">],</span> <span class="n">lines_H_I</span><span class="p">[</span><span class="s1">&#39;intens&#39;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">lines_H_I</span><span class="p">[</span><span class="s1">&#39;element&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">lines_H_I</span><span class="p">[</span><span class="s1">&#39;sp_num&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">lines_H_I</span><span class="p">[</span><span class="s1">'obs_wl_air(nm)'</span><span class="p">],</span> <span class="n">lines_H_I</span><span class="p">[</span><span class="s1">'intens'</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">lines_H_I</span><span class="p">[</span><span class="s1">'element'</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">lines_H_I</span><span class="p">[</span><span class="s1">'sp_num'</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 
-<span class="n">nist</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="s2">&quot;O I-III&quot;</span><span class="p">)</span> <span class="c1"># caches data from NIST but does not assign to a variable</span>
+<span class="n">nist</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="s2">"O I-III"</span><span class="p">)</span> <span class="c1"># caches data from NIST but does not assign to a variable</span>
 
 <span class="c1"># Oxygen I-III will still be plotted, each ionization state separately.</span>
 <span class="n">lines_all_cached</span> <span class="o">=</span> <span class="n">nist</span><span class="o">.</span><span class="n">get_all_cached</span><span class="p">()</span>
-<span class="k">for</span> <span class="n">species</span><span class="p">,</span><span class="n">lines</span> <span class="ow">in</span> <span class="n">lines_all_cached</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;element&quot;</span><span class="p">,</span><span class="s2">&quot;sp_num&quot;</span><span class="p">]):</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="s1">&#39;obs_wl_air(nm)&#39;</span><span class="p">],</span> <span class="n">lines</span><span class="p">[</span><span class="s1">&#39;intens&#39;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">species</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">species</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">species</span><span class="p">,</span><span class="n">lines</span> <span class="ow">in</span> <span class="n">lines_all_cached</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">"element"</span><span class="p">,</span><span class="s2">"sp_num"</span><span class="p">]):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="s1">'obs_wl_air(nm)'</span><span class="p">],</span> <span class="n">lines</span><span class="p">[</span><span class="s1">'intens'</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">species</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">species</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">'x'</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">'none'</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 </code></pre></div>
 <h2 id="citing">Citing<a class="headerlink" href="#citing" title="Permanent link">&para;</a></h2>
@@ -935,6 +1019,8 @@
         <script src="assets/javascript/mathjax.js"></script>
       
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS_CHTML-full,Safe"></script>
+      
+        <script src="https://unpkg.com/mermaid@10.9.0/dist/mermaid.min.js"></script>
       
     
   </body>

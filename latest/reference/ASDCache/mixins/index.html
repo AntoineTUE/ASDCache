@@ -1,0 +1,3272 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A Python project to retrieve data from the NIST Atomic Spectra Database (ASD), using caching for fast, efficient data handling">
+      
+      
+        <meta name="author" content="Antoine Salden">
+      
+      
+        <link rel="canonical" href="https://antoinetue.github.io/ASDCache/latest/reference/ASDCache/mixins/">
+      
+      
+        <link rel="prev" href="../arrow/">
+      
+      
+        <link rel="next" href="../utils/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/logo.svg">
+      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>mixins - ASDCache documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ASDCache.mixins" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="ASDCache documentation" class="md-header__button md-logo" aria-label="ASDCache documentation" data-md-component="logo">
+      
+  <img src="../../../assets/logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            ASDCache documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              mixins
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/AntoineTUE/ASDCache" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M202.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1M496 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2m-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3m-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1"/></svg>
+  </div>
+  <div class="md-source__repository">
+    ASDCache
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="ASDCache documentation" class="md-nav__button md-logo" aria-label="ASDCache documentation" data-md-component="logo">
+      
+  <img src="../../../assets/logo.svg" alt="logo">
+
+    </a>
+    ASDCache documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/AntoineTUE/ASDCache" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M202.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1M496 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2m-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3m-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1"/></svg>
+  </div>
+  <div class="md-source__repository">
+    ASDCache
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ASDCache
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data schema overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples of using ASDCache
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../citing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Citing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../license/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    License
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_1" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>ASDCache
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7_1" id="__nav_7_1_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>ASDCache
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ASDCache/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>ASDCache
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Schemas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>Schemas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../arrow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>arrow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>mixins
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>mixins
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#ASDCache.mixins.GenericCacheMixin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;GenericCacheMixin
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" GenericCacheMixin">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ASDCache.mixins.GenericCacheMixin.cache_expiry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;cache_expiry
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ASDCache.mixins.GenericCacheMixin.responses" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;responses
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ASDCache.mixins.GenericCacheMixin.cache_path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;cache_path
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ASDCache.mixins.GenericCacheMixin.set_cache_expiry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;set_cache_expiry
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ASDCache.mixins.GenericCacheMixin.clear_cache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;clear_cache
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ASDCache.mixins.CacheSessionMixin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;CacheSessionMixin
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" CacheSessionMixin">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ASDCache.mixins.CacheSessionMixin.cache_expiry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;cache_expiry
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ASDCache.mixins.CacheSessionMixin.responses" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;responses
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ASDCache.mixins.CacheSessionMixin.cache_path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;cache_path
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ASDCache.mixins.CacheSessionMixin.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;__init__
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ASDCache.mixins.CacheSessionMixin.set_cache_expiry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;set_cache_expiry
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ASDCache.mixins.CacheSessionMixin.clear_cache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;clear_cache
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ASDCache.mixins.CacheAccessorMixin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;CacheAccessorMixin
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" CacheAccessorMixin">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ASDCache.mixins.CacheAccessorMixin.session" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;session
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ASDCache.mixins.CacheAccessorMixin.use_polars" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;use_polars
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ASDCache.mixins.CacheAccessorMixin.cache_expiry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;cache_expiry
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ASDCache.mixins.CacheAccessorMixin.responses" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;responses
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ASDCache.mixins.CacheAccessorMixin.cache_path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;cache_path
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ASDCache.mixins.CacheAccessorMixin.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;__init__
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ASDCache.mixins.CacheAccessorMixin.set_cache_expiry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;set_cache_expiry
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ASDCache.mixins.CacheAccessorMixin.clear_cache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;clear_cache
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ASDCache.mixins.DataHandlerMixin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;DataHandlerMixin
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" DataHandlerMixin">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ASDCache.mixins.DataHandlerMixin.use_polars" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;use_polars
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ASDCache.mixins.DataHandlerMixin.cached_species" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;cached_species
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ASDCache.mixins.DataHandlerMixin.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;__init__
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ASDCache.mixins.DataHandlerMixin.list_cached_species" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;list_cached_species
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ASDCache.mixins.DataHandlerMixin._from_pandas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;_from_pandas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ASDCache.mixins.DataHandlerMixin._from_polars" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;_from_polars
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ASDCache.mixins.DataHandlerMixin.create_dataframe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;create_dataframe
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utils/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>utils
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<h1 id="ASDCache.mixins" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-module"></code>            <span class="doc doc-object-name doc-module-name">ASDCache.mixins</span>
+
+
+<a href="#ASDCache.mixins" class="headerlink" title="Permanent link">&para;</a></h1>
+
+    <div class="doc doc-contents first">
+
+        <p>Module containing mixins for handling the cache.</p>
+
+
+
+
+
+
+
+
+
+
+<p><span class="doc-section-title">Classes:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code><a class="autorefs autorefs-internal" title="            GenericCacheMixin (ASDCache.mixins.GenericCacheMixin)" href="#ASDCache.mixins.GenericCacheMixin">GenericCacheMixin</a></code></td>
+            <td>
+              <div class="doc-md-description">
+                <p>Base mixin for cache handling that provides cache management utilities for ASDCache classes, to be used as a parent class for other mixins.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><a class="autorefs autorefs-internal" title="            CacheSessionMixin (ASDCache.mixins.CacheSessionMixin)" href="#ASDCache.mixins.CacheSessionMixin">CacheSessionMixin</a></code></td>
+            <td>
+              <div class="doc-md-description">
+                <p>Mixin that initializes and manages a persistent cache of NIST ASD responses.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><a class="autorefs autorefs-internal" title="            CacheAccessorMixin (ASDCache.mixins.CacheAccessorMixin)" href="#ASDCache.mixins.CacheAccessorMixin">CacheAccessorMixin</a></code></td>
+            <td>
+              <div class="doc-md-description">
+                <p>Mixin providing access to a parent cache instance.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><a class="autorefs autorefs-internal" title="            DataHandlerMixin (ASDCache.mixins.DataHandlerMixin)" href="#ASDCache.mixins.DataHandlerMixin">DataHandlerMixin</a></code></td>
+            <td>
+              <div class="doc-md-description">
+                <p>Mixin providing data extraction and DataFrame conversion utilities, for classes that handle parsing data from the NIST ASD databases.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="ASDCache.mixins.GenericCacheMixin" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <span class="doc doc-object-name doc-class-name">GenericCacheMixin</span>
+
+
+<a href="#ASDCache.mixins.GenericCacheMixin" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Base mixin for cache handling that provides cache management utilities for ASDCache classes, to be used as a parent class for other mixins.</p>
+<p>It exposes functionality to control cache expiration, response retrieval and cache clearing.</p>
+<p>Implementing classes are expected to provide:</p>
+<ul>
+<li>
+<p>a suitable <code>CachedSession</code> object as <code>self.session</code></p>
+</li>
+<li>
+<p>a string attribute <code>self.nist_url</code> that contains the base url of the NIST ASD</p>
+</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+<p><span class="doc-section-title">Methods:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+            <tr class="doc-section-item">
+              <td><code><a class="autorefs autorefs-internal" title="            set_cache_expiry (ASDCache.mixins.GenericCacheMixin.set_cache_expiry)" href="#ASDCache.mixins.GenericCacheMixin.set_cache_expiry">set_cache_expiry</a></code></td>
+              <td>
+                <div class="doc-md-description">
+                  <p>Set the cache expiry to a different interval.</p>
+                </div>
+              </td>
+            </tr>
+            <tr class="doc-section-item">
+              <td><code><a class="autorefs autorefs-internal" title="            clear_cache (ASDCache.mixins.GenericCacheMixin.clear_cache)" href="#ASDCache.mixins.GenericCacheMixin.clear_cache">clear_cache</a></code></td>
+              <td>
+                <div class="doc-md-description">
+                  <p>Clear responses from the cache.</p>
+                </div>
+              </td>
+            </tr>
+      </tbody>
+    </table>
+
+
+
+
+<p><span class="doc-section-title">Attributes:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code><a class="autorefs autorefs-internal" title="            cache_expiry
+
+
+  
+      property
+      writable
+   (ASDCache.mixins.GenericCacheMixin.cache_expiry)" href="#ASDCache.mixins.GenericCacheMixin.cache_expiry">cache_expiry</a></code></td>
+            <td>
+                  <code><span title="datetime.timedelta">timedelta</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The cache expiry time.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><a class="autorefs autorefs-internal" title="            responses
+
+
+  
+      property
+   (ASDCache.mixins.GenericCacheMixin.responses)" href="#ASDCache.mixins.GenericCacheMixin.responses">responses</a></code></td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Generator yielding responses from the cache that contain relevant data.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><a class="autorefs autorefs-internal" title="            cache_path
+
+
+  
+      property
+   (ASDCache.mixins.GenericCacheMixin.cache_path)" href="#ASDCache.mixins.GenericCacheMixin.cache_path">cache_path</a></code></td>
+            <td>
+                  <code><span title="pathlib.Path">Path</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The path to the cache database file.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+              <details class="mkdocstrings-source">
+                <summary>Source code in <code>src/ASDCache/mixins.py</code></summary>
+                <div class="highlight"><pre><span></span><code><span class="linenos" data-linenos=" 24 "></span><span class="k">class</span><span class="w"> </span><span class="nc">GenericCacheMixin</span><span class="p">:</span>
+<span class="linenos" data-linenos=" 25 "></span><span class="w">    </span><span class="sd">"""Base mixin for cache handling that provides cache management utilities for ASDCache classes, to be used as a parent class for other mixins.</span>
+<span class="linenos" data-linenos=" 26 "></span>
+<span class="linenos" data-linenos=" 27 "></span><span class="sd">    It exposes functionality to control cache expiration, response retrieval and cache clearing.</span>
+<span class="linenos" data-linenos=" 28 "></span>
+<span class="linenos" data-linenos=" 29 "></span><span class="sd">    Implementing classes are expected to provide:</span>
+<span class="linenos" data-linenos=" 30 "></span>
+<span class="linenos" data-linenos=" 31 "></span><span class="sd">    * a suitable `CachedSession` object as `self.session`</span>
+<span class="linenos" data-linenos=" 32 "></span>
+<span class="linenos" data-linenos=" 33 "></span><span class="sd">    * a string attribute `self.nist_url` that contains the base url of the NIST ASD</span>
+<span class="linenos" data-linenos=" 34 "></span><span class="sd">    """</span>
+<span class="linenos" data-linenos=" 35 "></span>
+<span class="linenos" data-linenos=" 36 "></span>    <span class="k">def</span><span class="w"> </span><span class="nf">_build_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">standard_query</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="linenos" data-linenos=" 37 "></span>        <span class="n">query_params</span> <span class="o">=</span> <span class="n">standard_query</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="linenos" data-linenos=" 38 "></span>        <span class="n">query_params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="linenos" data-linenos=" 39 "></span>        <span class="k">return</span> <span class="n">query_params</span>
+<span class="linenos" data-linenos=" 40 "></span>
+<span class="linenos" data-linenos=" 41 "></span>    <span class="k">def</span><span class="w"> </span><span class="nf">set_cache_expiry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">timedelta</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="linenos" data-linenos=" 42 "></span><span class="w">        </span><span class="sd">"""Set the cache expiry to a different interval.</span>
+<span class="linenos" data-linenos=" 43 "></span>
+<span class="linenos" data-linenos=" 44 "></span><span class="sd">        Can be done by either passing in a `timedelta` object, or valid keyword arguments for `timedelta` itself.</span>
+<span class="linenos" data-linenos=" 45 "></span>
+<span class="linenos" data-linenos=" 46 "></span><span class="sd">        If no arguments are provided, the default expiry time of 2 weeks is used.</span>
+<span class="linenos" data-linenos=" 47 "></span>
+<span class="linenos" data-linenos=" 48 "></span><span class="sd">        Example:</span>
+<span class="linenos" data-linenos=" 49 "></span><span class="sd">            ```python</span>
+<span class="linenos" data-linenos=" 50 "></span><span class="sd">            # set expiry to 3 days</span>
+<span class="linenos" data-linenos=" 51 "></span><span class="sd">            cache = ...</span>
+<span class="linenos" data-linenos=" 52 "></span><span class="sd">            cache.set_cache_expiry(timedelta(days=3))</span>
+<span class="linenos" data-linenos=" 53 "></span><span class="sd">            cache.set_cache_expiry(days=3)</span>
+<span class="linenos" data-linenos=" 54 "></span><span class="sd">            cache.cache_expiry = timedelta(days=3)  # only accepts a timedelta</span>
+<span class="linenos" data-linenos=" 55 "></span><span class="sd">            ```</span>
+<span class="linenos" data-linenos=" 56 "></span><span class="sd">        """</span>
+<span class="linenos" data-linenos=" 57 "></span>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">new</span><span class="p">,</span> <span class="n">timedelta</span><span class="p">):</span>
+<span class="linenos" data-linenos=" 58 "></span>            <span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="p">{</span><span class="s2">"weeks"</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+<span class="linenos" data-linenos=" 59 "></span>            <span class="n">new</span> <span class="o">=</span> <span class="n">timedelta</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="linenos" data-linenos=" 60 "></span>        <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">expire_after</span> <span class="o">=</span> <span class="n">new</span>
+<span class="linenos" data-linenos=" 61 "></span>
+<span class="linenos" data-linenos=" 62 "></span>    <span class="nd">@property</span>
+<span class="linenos" data-linenos=" 63 "></span>    <span class="k">def</span><span class="w"> </span><span class="nf">cache_expiry</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">timedelta</span><span class="p">:</span>
+<span class="linenos" data-linenos=" 64 "></span><span class="w">        </span><span class="sd">"""The cache expiry time.</span>
+<span class="linenos" data-linenos=" 65 "></span>
+<span class="linenos" data-linenos=" 66 "></span><span class="sd">        Queries that are older than this time are considered stale and marked for updating, by quering the NIST ASD.</span>
+<span class="linenos" data-linenos=" 67 "></span><span class="sd">        In case the query for new data fails, the stale, cached response will still be parsed.</span>
+<span class="linenos" data-linenos=" 68 "></span><span class="sd">        """</span>
+<span class="linenos" data-linenos=" 69 "></span>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">expire_after</span>
+<span class="linenos" data-linenos=" 70 "></span>
+<span class="linenos" data-linenos=" 71 "></span>    <span class="nd">@cache_expiry</span><span class="o">.</span><span class="n">setter</span>
+<span class="linenos" data-linenos=" 72 "></span>    <span class="k">def</span><span class="w"> </span><span class="nf">cache_expiry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">:</span> <span class="n">timedelta</span><span class="p">):</span>
+<span class="linenos" data-linenos=" 73 "></span><span class="w">        </span><span class="sd">"""Set the cache expiry to a different interval.</span>
+<span class="linenos" data-linenos=" 74 "></span>
+<span class="linenos" data-linenos=" 75 "></span><span class="sd">        Can be done by either passing in a `timedelta` object, or valid keyword arguments for `timedelta` itself.</span>
+<span class="linenos" data-linenos=" 76 "></span><span class="sd">        """</span>
+<span class="linenos" data-linenos=" 77 "></span>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">new</span><span class="p">,</span> <span class="n">timedelta</span><span class="p">):</span>
+<span class="linenos" data-linenos=" 78 "></span>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Expected a timedelta object, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">new</span><span class="p">)</span><span class="si">}</span><span class="s2"> instead."</span><span class="p">)</span>
+<span class="linenos" data-linenos=" 79 "></span>        <span class="bp">self</span><span class="o">.</span><span class="n">set_cache_expiry</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
+<span class="linenos" data-linenos=" 80 "></span>
+<span class="linenos" data-linenos=" 81 "></span>    <span class="nd">@property</span>
+<span class="linenos" data-linenos=" 82 "></span>    <span class="k">def</span><span class="w"> </span><span class="nf">responses</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="linenos" data-linenos=" 83 "></span><span class="w">        </span><span class="sd">"""Generator yielding responses from the cache that contain relevant data.</span>
+<span class="linenos" data-linenos=" 84 "></span>
+<span class="linenos" data-linenos=" 85 "></span><span class="sd">        Usefull to loop over all responses, while avoiding to load them all in memory.</span>
+<span class="linenos" data-linenos=" 86 "></span>
+<span class="linenos" data-linenos=" 87 "></span><span class="sd">        Example:</span>
+<span class="linenos" data-linenos=" 88 "></span><span class="sd">            ```python</span>
+<span class="linenos" data-linenos=" 89 "></span><span class="sd">            cache = SpectraCache()</span>
+<span class="linenos" data-linenos=" 90 "></span><span class="sd">            for response in cache:</span>
+<span class="linenos" data-linenos=" 91 "></span><span class="sd">                df = cache.create_dataframe(response)</span>
+<span class="linenos" data-linenos=" 92 "></span><span class="sd">                ...</span>
+<span class="linenos" data-linenos=" 93 "></span><span class="sd">            ```</span>
+<span class="linenos" data-linenos=" 94 "></span><span class="sd">        """</span>
+<span class="linenos" data-linenos=" 95 "></span>        <span class="k">yield from</span> <span class="p">(</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">filter</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nist_url</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+<span class="linenos" data-linenos=" 96 "></span>
+<span class="linenos" data-linenos=" 97 "></span>    <span class="k">def</span><span class="w"> </span><span class="nf">clear_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="linenos" data-linenos=" 98 "></span><span class="w">        </span><span class="sd">"""Clear responses from the cache.</span>
+<span class="linenos" data-linenos=" 99 "></span>
+<span class="linenos" data-linenos="100 "></span><span class="sd">        This will remove all responses from the cache that belong to the corresponding cache class.</span>
+<span class="linenos" data-linenos="101 "></span>
+<span class="linenos" data-linenos="102 "></span><span class="sd">        Any response that belongs to a different type of cache (such as bibliographic responses, in case of a SpectraCache) will not be removed.</span>
+<span class="linenos" data-linenos="103 "></span><span class="sd">        """</span>
+<span class="linenos" data-linenos="104 "></span>        <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">cache_key</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">responses</span><span class="p">))</span>
+<span class="linenos" data-linenos="105 "></span>
+<span class="linenos" data-linenos="106 "></span>    <span class="nd">@property</span>
+<span class="linenos" data-linenos="107 "></span>    <span class="k">def</span><span class="w"> </span><span class="nf">cache_path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="linenos" data-linenos="108 "></span><span class="w">        </span><span class="sd">"""The path to the cache database file."""</span>
+<span class="linenos" data-linenos="109 "></span>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">db_path</span>
+</code></pre></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="ASDCache.mixins.GenericCacheMixin.cache_expiry" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">cache_expiry</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+      <small class="doc doc-label doc-label-writable"><code>writable</code></small>
+  </span>
+
+<a href="#ASDCache.mixins.GenericCacheMixin.cache_expiry" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">cache_expiry</span><span class="p">:</span> <span class="n"><span title="datetime.timedelta">timedelta</span></span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>The cache expiry time.</p>
+<p>Queries that are older than this time are considered stale and marked for updating, by quering the NIST ASD.
+In case the query for new data fails, the stale, cached response will still be parsed.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="ASDCache.mixins.GenericCacheMixin.responses" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">responses</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#ASDCache.mixins.GenericCacheMixin.responses" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">responses</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Generator yielding responses from the cache that contain relevant data.</p>
+<p>Usefull to loop over all responses, while avoiding to load them all in memory.</p>
+
+
+<details class="example" open>
+  <summary>Example</summary>
+  <div class="highlight"><pre><span></span><code><span class="n">cache</span> <span class="o">=</span> <span class="n">SpectraCache</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">response</span> <span class="ow">in</span> <span class="n">cache</span><span class="p">:</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">cache</span><span class="o">.</span><span class="n">create_dataframe</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="o">...</span>
+</code></pre></div>
+</details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="ASDCache.mixins.GenericCacheMixin.cache_path" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">cache_path</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#ASDCache.mixins.GenericCacheMixin.cache_path" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">cache_path</span><span class="p">:</span> <span class="n"><span title="pathlib.Path">Path</span></span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>The path to the cache database file.</p>
+
+    </div>
+
+</div>
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="ASDCache.mixins.GenericCacheMixin.set_cache_expiry" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">set_cache_expiry</span>
+
+
+<a href="#ASDCache.mixins.GenericCacheMixin.set_cache_expiry" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">set_cache_expiry</span><span class="p">(</span><span class="n">new</span><span class="p">:</span> <span class="n"><span title="typing.Optional">Optional</span></span><span class="p">[</span><span class="n"><span title="datetime.timedelta">timedelta</span></span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Set the cache expiry to a different interval.</p>
+<p>Can be done by either passing in a <code>timedelta</code> object, or valid keyword arguments for <code>timedelta</code> itself.</p>
+<p>If no arguments are provided, the default expiry time of 2 weeks is used.</p>
+
+
+<details class="example" open>
+  <summary>Example</summary>
+  <div class="highlight"><pre><span></span><code><span class="c1"># set expiry to 3 days</span>
+<span class="n">cache</span> <span class="o">=</span> <span class="o">...</span>
+<span class="n">cache</span><span class="o">.</span><span class="n">set_cache_expiry</span><span class="p">(</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">3</span><span class="p">))</span>
+<span class="n">cache</span><span class="o">.</span><span class="n">set_cache_expiry</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">cache</span><span class="o">.</span><span class="n">cache_expiry</span> <span class="o">=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>  <span class="c1"># only accepts a timedelta</span>
+</code></pre></div>
+</details>
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/ASDCache/mixins.py</code></summary>
+              <div class="highlight"><pre><span></span><code><span class="linenos" data-linenos="41 "></span><span class="k">def</span><span class="w"> </span><span class="nf">set_cache_expiry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">timedelta</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="linenos" data-linenos="42 "></span><span class="w">    </span><span class="sd">"""Set the cache expiry to a different interval.</span>
+<span class="linenos" data-linenos="43 "></span>
+<span class="linenos" data-linenos="44 "></span><span class="sd">    Can be done by either passing in a `timedelta` object, or valid keyword arguments for `timedelta` itself.</span>
+<span class="linenos" data-linenos="45 "></span>
+<span class="linenos" data-linenos="46 "></span><span class="sd">    If no arguments are provided, the default expiry time of 2 weeks is used.</span>
+<span class="linenos" data-linenos="47 "></span>
+<span class="linenos" data-linenos="48 "></span><span class="sd">    Example:</span>
+<span class="linenos" data-linenos="49 "></span><span class="sd">        ```python</span>
+<span class="linenos" data-linenos="50 "></span><span class="sd">        # set expiry to 3 days</span>
+<span class="linenos" data-linenos="51 "></span><span class="sd">        cache = ...</span>
+<span class="linenos" data-linenos="52 "></span><span class="sd">        cache.set_cache_expiry(timedelta(days=3))</span>
+<span class="linenos" data-linenos="53 "></span><span class="sd">        cache.set_cache_expiry(days=3)</span>
+<span class="linenos" data-linenos="54 "></span><span class="sd">        cache.cache_expiry = timedelta(days=3)  # only accepts a timedelta</span>
+<span class="linenos" data-linenos="55 "></span><span class="sd">        ```</span>
+<span class="linenos" data-linenos="56 "></span><span class="sd">    """</span>
+<span class="linenos" data-linenos="57 "></span>    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">new</span><span class="p">,</span> <span class="n">timedelta</span><span class="p">):</span>
+<span class="linenos" data-linenos="58 "></span>        <span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="p">{</span><span class="s2">"weeks"</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+<span class="linenos" data-linenos="59 "></span>        <span class="n">new</span> <span class="o">=</span> <span class="n">timedelta</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="linenos" data-linenos="60 "></span>    <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">expire_after</span> <span class="o">=</span> <span class="n">new</span>
+</code></pre></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="ASDCache.mixins.GenericCacheMixin.clear_cache" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">clear_cache</span>
+
+
+<a href="#ASDCache.mixins.GenericCacheMixin.clear_cache" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">clear_cache</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Clear responses from the cache.</p>
+<p>This will remove all responses from the cache that belong to the corresponding cache class.</p>
+<p>Any response that belongs to a different type of cache (such as bibliographic responses, in case of a SpectraCache) will not be removed.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/ASDCache/mixins.py</code></summary>
+              <div class="highlight"><pre><span></span><code><span class="linenos" data-linenos=" 97 "></span><span class="k">def</span><span class="w"> </span><span class="nf">clear_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="linenos" data-linenos=" 98 "></span><span class="w">    </span><span class="sd">"""Clear responses from the cache.</span>
+<span class="linenos" data-linenos=" 99 "></span>
+<span class="linenos" data-linenos="100 "></span><span class="sd">    This will remove all responses from the cache that belong to the corresponding cache class.</span>
+<span class="linenos" data-linenos="101 "></span>
+<span class="linenos" data-linenos="102 "></span><span class="sd">    Any response that belongs to a different type of cache (such as bibliographic responses, in case of a SpectraCache) will not be removed.</span>
+<span class="linenos" data-linenos="103 "></span><span class="sd">    """</span>
+<span class="linenos" data-linenos="104 "></span>    <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">cache_key</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">responses</span><span class="p">))</span>
+</code></pre></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="ASDCache.mixins.CacheSessionMixin" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <span class="doc doc-object-name doc-class-name">CacheSessionMixin</span>
+
+
+<a href="#ASDCache.mixins.CacheSessionMixin" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+            <div style="display: none">
+              <a class="autorefs autorefs-internal" title="            CacheSessionMixin (ASDCache.mixins.CacheSessionMixin)" href="#ASDCache.mixins.CacheSessionMixin" id="mermaid-link-ASDCache.mixins.CacheSessionMixin"></a>
+                  <a class="autorefs autorefs-internal" title="            GenericCacheMixin (ASDCache.mixins.GenericCacheMixin)" href="#ASDCache.mixins.GenericCacheMixin" id="mermaid-link-ASDCache.mixins.GenericCacheMixin"></a>
+            </div>
+            <pre class="mermaid"><code id="mermaid-diagram-ASDCache.mixins.CacheSessionMixin">
+              flowchart LR
+              ASDCache.mixins.CacheSessionMixin[CacheSessionMixin]
+              ASDCache.mixins.GenericCacheMixin[GenericCacheMixin]
+
+                              ASDCache.mixins.GenericCacheMixin --> ASDCache.mixins.CacheSessionMixin
+                
+
+
+              click ASDCache.mixins.CacheSessionMixin href "" "ASDCache.mixins.CacheSessionMixin"
+              click ASDCache.mixins.GenericCacheMixin href "" "ASDCache.mixins.GenericCacheMixin"
+            </code></pre>
+            <script>
+              var diagram = document.getElementById('mermaid-diagram-ASDCache.mixins.CacheSessionMixin');
+              diagram.innerHTML = diagram.innerHTML.replace(/click ([\w.]+) href "" "\1"/g, function(match, nodeID, offset) {
+                try {
+                  const link = document.getElementById("mermaid-link-" + nodeID).href;
+                  return `click ${nodeID} href "${link}" "${nodeID}"`
+                } catch (e) {
+                  return '';
+                }
+              });
+            </script>
+
+
+        <p>Mixin that initializes and manages a persistent cache of NIST ASD responses.</p>
+<p>Creates a <code>CachedSession</code> object under the <code>session</code> attribute, which is the entry point for all requests to the NIST ASD.</p>
+<p>Implementing classes are expected to provide:</p>
+<ul>
+<li>
+<p>a <code>self.nist_url</code> string attribute that contains the base url of the NIST ASD</p>
+</li>
+<li>
+<p>a <code>self._check_response_success</code> method that checks if a response is successful and can be cached.</p>
+</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+<p><span class="doc-section-title">Methods:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+            <tr class="doc-section-item">
+              <td><code><a class="autorefs autorefs-internal" title="            __init__ (ASDCache.mixins.CacheSessionMixin.__init__)" href="#ASDCache.mixins.CacheSessionMixin.__init__">__init__</a></code></td>
+              <td>
+                <div class="doc-md-description">
+                  <p>Instantiate a standalone cache.</p>
+                </div>
+              </td>
+            </tr>
+            <tr class="doc-section-item">
+              <td><code><a class="autorefs autorefs-internal" title="            set_cache_expiry (ASDCache.mixins.CacheSessionMixin.set_cache_expiry)" href="#ASDCache.mixins.CacheSessionMixin.set_cache_expiry">set_cache_expiry</a></code></td>
+              <td>
+                <div class="doc-md-description">
+                  <p>Set the cache expiry to a different interval.</p>
+                </div>
+              </td>
+            </tr>
+            <tr class="doc-section-item">
+              <td><code><a class="autorefs autorefs-internal" title="            clear_cache (ASDCache.mixins.CacheSessionMixin.clear_cache)" href="#ASDCache.mixins.CacheSessionMixin.clear_cache">clear_cache</a></code></td>
+              <td>
+                <div class="doc-md-description">
+                  <p>Clear responses from the cache.</p>
+                </div>
+              </td>
+            </tr>
+      </tbody>
+    </table>
+
+
+
+
+<p><span class="doc-section-title">Attributes:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code><a class="autorefs autorefs-internal" title="            cache_expiry
+
+
+  
+      property
+      writable
+   (ASDCache.mixins.CacheSessionMixin.cache_expiry)" href="#ASDCache.mixins.CacheSessionMixin.cache_expiry">cache_expiry</a></code></td>
+            <td>
+                  <code><span title="datetime.timedelta">timedelta</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The cache expiry time.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><a class="autorefs autorefs-internal" title="            responses
+
+
+  
+      property
+   (ASDCache.mixins.CacheSessionMixin.responses)" href="#ASDCache.mixins.CacheSessionMixin.responses">responses</a></code></td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Generator yielding responses from the cache that contain relevant data.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><a class="autorefs autorefs-internal" title="            cache_path
+
+
+  
+      property
+   (ASDCache.mixins.CacheSessionMixin.cache_path)" href="#ASDCache.mixins.CacheSessionMixin.cache_path">cache_path</a></code></td>
+            <td>
+                  <code><span title="pathlib.Path">Path</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The path to the cache database file.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+              <details class="mkdocstrings-source">
+                <summary>Source code in <code>src/ASDCache/mixins.py</code></summary>
+                <div class="highlight"><pre><span></span><code><span class="linenos" data-linenos="112 "></span><span class="k">class</span><span class="w"> </span><span class="nc">CacheSessionMixin</span><span class="p">(</span><span class="n">GenericCacheMixin</span><span class="p">):</span>
+<span class="linenos" data-linenos="113 "></span><span class="w">    </span><span class="sd">"""Mixin that initializes and manages a persistent cache of NIST ASD responses.</span>
+<span class="linenos" data-linenos="114 "></span>
+<span class="linenos" data-linenos="115 "></span><span class="sd">    Creates a `CachedSession` object under the `session` attribute, which is the entry point for all requests to the NIST ASD.</span>
+<span class="linenos" data-linenos="116 "></span>
+<span class="linenos" data-linenos="117 "></span><span class="sd">    Implementing classes are expected to provide:</span>
+<span class="linenos" data-linenos="118 "></span>
+<span class="linenos" data-linenos="119 "></span><span class="sd">    * a `self.nist_url` string attribute that contains the base url of the NIST ASD</span>
+<span class="linenos" data-linenos="120 "></span>
+<span class="linenos" data-linenos="121 "></span><span class="sd">    * a `self._check_response_success` method that checks if a response is successful and can be cached.</span>
+<span class="linenos" data-linenos="122 "></span><span class="sd">    """</span>
+<span class="linenos" data-linenos="123 "></span>
+<span class="linenos" data-linenos="124 "></span>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">cache_expiry</span><span class="o">=</span><span class="n">timedelta</span><span class="p">(</span><span class="n">weeks</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span> <span class="n">cache_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="linenos" data-linenos="125 "></span><span class="w">        </span><span class="sd">"""Instantiate a standalone cache.</span>
+<span class="linenos" data-linenos="126 "></span>
+<span class="linenos" data-linenos="127 "></span><span class="sd">        Args:</span>
+<span class="linenos" data-linenos="128 "></span><span class="sd">            cache_expiry (timedelta, optional): The expiry time for cached responses. Defaults to 2 weeks.</span>
+<span class="linenos" data-linenos="129 "></span><span class="sd">            cache_path (Path, optional): The path to the cache directory. If None, a default path is used. Defaults to None.</span>
+<span class="linenos" data-linenos="130 "></span><span class="sd">        """</span>
+<span class="linenos" data-linenos="131 "></span>        <span class="c1"># `filter_fn` keeps responses with errors out of the cache, error must still be raised</span>
+<span class="linenos" data-linenos="132 "></span>        <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="n">CachedSession</span><span class="p">(</span>
+<span class="linenos" data-linenos="133 "></span>            <span class="s2">"NIST_ASD_cache"</span> <span class="k">if</span> <span class="n">cache_path</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">cache_path</span><span class="p">,</span>
+<span class="linenos" data-linenos="134 "></span>            <span class="n">use_cache_dir</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="linenos" data-linenos="135 "></span>            <span class="n">expire_after</span><span class="o">=</span><span class="n">cache_expiry</span><span class="p">,</span>
+<span class="linenos" data-linenos="136 "></span>            <span class="n">stale_if_error</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="linenos" data-linenos="137 "></span>            <span class="n">filter_fn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_check_response_success</span><span class="p">,</span>
+<span class="linenos" data-linenos="138 "></span>        <span class="p">)</span>
+<span class="linenos" data-linenos="139 "></span>        <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">stream</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="linenos" data-linenos="140 "></span>        <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">"User-Agent"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"ASDCache/</span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">"</span><span class="p">})</span>
+<span class="linenos" data-linenos="141 "></span>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</code></pre></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="ASDCache.mixins.CacheSessionMixin.cache_expiry" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">cache_expiry</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+      <small class="doc doc-label doc-label-writable"><code>writable</code></small>
+  </span>
+
+<a href="#ASDCache.mixins.CacheSessionMixin.cache_expiry" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">cache_expiry</span><span class="p">:</span> <span class="n"><span title="datetime.timedelta">timedelta</span></span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>The cache expiry time.</p>
+<p>Queries that are older than this time are considered stale and marked for updating, by quering the NIST ASD.
+In case the query for new data fails, the stale, cached response will still be parsed.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="ASDCache.mixins.CacheSessionMixin.responses" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">responses</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#ASDCache.mixins.CacheSessionMixin.responses" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">responses</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Generator yielding responses from the cache that contain relevant data.</p>
+<p>Usefull to loop over all responses, while avoiding to load them all in memory.</p>
+
+
+<details class="example" open>
+  <summary>Example</summary>
+  <div class="highlight"><pre><span></span><code><span class="n">cache</span> <span class="o">=</span> <span class="n">SpectraCache</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">response</span> <span class="ow">in</span> <span class="n">cache</span><span class="p">:</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">cache</span><span class="o">.</span><span class="n">create_dataframe</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="o">...</span>
+</code></pre></div>
+</details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="ASDCache.mixins.CacheSessionMixin.cache_path" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">cache_path</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#ASDCache.mixins.CacheSessionMixin.cache_path" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">cache_path</span><span class="p">:</span> <span class="n"><span title="pathlib.Path">Path</span></span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>The path to the cache database file.</p>
+
+    </div>
+
+</div>
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="ASDCache.mixins.CacheSessionMixin.__init__" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">__init__</span>
+
+
+<a href="#ASDCache.mixins.CacheSessionMixin.__init__" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">cache_expiry</span><span class="o">=</span><span class="n"><span title="datetime.timedelta">timedelta</span></span><span class="p">(</span><span class="n"><span title="datetime.timedelta(weeks)">weeks</span></span><span class="o">=</span><span class="mi">2</span><span class="p">),</span> <span class="n">cache_path</span><span class="p">:</span> <span class="n"><span title="typing.Optional">Optional</span></span><span class="p">[</span><span class="n"><span title="pathlib.Path">Path</span></span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Instantiate a standalone cache.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>cache_expiry</code>
+            </td>
+            <td>
+                  <code><span title="datetime.timedelta">timedelta</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The expiry time for cached responses. Defaults to 2 weeks.</p>
+              </div>
+            </td>
+            <td>
+                  <code><span title="datetime.timedelta">timedelta</span>(<span title="datetime.timedelta(weeks)">weeks</span>=2)</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>cache_path</code>
+            </td>
+            <td>
+                  <code><span title="pathlib.Path">Path</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The path to the cache directory. If None, a default path is used. Defaults to None.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/ASDCache/mixins.py</code></summary>
+              <div class="highlight"><pre><span></span><code><span class="linenos" data-linenos="124 "></span><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">cache_expiry</span><span class="o">=</span><span class="n">timedelta</span><span class="p">(</span><span class="n">weeks</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span> <span class="n">cache_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="linenos" data-linenos="125 "></span><span class="w">    </span><span class="sd">"""Instantiate a standalone cache.</span>
+<span class="linenos" data-linenos="126 "></span>
+<span class="linenos" data-linenos="127 "></span><span class="sd">    Args:</span>
+<span class="linenos" data-linenos="128 "></span><span class="sd">        cache_expiry (timedelta, optional): The expiry time for cached responses. Defaults to 2 weeks.</span>
+<span class="linenos" data-linenos="129 "></span><span class="sd">        cache_path (Path, optional): The path to the cache directory. If None, a default path is used. Defaults to None.</span>
+<span class="linenos" data-linenos="130 "></span><span class="sd">    """</span>
+<span class="linenos" data-linenos="131 "></span>    <span class="c1"># `filter_fn` keeps responses with errors out of the cache, error must still be raised</span>
+<span class="linenos" data-linenos="132 "></span>    <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="n">CachedSession</span><span class="p">(</span>
+<span class="linenos" data-linenos="133 "></span>        <span class="s2">"NIST_ASD_cache"</span> <span class="k">if</span> <span class="n">cache_path</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">cache_path</span><span class="p">,</span>
+<span class="linenos" data-linenos="134 "></span>        <span class="n">use_cache_dir</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="linenos" data-linenos="135 "></span>        <span class="n">expire_after</span><span class="o">=</span><span class="n">cache_expiry</span><span class="p">,</span>
+<span class="linenos" data-linenos="136 "></span>        <span class="n">stale_if_error</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="linenos" data-linenos="137 "></span>        <span class="n">filter_fn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_check_response_success</span><span class="p">,</span>
+<span class="linenos" data-linenos="138 "></span>    <span class="p">)</span>
+<span class="linenos" data-linenos="139 "></span>    <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">stream</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="linenos" data-linenos="140 "></span>    <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">"User-Agent"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"ASDCache/</span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">"</span><span class="p">})</span>
+<span class="linenos" data-linenos="141 "></span>    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</code></pre></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="ASDCache.mixins.CacheSessionMixin.set_cache_expiry" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">set_cache_expiry</span>
+
+
+<a href="#ASDCache.mixins.CacheSessionMixin.set_cache_expiry" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">set_cache_expiry</span><span class="p">(</span><span class="n">new</span><span class="p">:</span> <span class="n"><span title="typing.Optional">Optional</span></span><span class="p">[</span><span class="n"><span title="datetime.timedelta">timedelta</span></span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Set the cache expiry to a different interval.</p>
+<p>Can be done by either passing in a <code>timedelta</code> object, or valid keyword arguments for <code>timedelta</code> itself.</p>
+<p>If no arguments are provided, the default expiry time of 2 weeks is used.</p>
+
+
+<details class="example" open>
+  <summary>Example</summary>
+  <div class="highlight"><pre><span></span><code><span class="c1"># set expiry to 3 days</span>
+<span class="n">cache</span> <span class="o">=</span> <span class="o">...</span>
+<span class="n">cache</span><span class="o">.</span><span class="n">set_cache_expiry</span><span class="p">(</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">3</span><span class="p">))</span>
+<span class="n">cache</span><span class="o">.</span><span class="n">set_cache_expiry</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">cache</span><span class="o">.</span><span class="n">cache_expiry</span> <span class="o">=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>  <span class="c1"># only accepts a timedelta</span>
+</code></pre></div>
+</details>
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/ASDCache/mixins.py</code></summary>
+              <div class="highlight"><pre><span></span><code><span class="linenos" data-linenos="41 "></span><span class="k">def</span><span class="w"> </span><span class="nf">set_cache_expiry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">timedelta</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="linenos" data-linenos="42 "></span><span class="w">    </span><span class="sd">"""Set the cache expiry to a different interval.</span>
+<span class="linenos" data-linenos="43 "></span>
+<span class="linenos" data-linenos="44 "></span><span class="sd">    Can be done by either passing in a `timedelta` object, or valid keyword arguments for `timedelta` itself.</span>
+<span class="linenos" data-linenos="45 "></span>
+<span class="linenos" data-linenos="46 "></span><span class="sd">    If no arguments are provided, the default expiry time of 2 weeks is used.</span>
+<span class="linenos" data-linenos="47 "></span>
+<span class="linenos" data-linenos="48 "></span><span class="sd">    Example:</span>
+<span class="linenos" data-linenos="49 "></span><span class="sd">        ```python</span>
+<span class="linenos" data-linenos="50 "></span><span class="sd">        # set expiry to 3 days</span>
+<span class="linenos" data-linenos="51 "></span><span class="sd">        cache = ...</span>
+<span class="linenos" data-linenos="52 "></span><span class="sd">        cache.set_cache_expiry(timedelta(days=3))</span>
+<span class="linenos" data-linenos="53 "></span><span class="sd">        cache.set_cache_expiry(days=3)</span>
+<span class="linenos" data-linenos="54 "></span><span class="sd">        cache.cache_expiry = timedelta(days=3)  # only accepts a timedelta</span>
+<span class="linenos" data-linenos="55 "></span><span class="sd">        ```</span>
+<span class="linenos" data-linenos="56 "></span><span class="sd">    """</span>
+<span class="linenos" data-linenos="57 "></span>    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">new</span><span class="p">,</span> <span class="n">timedelta</span><span class="p">):</span>
+<span class="linenos" data-linenos="58 "></span>        <span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="p">{</span><span class="s2">"weeks"</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+<span class="linenos" data-linenos="59 "></span>        <span class="n">new</span> <span class="o">=</span> <span class="n">timedelta</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="linenos" data-linenos="60 "></span>    <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">expire_after</span> <span class="o">=</span> <span class="n">new</span>
+</code></pre></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="ASDCache.mixins.CacheSessionMixin.clear_cache" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">clear_cache</span>
+
+
+<a href="#ASDCache.mixins.CacheSessionMixin.clear_cache" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">clear_cache</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Clear responses from the cache.</p>
+<p>This will remove all responses from the cache that belong to the corresponding cache class.</p>
+<p>Any response that belongs to a different type of cache (such as bibliographic responses, in case of a SpectraCache) will not be removed.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/ASDCache/mixins.py</code></summary>
+              <div class="highlight"><pre><span></span><code><span class="linenos" data-linenos=" 97 "></span><span class="k">def</span><span class="w"> </span><span class="nf">clear_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="linenos" data-linenos=" 98 "></span><span class="w">    </span><span class="sd">"""Clear responses from the cache.</span>
+<span class="linenos" data-linenos=" 99 "></span>
+<span class="linenos" data-linenos="100 "></span><span class="sd">    This will remove all responses from the cache that belong to the corresponding cache class.</span>
+<span class="linenos" data-linenos="101 "></span>
+<span class="linenos" data-linenos="102 "></span><span class="sd">    Any response that belongs to a different type of cache (such as bibliographic responses, in case of a SpectraCache) will not be removed.</span>
+<span class="linenos" data-linenos="103 "></span><span class="sd">    """</span>
+<span class="linenos" data-linenos="104 "></span>    <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">cache_key</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">responses</span><span class="p">))</span>
+</code></pre></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="ASDCache.mixins.CacheAccessorMixin" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <span class="doc doc-object-name doc-class-name">CacheAccessorMixin</span>
+
+
+<a href="#ASDCache.mixins.CacheAccessorMixin" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+            <div style="display: none">
+              <a class="autorefs autorefs-internal" title="            CacheAccessorMixin (ASDCache.mixins.CacheAccessorMixin)" href="#ASDCache.mixins.CacheAccessorMixin" id="mermaid-link-ASDCache.mixins.CacheAccessorMixin"></a>
+                  <a class="autorefs autorefs-internal" title="            GenericCacheMixin (ASDCache.mixins.GenericCacheMixin)" href="#ASDCache.mixins.GenericCacheMixin" id="mermaid-link-ASDCache.mixins.GenericCacheMixin"></a>
+            </div>
+            <pre class="mermaid"><code id="mermaid-diagram-ASDCache.mixins.CacheAccessorMixin">
+              flowchart LR
+              ASDCache.mixins.CacheAccessorMixin[CacheAccessorMixin]
+              ASDCache.mixins.GenericCacheMixin[GenericCacheMixin]
+
+                              ASDCache.mixins.GenericCacheMixin --> ASDCache.mixins.CacheAccessorMixin
+                
+
+
+              click ASDCache.mixins.CacheAccessorMixin href "" "ASDCache.mixins.CacheAccessorMixin"
+              click ASDCache.mixins.GenericCacheMixin href "" "ASDCache.mixins.GenericCacheMixin"
+            </code></pre>
+            <script>
+              var diagram = document.getElementById('mermaid-diagram-ASDCache.mixins.CacheAccessorMixin');
+              diagram.innerHTML = diagram.innerHTML.replace(/click ([\w.]+) href "" "\1"/g, function(match, nodeID, offset) {
+                try {
+                  const link = document.getElementById("mermaid-link-" + nodeID).href;
+                  return `click ${nodeID} href "${link}" "${nodeID}"`
+                } catch (e) {
+                  return '';
+                }
+              });
+            </script>
+
+
+        <p>Mixin providing access to a parent cache instance.</p>
+<p>A CacheAccessor does not create or own its own cache session.</p>
+<p>Instead, it reuses the <code>CachedSession</code> instance from a parent object that inherits from <a class="autorefs autorefs-internal" title="            CacheSessionMixin" href="#ASDCache.mixins.CacheSessionMixin">CacheSessionMixin</a>.</p>
+<p>This allows CacheAccessor classes to share the same cache configuration, expiration settings, and storage backend as the parent cache object.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+<p><span class="doc-section-title">Methods:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+            <tr class="doc-section-item">
+              <td><code><a class="autorefs autorefs-internal" title="            __init__ (ASDCache.mixins.CacheAccessorMixin.__init__)" href="#ASDCache.mixins.CacheAccessorMixin.__init__">__init__</a></code></td>
+              <td>
+                <div class="doc-md-description">
+                  <p>Initialize the cache accessor.</p>
+                </div>
+              </td>
+            </tr>
+            <tr class="doc-section-item">
+              <td><code><a class="autorefs autorefs-internal" title="            set_cache_expiry (ASDCache.mixins.CacheAccessorMixin.set_cache_expiry)" href="#ASDCache.mixins.CacheAccessorMixin.set_cache_expiry">set_cache_expiry</a></code></td>
+              <td>
+                <div class="doc-md-description">
+                  <p>Set the cache expiry to a different interval.</p>
+                </div>
+              </td>
+            </tr>
+            <tr class="doc-section-item">
+              <td><code><a class="autorefs autorefs-internal" title="            clear_cache (ASDCache.mixins.CacheAccessorMixin.clear_cache)" href="#ASDCache.mixins.CacheAccessorMixin.clear_cache">clear_cache</a></code></td>
+              <td>
+                <div class="doc-md-description">
+                  <p>Clear responses from the cache.</p>
+                </div>
+              </td>
+            </tr>
+      </tbody>
+    </table>
+
+
+
+
+<p><span class="doc-section-title">Attributes:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code><a class="autorefs autorefs-internal" title="            session
+
+
+  
+      property
+   (ASDCache.mixins.CacheAccessorMixin.session)" href="#ASDCache.mixins.CacheAccessorMixin.session">session</a></code></td>
+            <td>
+                  <code><span title="requests_cache.CachedSession">CachedSession</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Reference to the parent's cache session.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><a class="autorefs autorefs-internal" title="            use_polars
+
+
+  
+      property
+   (ASDCache.mixins.CacheAccessorMixin.use_polars)" href="#ASDCache.mixins.CacheAccessorMixin.use_polars">use_polars</a></code></td>
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Flag if <code>polars</code> is to be used, if present in the environment.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><a class="autorefs autorefs-internal" title="            cache_expiry
+
+
+  
+      property
+      writable
+   (ASDCache.mixins.CacheAccessorMixin.cache_expiry)" href="#ASDCache.mixins.CacheAccessorMixin.cache_expiry">cache_expiry</a></code></td>
+            <td>
+                  <code><span title="datetime.timedelta">timedelta</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The cache expiry time.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><a class="autorefs autorefs-internal" title="            responses
+
+
+  
+      property
+   (ASDCache.mixins.CacheAccessorMixin.responses)" href="#ASDCache.mixins.CacheAccessorMixin.responses">responses</a></code></td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Generator yielding responses from the cache that contain relevant data.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><a class="autorefs autorefs-internal" title="            cache_path
+
+
+  
+      property
+   (ASDCache.mixins.CacheAccessorMixin.cache_path)" href="#ASDCache.mixins.CacheAccessorMixin.cache_path">cache_path</a></code></td>
+            <td>
+                  <code><span title="pathlib.Path">Path</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The path to the cache database file.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+              <details class="mkdocstrings-source">
+                <summary>Source code in <code>src/ASDCache/mixins.py</code></summary>
+                <div class="highlight"><pre><span></span><code><span class="linenos" data-linenos="144 "></span><span class="k">class</span><span class="w"> </span><span class="nc">CacheAccessorMixin</span><span class="p">(</span><span class="n">GenericCacheMixin</span><span class="p">):</span>
+<span class="linenos" data-linenos="145 "></span><span class="w">    </span><span class="sd">"""Mixin providing access to a parent cache instance.</span>
+<span class="linenos" data-linenos="146 "></span>
+<span class="linenos" data-linenos="147 "></span><span class="sd">    A CacheAccessor does not create or own its own cache session.</span>
+<span class="linenos" data-linenos="148 "></span>
+<span class="linenos" data-linenos="149 "></span><span class="sd">    Instead, it reuses the `CachedSession` instance from a parent object that inherits from [CacheSessionMixin][(m).].</span>
+<span class="linenos" data-linenos="150 "></span>
+<span class="linenos" data-linenos="151 "></span><span class="sd">    This allows CacheAccessor classes to share the same cache configuration, expiration settings, and storage backend as the parent cache object.</span>
+<span class="linenos" data-linenos="152 "></span><span class="sd">    """</span>
+<span class="linenos" data-linenos="153 "></span>
+<span class="linenos" data-linenos="154 "></span>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="linenos" data-linenos="155 "></span><span class="w">        </span><span class="sd">"""Initialize the cache accessor.</span>
+<span class="linenos" data-linenos="156 "></span>
+<span class="linenos" data-linenos="157 "></span><span class="sd">        Args:</span>
+<span class="linenos" data-linenos="158 "></span><span class="sd">            parent (CacheSessionMixin): The parent cache instance from which to access the cache session.</span>
+<span class="linenos" data-linenos="159 "></span><span class="sd">            *args: Additional positional arguments to pass to the parent class.</span>
+<span class="linenos" data-linenos="160 "></span><span class="sd">            **kwargs: Additional keyword arguments to pass to the parent class.</span>
+<span class="linenos" data-linenos="161 "></span>
+<span class="linenos" data-linenos="162 "></span><span class="sd">        Raises:</span>
+<span class="linenos" data-linenos="163 "></span><span class="sd">            TypeError: If the `parent` argument is not an instance of [CacheSessionMixin][(m).].</span>
+<span class="linenos" data-linenos="164 "></span><span class="sd">        """</span>
+<span class="linenos" data-linenos="165 "></span>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">CacheSessionMixin</span><span class="p">):</span>
+<span class="linenos" data-linenos="166 "></span>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"parent must be an instance of CacheSessionMixin, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span><span class="si">}</span><span class="s2"> instead."</span><span class="p">)</span>
+<span class="linenos" data-linenos="167 "></span>        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span>
+<span class="linenos" data-linenos="168 "></span>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="linenos" data-linenos="169 "></span>
+<span class="linenos" data-linenos="170 "></span>    <span class="nd">@property</span>
+<span class="linenos" data-linenos="171 "></span>    <span class="k">def</span><span class="w"> </span><span class="nf">session</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CachedSession</span><span class="p">:</span>
+<span class="linenos" data-linenos="172 "></span><span class="w">        </span><span class="sd">"""Reference to the parent's cache session."""</span>
+<span class="linenos" data-linenos="173 "></span>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">session</span>
+<span class="linenos" data-linenos="174 "></span>
+<span class="linenos" data-linenos="175 "></span>    <span class="nd">@property</span>
+<span class="linenos" data-linenos="176 "></span>    <span class="k">def</span><span class="w"> </span><span class="nf">use_polars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="linenos" data-linenos="177 "></span><span class="w">        </span><span class="sd">"""Flag if `polars` is to be used, if present in the environment."""</span>
+<span class="linenos" data-linenos="178 "></span>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">use_polars</span>
+</code></pre></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="ASDCache.mixins.CacheAccessorMixin.session" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">session</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#ASDCache.mixins.CacheAccessorMixin.session" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">session</span><span class="p">:</span> <span class="n"><span title="requests_cache.CachedSession">CachedSession</span></span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Reference to the parent's cache session.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="ASDCache.mixins.CacheAccessorMixin.use_polars" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">use_polars</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#ASDCache.mixins.CacheAccessorMixin.use_polars" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">use_polars</span><span class="p">:</span> <span class="n"><span title="bool">bool</span></span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Flag if <code>polars</code> is to be used, if present in the environment.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="ASDCache.mixins.CacheAccessorMixin.cache_expiry" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">cache_expiry</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+      <small class="doc doc-label doc-label-writable"><code>writable</code></small>
+  </span>
+
+<a href="#ASDCache.mixins.CacheAccessorMixin.cache_expiry" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">cache_expiry</span><span class="p">:</span> <span class="n"><span title="datetime.timedelta">timedelta</span></span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>The cache expiry time.</p>
+<p>Queries that are older than this time are considered stale and marked for updating, by quering the NIST ASD.
+In case the query for new data fails, the stale, cached response will still be parsed.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="ASDCache.mixins.CacheAccessorMixin.responses" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">responses</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#ASDCache.mixins.CacheAccessorMixin.responses" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">responses</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Generator yielding responses from the cache that contain relevant data.</p>
+<p>Usefull to loop over all responses, while avoiding to load them all in memory.</p>
+
+
+<details class="example" open>
+  <summary>Example</summary>
+  <div class="highlight"><pre><span></span><code><span class="n">cache</span> <span class="o">=</span> <span class="n">SpectraCache</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">response</span> <span class="ow">in</span> <span class="n">cache</span><span class="p">:</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">cache</span><span class="o">.</span><span class="n">create_dataframe</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="o">...</span>
+</code></pre></div>
+</details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="ASDCache.mixins.CacheAccessorMixin.cache_path" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">cache_path</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#ASDCache.mixins.CacheAccessorMixin.cache_path" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">cache_path</span><span class="p">:</span> <span class="n"><span title="pathlib.Path">Path</span></span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>The path to the cache database file.</p>
+
+    </div>
+
+</div>
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="ASDCache.mixins.CacheAccessorMixin.__init__" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">__init__</span>
+
+
+<a href="#ASDCache.mixins.CacheAccessorMixin.__init__" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Initialize the cache accessor.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>parent</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="            CacheSessionMixin (ASDCache.mixins.CacheSessionMixin)" href="#ASDCache.mixins.CacheSessionMixin">CacheSessionMixin</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The parent cache instance from which to access the cache session.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>*args</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Additional positional arguments to pass to the parent class.</p>
+              </div>
+            </td>
+            <td>
+                  <code>()</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>**kwargs</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Additional keyword arguments to pass to the parent class.</p>
+              </div>
+            </td>
+            <td>
+                  <code>{}</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="TypeError">TypeError</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If the <code>parent</code> argument is not an instance of <a class="autorefs autorefs-internal" title="            CacheSessionMixin" href="#ASDCache.mixins.CacheSessionMixin">CacheSessionMixin</a>.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/ASDCache/mixins.py</code></summary>
+              <div class="highlight"><pre><span></span><code><span class="linenos" data-linenos="154 "></span><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="linenos" data-linenos="155 "></span><span class="w">    </span><span class="sd">"""Initialize the cache accessor.</span>
+<span class="linenos" data-linenos="156 "></span>
+<span class="linenos" data-linenos="157 "></span><span class="sd">    Args:</span>
+<span class="linenos" data-linenos="158 "></span><span class="sd">        parent (CacheSessionMixin): The parent cache instance from which to access the cache session.</span>
+<span class="linenos" data-linenos="159 "></span><span class="sd">        *args: Additional positional arguments to pass to the parent class.</span>
+<span class="linenos" data-linenos="160 "></span><span class="sd">        **kwargs: Additional keyword arguments to pass to the parent class.</span>
+<span class="linenos" data-linenos="161 "></span>
+<span class="linenos" data-linenos="162 "></span><span class="sd">    Raises:</span>
+<span class="linenos" data-linenos="163 "></span><span class="sd">        TypeError: If the `parent` argument is not an instance of [CacheSessionMixin][(m).].</span>
+<span class="linenos" data-linenos="164 "></span><span class="sd">    """</span>
+<span class="linenos" data-linenos="165 "></span>    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">CacheSessionMixin</span><span class="p">):</span>
+<span class="linenos" data-linenos="166 "></span>        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"parent must be an instance of CacheSessionMixin, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span><span class="si">}</span><span class="s2"> instead."</span><span class="p">)</span>
+<span class="linenos" data-linenos="167 "></span>    <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span>
+<span class="linenos" data-linenos="168 "></span>    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</code></pre></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="ASDCache.mixins.CacheAccessorMixin.set_cache_expiry" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">set_cache_expiry</span>
+
+
+<a href="#ASDCache.mixins.CacheAccessorMixin.set_cache_expiry" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">set_cache_expiry</span><span class="p">(</span><span class="n">new</span><span class="p">:</span> <span class="n"><span title="typing.Optional">Optional</span></span><span class="p">[</span><span class="n"><span title="datetime.timedelta">timedelta</span></span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Set the cache expiry to a different interval.</p>
+<p>Can be done by either passing in a <code>timedelta</code> object, or valid keyword arguments for <code>timedelta</code> itself.</p>
+<p>If no arguments are provided, the default expiry time of 2 weeks is used.</p>
+
+
+<details class="example" open>
+  <summary>Example</summary>
+  <div class="highlight"><pre><span></span><code><span class="c1"># set expiry to 3 days</span>
+<span class="n">cache</span> <span class="o">=</span> <span class="o">...</span>
+<span class="n">cache</span><span class="o">.</span><span class="n">set_cache_expiry</span><span class="p">(</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">3</span><span class="p">))</span>
+<span class="n">cache</span><span class="o">.</span><span class="n">set_cache_expiry</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">cache</span><span class="o">.</span><span class="n">cache_expiry</span> <span class="o">=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>  <span class="c1"># only accepts a timedelta</span>
+</code></pre></div>
+</details>
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/ASDCache/mixins.py</code></summary>
+              <div class="highlight"><pre><span></span><code><span class="linenos" data-linenos="41 "></span><span class="k">def</span><span class="w"> </span><span class="nf">set_cache_expiry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">timedelta</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="linenos" data-linenos="42 "></span><span class="w">    </span><span class="sd">"""Set the cache expiry to a different interval.</span>
+<span class="linenos" data-linenos="43 "></span>
+<span class="linenos" data-linenos="44 "></span><span class="sd">    Can be done by either passing in a `timedelta` object, or valid keyword arguments for `timedelta` itself.</span>
+<span class="linenos" data-linenos="45 "></span>
+<span class="linenos" data-linenos="46 "></span><span class="sd">    If no arguments are provided, the default expiry time of 2 weeks is used.</span>
+<span class="linenos" data-linenos="47 "></span>
+<span class="linenos" data-linenos="48 "></span><span class="sd">    Example:</span>
+<span class="linenos" data-linenos="49 "></span><span class="sd">        ```python</span>
+<span class="linenos" data-linenos="50 "></span><span class="sd">        # set expiry to 3 days</span>
+<span class="linenos" data-linenos="51 "></span><span class="sd">        cache = ...</span>
+<span class="linenos" data-linenos="52 "></span><span class="sd">        cache.set_cache_expiry(timedelta(days=3))</span>
+<span class="linenos" data-linenos="53 "></span><span class="sd">        cache.set_cache_expiry(days=3)</span>
+<span class="linenos" data-linenos="54 "></span><span class="sd">        cache.cache_expiry = timedelta(days=3)  # only accepts a timedelta</span>
+<span class="linenos" data-linenos="55 "></span><span class="sd">        ```</span>
+<span class="linenos" data-linenos="56 "></span><span class="sd">    """</span>
+<span class="linenos" data-linenos="57 "></span>    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">new</span><span class="p">,</span> <span class="n">timedelta</span><span class="p">):</span>
+<span class="linenos" data-linenos="58 "></span>        <span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="p">{</span><span class="s2">"weeks"</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+<span class="linenos" data-linenos="59 "></span>        <span class="n">new</span> <span class="o">=</span> <span class="n">timedelta</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="linenos" data-linenos="60 "></span>    <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">expire_after</span> <span class="o">=</span> <span class="n">new</span>
+</code></pre></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="ASDCache.mixins.CacheAccessorMixin.clear_cache" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">clear_cache</span>
+
+
+<a href="#ASDCache.mixins.CacheAccessorMixin.clear_cache" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">clear_cache</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Clear responses from the cache.</p>
+<p>This will remove all responses from the cache that belong to the corresponding cache class.</p>
+<p>Any response that belongs to a different type of cache (such as bibliographic responses, in case of a SpectraCache) will not be removed.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/ASDCache/mixins.py</code></summary>
+              <div class="highlight"><pre><span></span><code><span class="linenos" data-linenos=" 97 "></span><span class="k">def</span><span class="w"> </span><span class="nf">clear_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="linenos" data-linenos=" 98 "></span><span class="w">    </span><span class="sd">"""Clear responses from the cache.</span>
+<span class="linenos" data-linenos=" 99 "></span>
+<span class="linenos" data-linenos="100 "></span><span class="sd">    This will remove all responses from the cache that belong to the corresponding cache class.</span>
+<span class="linenos" data-linenos="101 "></span>
+<span class="linenos" data-linenos="102 "></span><span class="sd">    Any response that belongs to a different type of cache (such as bibliographic responses, in case of a SpectraCache) will not be removed.</span>
+<span class="linenos" data-linenos="103 "></span><span class="sd">    """</span>
+<span class="linenos" data-linenos="104 "></span>    <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">cache_key</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">responses</span><span class="p">))</span>
+</code></pre></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="ASDCache.mixins.DataHandlerMixin" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <span class="doc doc-object-name doc-class-name">DataHandlerMixin</span>
+
+
+<a href="#ASDCache.mixins.DataHandlerMixin" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Mixin providing data extraction and DataFrame conversion utilities, for classes that handle parsing data from the NIST ASD databases.</p>
+<p>It adds functionality to convert from <a class="autorefs autorefs-external" href="https://arrow.apache.org/docs/python/generated/pyarrow.Table.html#pyarrow.Table">pyarrow.Table</a> to either <a class="autorefs autorefs-external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame">pandas.DataFrame</a> or <a href="https://docs.pola.rs/api/python/stable/reference/dataframe/index.html#dataframe">polars.DataFrame</a>, depending on the <code>use_polars</code> attribute.</p>
+<p>Implementing classes are expected to provide:</p>
+<ul>
+<li>
+<p><code>session</code>: A cache-enabled session object.</p>
+</li>
+<li>
+<p><code>nist_url</code>: The ASD endpoint associated with the cache.</p>
+</li>
+<li>
+<p><code>_parse_response()</code>: class method that converts a response into an Apache Arrow table.</p>
+</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+<p><span class="doc-section-title">Methods:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+            <tr class="doc-section-item">
+              <td><code><a class="autorefs autorefs-internal" title="            __init__ (ASDCache.mixins.DataHandlerMixin.__init__)" href="#ASDCache.mixins.DataHandlerMixin.__init__">__init__</a></code></td>
+              <td>
+                <div class="doc-md-description">
+                  <p>Initialize the data handler mixin.</p>
+                </div>
+              </td>
+            </tr>
+            <tr class="doc-section-item">
+              <td><code><a class="autorefs autorefs-internal" title="            list_cached_species (ASDCache.mixins.DataHandlerMixin.list_cached_species)" href="#ASDCache.mixins.DataHandlerMixin.list_cached_species">list_cached_species</a></code></td>
+              <td>
+                <div class="doc-md-description">
+                  <p>List all species in the cache, for which relevant data is stored.</p>
+                </div>
+              </td>
+            </tr>
+            <tr class="doc-section-item">
+              <td><code><a class="autorefs autorefs-internal" title="            create_dataframe (ASDCache.mixins.DataHandlerMixin.create_dataframe)" href="#ASDCache.mixins.DataHandlerMixin.create_dataframe">create_dataframe</a></code></td>
+              <td>
+                <div class="doc-md-description">
+                  <p>Create a dataframe from the (cached) NIST ASD response.</p>
+                </div>
+              </td>
+            </tr>
+      </tbody>
+    </table>
+
+
+
+
+<p><span class="doc-section-title">Attributes:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code><a class="autorefs autorefs-internal" title="            use_polars
+
+
+  
+      property
+      writable
+   (ASDCache.mixins.DataHandlerMixin.use_polars)" href="#ASDCache.mixins.DataHandlerMixin.use_polars">use_polars</a></code></td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Flag if <code>polars</code> is to be used, if present in the environment.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><a class="autorefs autorefs-internal" title="            cached_species
+
+
+  
+      property
+   (ASDCache.mixins.DataHandlerMixin.cached_species)" href="#ASDCache.mixins.DataHandlerMixin.cached_species">cached_species</a></code></td>
+            <td>
+                  <code><span title="list">list</span>[<span title="str">str</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A list of all cached species for which relevant data have been cached.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+              <details class="mkdocstrings-source">
+                <summary>Source code in <code>src/ASDCache/mixins.py</code></summary>
+                <div class="highlight"><pre><span></span><code><span class="linenos" data-linenos="181 "></span><span class="k">class</span><span class="w"> </span><span class="nc">DataHandlerMixin</span><span class="p">:</span>
+<span class="linenos" data-linenos="182 "></span><span class="w">    </span><span class="sd">"""Mixin providing data extraction and DataFrame conversion utilities, for classes that handle parsing data from the NIST ASD databases.</span>
+<span class="linenos" data-linenos="183 "></span>
+<span class="linenos" data-linenos="184 "></span><span class="sd">    It adds functionality to convert from [pyarrow.Table][pyarrow.Table] to either [pandas.DataFrame][pandas.DataFrame] or [polars.DataFrame](https://docs.pola.rs/api/python/stable/reference/dataframe/index.html#dataframe), depending on the `use_polars` attribute.</span>
+<span class="linenos" data-linenos="185 "></span>
+<span class="linenos" data-linenos="186 "></span><span class="sd">    Implementing classes are expected to provide:</span>
+<span class="linenos" data-linenos="187 "></span>
+<span class="linenos" data-linenos="188 "></span><span class="sd">    * `session`: A cache-enabled session object.</span>
+<span class="linenos" data-linenos="189 "></span>
+<span class="linenos" data-linenos="190 "></span><span class="sd">    * `nist_url`: The ASD endpoint associated with the cache.</span>
+<span class="linenos" data-linenos="191 "></span>
+<span class="linenos" data-linenos="192 "></span><span class="sd">    * `_parse_response()`: class method that converts a response into an Apache Arrow table.</span>
+<span class="linenos" data-linenos="193 "></span><span class="sd">    """</span>
+<span class="linenos" data-linenos="194 "></span>
+<span class="linenos" data-linenos="195 "></span>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="linenos" data-linenos="196 "></span><span class="w">        </span><span class="sd">"""Initialize the data handler mixin."""</span>
+<span class="linenos" data-linenos="197 "></span>        <span class="bp">self</span><span class="o">.</span><span class="n">_use_polars</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"use_polars_backend"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">and</span> <span class="n">POLARS_AVAILABLE</span>
+<span class="linenos" data-linenos="198 "></span>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="linenos" data-linenos="199 "></span>
+<span class="linenos" data-linenos="200 "></span>    <span class="nd">@property</span>
+<span class="linenos" data-linenos="201 "></span>    <span class="k">def</span><span class="w"> </span><span class="nf">use_polars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="linenos" data-linenos="202 "></span><span class="w">        </span><span class="sd">"""Flag if `polars` is to be used, if present in the environment."""</span>
+<span class="linenos" data-linenos="203 "></span>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_polars</span>
+<span class="linenos" data-linenos="204 "></span>
+<span class="linenos" data-linenos="205 "></span>    <span class="nd">@use_polars</span><span class="o">.</span><span class="n">setter</span>
+<span class="linenos" data-linenos="206 "></span>    <span class="k">def</span><span class="w"> </span><span class="nf">use_polars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+<span class="linenos" data-linenos="207 "></span>        <span class="k">if</span> <span class="n">value</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">POLARS_AVAILABLE</span><span class="p">:</span>
+<span class="linenos" data-linenos="208 "></span>            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">"polars is not installed in the environment, cannot set use_polars to True."</span><span class="p">)</span>
+<span class="linenos" data-linenos="209 "></span>        <span class="bp">self</span><span class="o">.</span><span class="n">_use_polars</span> <span class="o">=</span> <span class="n">value</span>
+<span class="linenos" data-linenos="210 "></span>
+<span class="linenos" data-linenos="211 "></span>    <span class="nd">@property</span>
+<span class="linenos" data-linenos="212 "></span>    <span class="k">def</span><span class="w"> </span><span class="nf">cached_species</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="linenos" data-linenos="213 "></span><span class="w">        </span><span class="sd">"""A list of all cached species for which relevant data have been cached."""</span>
+<span class="linenos" data-linenos="214 "></span>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_cached_species</span><span class="p">()</span>
+<span class="linenos" data-linenos="215 "></span>
+<span class="linenos" data-linenos="216 "></span>    <span class="k">def</span><span class="w"> </span><span class="nf">list_cached_species</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="linenos" data-linenos="217 "></span><span class="w">        </span><span class="sd">"""List all species in the cache, for which relevant data is stored.</span>
+<span class="linenos" data-linenos="218 "></span>
+<span class="linenos" data-linenos="219 "></span><span class="sd">        This is determined based on the string of the original query URL.</span>
+<span class="linenos" data-linenos="220 "></span><span class="sd">        """</span>
+<span class="linenos" data-linenos="221 "></span>        <span class="n">species</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="linenos" data-linenos="222 "></span>        <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">urls</span><span class="p">():</span>
+<span class="linenos" data-linenos="223 "></span>            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nist_url</span> <span class="ow">in</span> <span class="n">u</span><span class="p">:</span>
+<span class="linenos" data-linenos="224 "></span>                <span class="n">species</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">extract_species</span><span class="p">(</span><span class="n">u</span><span class="p">))</span>
+<span class="linenos" data-linenos="225 "></span>        <span class="k">return</span> <span class="n">species</span>
+<span class="linenos" data-linenos="226 "></span>
+<span class="linenos" data-linenos="227 "></span>    <span class="nd">@classmethod</span>
+<span class="linenos" data-linenos="228 "></span>    <span class="k">def</span><span class="w"> </span><span class="nf">_from_pandas</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"pd.DataFrame"</span><span class="p">:</span>
+<span class="linenos" data-linenos="229 "></span><span class="w">        </span><span class="sd">"""Process a response into a DataFrame using pandas, with datatypes backed by pyarrow."""</span>
+<span class="linenos" data-linenos="230 "></span>        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_parse_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">types_mapper</span><span class="o">=</span><span class="n">map_arrow_to_pandas_types</span><span class="p">)</span>
+<span class="linenos" data-linenos="231 "></span>
+<span class="linenos" data-linenos="232 "></span>    <span class="nd">@classmethod</span>
+<span class="linenos" data-linenos="233 "></span>    <span class="k">def</span><span class="w"> </span><span class="nf">_from_polars</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"pl.DataFrame"</span><span class="p">:</span>
+<span class="linenos" data-linenos="234 "></span><span class="w">        </span><span class="sd">"""Process a response into a DataFrame using polars."""</span>
+<span class="linenos" data-linenos="235 "></span>        <span class="k">return</span> <span class="n">pl</span><span class="o">.</span><span class="n">from_arrow</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">_parse_response</span><span class="p">(</span><span class="n">response</span><span class="p">))</span>  <span class="c1"># ty:ignore[invalid-return-type]</span>
+<span class="linenos" data-linenos="236 "></span>
+<span class="linenos" data-linenos="237 "></span>    <span class="k">def</span><span class="w"> </span><span class="nf">create_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">:</span> <span class="n">Response</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"pd.DataFrame|pl.DataFrame"</span><span class="p">:</span>
+<span class="linenos" data-linenos="238 "></span><span class="w">        </span><span class="sd">"""Create a dataframe from the (cached) NIST ASD response.</span>
+<span class="linenos" data-linenos="239 "></span>
+<span class="linenos" data-linenos="240 "></span><span class="sd">        Will decide on the backend to use based on the `use_polars` attribute.</span>
+<span class="linenos" data-linenos="241 "></span>
+<span class="linenos" data-linenos="242 "></span><span class="sd">        Will check that it is processing the correct type of response, based on the `nist_url` attribute.</span>
+<span class="linenos" data-linenos="243 "></span>
+<span class="linenos" data-linenos="244 "></span><span class="sd">        Note:</span>
+<span class="linenos" data-linenos="245 "></span><span class="sd">            If `polars` is not installed in the environment, the `use_polars` attribute will always be `False`.</span>
+<span class="linenos" data-linenos="246 "></span><span class="sd">        """</span>
+<span class="linenos" data-linenos="247 "></span>        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="o">.</span><span class="n">url</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nist_url</span><span class="p">):</span>
+<span class="linenos" data-linenos="248 "></span>            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"Invalid response, only the </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nist_url</span><span class="si">}</span><span class="s2"> endpoint is supported, got </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2">"</span>
+<span class="linenos" data-linenos="249 "></span>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+<span class="linenos" data-linenos="250 "></span>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_polars</span><span class="p">:</span>
+<span class="linenos" data-linenos="251 "></span>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_from_polars</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+<span class="linenos" data-linenos="252 "></span>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_from_pandas</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+</code></pre></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="ASDCache.mixins.DataHandlerMixin.use_polars" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">use_polars</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+      <small class="doc doc-label doc-label-writable"><code>writable</code></small>
+  </span>
+
+<a href="#ASDCache.mixins.DataHandlerMixin.use_polars" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">use_polars</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Flag if <code>polars</code> is to be used, if present in the environment.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="ASDCache.mixins.DataHandlerMixin.cached_species" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">cached_species</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#ASDCache.mixins.DataHandlerMixin.cached_species" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">cached_species</span><span class="p">:</span> <span class="n"><span title="list">list</span></span><span class="p">[</span><span class="n"><span title="str">str</span></span><span class="p">]</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>A list of all cached species for which relevant data have been cached.</p>
+
+    </div>
+
+</div>
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="ASDCache.mixins.DataHandlerMixin.__init__" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">__init__</span>
+
+
+<a href="#ASDCache.mixins.DataHandlerMixin.__init__" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Initialize the data handler mixin.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/ASDCache/mixins.py</code></summary>
+              <div class="highlight"><pre><span></span><code><span class="linenos" data-linenos="195 "></span><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="linenos" data-linenos="196 "></span><span class="w">    </span><span class="sd">"""Initialize the data handler mixin."""</span>
+<span class="linenos" data-linenos="197 "></span>    <span class="bp">self</span><span class="o">.</span><span class="n">_use_polars</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"use_polars_backend"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">and</span> <span class="n">POLARS_AVAILABLE</span>
+<span class="linenos" data-linenos="198 "></span>    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</code></pre></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="ASDCache.mixins.DataHandlerMixin.list_cached_species" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">list_cached_species</span>
+
+
+<a href="#ASDCache.mixins.DataHandlerMixin.list_cached_species" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">list_cached_species</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n"><span title="list">list</span></span><span class="p">[</span><span class="n"><span title="str">str</span></span><span class="p">]</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>List all species in the cache, for which relevant data is stored.</p>
+<p>This is determined based on the string of the original query URL.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/ASDCache/mixins.py</code></summary>
+              <div class="highlight"><pre><span></span><code><span class="linenos" data-linenos="216 "></span><span class="k">def</span><span class="w"> </span><span class="nf">list_cached_species</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="linenos" data-linenos="217 "></span><span class="w">    </span><span class="sd">"""List all species in the cache, for which relevant data is stored.</span>
+<span class="linenos" data-linenos="218 "></span>
+<span class="linenos" data-linenos="219 "></span><span class="sd">    This is determined based on the string of the original query URL.</span>
+<span class="linenos" data-linenos="220 "></span><span class="sd">    """</span>
+<span class="linenos" data-linenos="221 "></span>    <span class="n">species</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="linenos" data-linenos="222 "></span>    <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">urls</span><span class="p">():</span>
+<span class="linenos" data-linenos="223 "></span>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nist_url</span> <span class="ow">in</span> <span class="n">u</span><span class="p">:</span>
+<span class="linenos" data-linenos="224 "></span>            <span class="n">species</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">extract_species</span><span class="p">(</span><span class="n">u</span><span class="p">))</span>
+<span class="linenos" data-linenos="225 "></span>    <span class="k">return</span> <span class="n">species</span>
+</code></pre></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="ASDCache.mixins.DataHandlerMixin._from_pandas" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">_from_pandas</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small>
+  </span>
+
+<a href="#ASDCache.mixins.DataHandlerMixin._from_pandas" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">_from_pandas</span><span class="p">(</span><span class="n">response</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="pandas.DataFrame" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame">DataFrame</a></span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Process a response into a DataFrame using pandas, with datatypes backed by pyarrow.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/ASDCache/mixins.py</code></summary>
+              <div class="highlight"><pre><span></span><code><span class="linenos" data-linenos="227 "></span><span class="nd">@classmethod</span>
+<span class="linenos" data-linenos="228 "></span><span class="k">def</span><span class="w"> </span><span class="nf">_from_pandas</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"pd.DataFrame"</span><span class="p">:</span>
+<span class="linenos" data-linenos="229 "></span><span class="w">    </span><span class="sd">"""Process a response into a DataFrame using pandas, with datatypes backed by pyarrow."""</span>
+<span class="linenos" data-linenos="230 "></span>    <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_parse_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">types_mapper</span><span class="o">=</span><span class="n">map_arrow_to_pandas_types</span><span class="p">)</span>
+</code></pre></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="ASDCache.mixins.DataHandlerMixin._from_polars" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">_from_polars</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small>
+  </span>
+
+<a href="#ASDCache.mixins.DataHandlerMixin._from_polars" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">_from_polars</span><span class="p">(</span><span class="n">response</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><span title="polars.DataFrame">DataFrame</span></span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Process a response into a DataFrame using polars.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/ASDCache/mixins.py</code></summary>
+              <div class="highlight"><pre><span></span><code><span class="linenos" data-linenos="232 "></span><span class="nd">@classmethod</span>
+<span class="linenos" data-linenos="233 "></span><span class="k">def</span><span class="w"> </span><span class="nf">_from_polars</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"pl.DataFrame"</span><span class="p">:</span>
+<span class="linenos" data-linenos="234 "></span><span class="w">    </span><span class="sd">"""Process a response into a DataFrame using polars."""</span>
+<span class="linenos" data-linenos="235 "></span>    <span class="k">return</span> <span class="n">pl</span><span class="o">.</span><span class="n">from_arrow</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">_parse_response</span><span class="p">(</span><span class="n">response</span><span class="p">))</span>  <span class="c1"># ty:ignore[invalid-return-type]</span>
+</code></pre></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="ASDCache.mixins.DataHandlerMixin.create_dataframe" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">create_dataframe</span>
+
+
+<a href="#ASDCache.mixins.DataHandlerMixin.create_dataframe" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">create_dataframe</span><span class="p">(</span><span class="n">response</span><span class="p">:</span> <span class="n"><span title="requests.Response">Response</span></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="pandas.DataFrame" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame">DataFrame</a></span> <span class="o">|</span> <span class="n"><span title="polars.DataFrame">DataFrame</span></span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Create a dataframe from the (cached) NIST ASD response.</p>
+<p>Will decide on the backend to use based on the <code>use_polars</code> attribute.</p>
+<p>Will check that it is processing the correct type of response, based on the <code>nist_url</code> attribute.</p>
+
+
+<details class="note" open>
+  <summary>Note</summary>
+  <p>If <code>polars</code> is not installed in the environment, the <code>use_polars</code> attribute will always be <code>False</code>.</p>
+</details>
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/ASDCache/mixins.py</code></summary>
+              <div class="highlight"><pre><span></span><code><span class="linenos" data-linenos="237 "></span><span class="k">def</span><span class="w"> </span><span class="nf">create_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">:</span> <span class="n">Response</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"pd.DataFrame|pl.DataFrame"</span><span class="p">:</span>
+<span class="linenos" data-linenos="238 "></span><span class="w">    </span><span class="sd">"""Create a dataframe from the (cached) NIST ASD response.</span>
+<span class="linenos" data-linenos="239 "></span>
+<span class="linenos" data-linenos="240 "></span><span class="sd">    Will decide on the backend to use based on the `use_polars` attribute.</span>
+<span class="linenos" data-linenos="241 "></span>
+<span class="linenos" data-linenos="242 "></span><span class="sd">    Will check that it is processing the correct type of response, based on the `nist_url` attribute.</span>
+<span class="linenos" data-linenos="243 "></span>
+<span class="linenos" data-linenos="244 "></span><span class="sd">    Note:</span>
+<span class="linenos" data-linenos="245 "></span><span class="sd">        If `polars` is not installed in the environment, the `use_polars` attribute will always be `False`.</span>
+<span class="linenos" data-linenos="246 "></span><span class="sd">    """</span>
+<span class="linenos" data-linenos="247 "></span>    <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="o">.</span><span class="n">url</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nist_url</span><span class="p">):</span>
+<span class="linenos" data-linenos="248 "></span>        <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"Invalid response, only the </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nist_url</span><span class="si">}</span><span class="s2"> endpoint is supported, got </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2">"</span>
+<span class="linenos" data-linenos="249 "></span>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+<span class="linenos" data-linenos="250 "></span>    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_polars</span><span class="p">:</span>
+<span class="linenos" data-linenos="251 "></span>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_from_polars</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+<span class="linenos" data-linenos="252 "></span>    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_from_pandas</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+</code></pre></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../arrow/" class="md-footer__link md-footer__link--prev" aria-label="Previous: &lt;code class=&#34;doc-symbol doc-symbol-nav doc-symbol-module&#34;&gt;&lt;/code&gt;arrow">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>arrow
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../utils/" class="md-footer__link md-footer__link--next" aria-label="Next: &lt;code class=&#34;doc-symbol doc-symbol-nav doc-symbol-module&#34;&gt;&lt;/code&gt;utils">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>utils
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; Antoine Salden 2024-present
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/AntoineTUE/ASDCache" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M202.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1M496 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2m-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3m-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.sections", "navigation.tabs.sticky", "navigation.footer", "toc.integrate", "toc.follow", "content.code.copy"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../assets/javascript/mathjax.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS_CHTML-full,Safe"></script>
+      
+        <script src="https://unpkg.com/mermaid@10.9.0/dist/mermaid.min.js"></script>
+      
+    
+  </body>
+</html>
