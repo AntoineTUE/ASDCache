@@ -63,11 +63,6 @@ plugins:
       - reference/*
     fallback_to_build_date: true
     enable_creation_date: true
-  # gen-files:
-  #   scripts:
-  #     - docs/assets/scripts/gen_ref_pages.py
-  # literate-nav:
-  #   nav_file: SUMMARY.md
   api-autonav:
     modules: ['src/ASDCache']
     exclude_private: false
@@ -189,7 +184,5 @@ nav:
   - schema.md
   - Examples: examples.ipynb
   - Citing: citing.md
-  # defer to gen-files + literate-nav
-  # - Reference: reference/ASDCache/
   - Changelog: changelog.md
   - License: license.md
