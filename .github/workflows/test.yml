@@ -36,7 +36,9 @@ jobs:
           - python-version: '3.10'
             pandas: 'pandas-3.x'
           # numpy<2 not supported from 3.13 onwards
-          - python-version: ['3.13','3.14']
+          - python-version: '3.13'
+            numpy: 'numpy-legacy'
+          - python-version: '3.14'
             numpy: 'numpy-legacy'
 
     steps:
@@ -53,7 +55,7 @@ jobs:
         version: "latest"
         enable-cache: true
 
-    - name: Run tests for ${{ matrix.python-version }}
+    - name: Run tests for python=${{ matrix.python-version }} numpy=${{ matrix.numpy }} pandas=${{ matrix.pandas }} polars=${{ matrix.polars }}
       run: uvx hatch test --python ${{ matrix.python-version }} -i numpy=${{ matrix.numpy }} -i pandas=${{ matrix.pandas }} -i polars=${{ matrix.polars }}
 
   run_tests_python_39:
